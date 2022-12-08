@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+  <!--
+    see Salesforce Metadata API Developer Guide for an up-to-date list of values :
+    https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/standardvalueset_names.htm
+
+    As noted by Fabien here
+    https://github.com/forcedotcom/salesforcedx-vscode/issues/1579#issuecomment-608571367
+    "You can't retrieve all values at once with the 'sfdx force:source:retrieve -m StandardValueSet' command
+    because this Metadata Type doesn’t support the wildcard character * (asterisk)."
+   -->
+  <types>
+    <members>AssetType</members>
+    <members>OtherLiabilityType</members>
+    <members>IncomeSourceType</members>
+    <members>PropertyUseType</members>
+    <members>AddressOwnership</members>
+    <members>PreferredLanguage</members>
+    <members>MaritalStatus</members>
+    <members>ResidencyType</members>
+    <members>Salutation</members>
+    <name>StandardValueSet</name>
+  </types>
+  <version>48.0</version>
+</Package>

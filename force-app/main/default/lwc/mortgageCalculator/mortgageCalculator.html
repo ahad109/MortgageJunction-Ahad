@@ -1,0 +1,49 @@
+<!--
+  @description       : 
+  @author            : M Hamza Siddiqui
+  @group             : 
+  @last modified on  : 10-29-2021
+  @last modified by  : M Hamza Siddiqui
+-->
+<template>
+        <lightning-card title="Mortgage Calculator" icon-name="custom:custom62">
+            <div class="input">
+                <lightning-input
+                    id="principal"
+                    type="number"
+                    label="Principal:"
+                    value={defaultPrincipal}
+                    onchange={handlePrincipalChange}>
+                </lightning-input>
+                <lightning-input
+                    id="years"
+                    type="number"
+                    label="Years:"
+                    value={defaultYear}
+                    onchange={handleYearChange}>
+                </lightning-input>
+                <lightning-input
+                    id="rate"
+                    type="text"
+                    label="Rate:"
+                    value={defaultRate}
+                    onchange={handleRateChange}>
+                </lightning-input>
+            </div>
+            <template if:true={monthlyPayment}>
+                <div class="result">
+                    Monthly Payment: 
+                    <lightning-formatted-number
+                        value={monthlyPayment}
+                        format-style="currency"
+                        currency-code="USD">
+                    </lightning-formatted-number>
+                
+                </div>
+            </template>
+
+           <!-- Default Principle: {initPrincipal}<br/>
+            Default Rate: {initRate}<br/>
+            Default Years: {initYears}<br/>-->
+        </lightning-card>
+    </template>

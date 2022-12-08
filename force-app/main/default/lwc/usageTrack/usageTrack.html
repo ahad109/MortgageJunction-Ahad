@@ -1,0 +1,117 @@
+<!--
+  @description       : 
+  @author            : M Hamza Siddiqui
+  @group             : 
+  @last modified on  : 05-27-2022
+  @last modified by  : M Hamza Siddiqui
+-->
+<template>
+    <template if:false={loaded} >
+        <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+    </template>
+    <template if:true={loaded}>
+        <template if:true={errorDisplayed}>
+            <lightning-formatted-rich-text value={errorDisplayed}></lightning-formatted-rich-text>
+        </template>
+        <template if:false={errorDisplayed}>
+            <lightning-card title="Usage Summary" icon-name="standard:account">
+
+
+
+                    <div class="slds-card__body">
+                        <slot>
+                            <div class="slds-m-around_medium">
+                                <div class="slds-grid  slds-gutters">
+
+                                    <!--<div class="slds-col">
+                                        <div class="slds-box">
+                                        <div class="slds-align_absolute-center slds-grid slds-gutters">
+                                            <div class="slds-col slds-p-top_xxx-small">
+                                                <lightning-icon icon-name="standard:work_plan"  size="large"></lightning-icon>
+                                    
+                                                
+                                            </div>
+                                            <div class="slds-col slds-text-heading_large">
+                                                {currentPlan}
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="slds-text-heading_small"> 
+                                        Current Plan 
+
+                                    </div>
+                                </div>
+                            </div>-->
+            
+            
+                                <!-- style="padding-left: 20px;max-width: 70%;margin-left: 30px" -->
+                                    <!-- <div class="slds-col slds-p-horizontal_medium slds-size_1-of-4" >
+                                        <div class="slds-box">
+                                            <div class="slds-align_absolute-center slds-grid slds-gutters">
+                                                <div class="slds-col slds-p-top_xxx-small">
+                                                    <lightning-icon icon-name="standard:work_plan" alternative-text="Approved"
+                                                     title="Approved"></lightning-icon>
+                                           
+                                                    </div>
+                                                    <div class="slds-col slds-text-heading_large">{currentPlan}</div>
+                                                </div><br>
+                                                <div class="slds-text-heading_small"> Current Plan </div>
+                                            </div>
+                                    </div> -->
+                                    <!-- style="padding-right: 10px;padding-left: 10px;max-width: 70%;margin-left: 15px;margin-right: 15px" -->
+                                    <!-- <div class="slds-col slds-p-horizontal_medium slds-size_1-of-4"  >
+                                        <div class="slds-box">
+                                            <div class="slds-align_absolute-center slds-grid slds-gutters">
+                                                <div class="slds-col slds-p-top_xxx-small">
+                                                    <lightning-icon icon-name="standard:user" alternative-text="Approved" title="Approved"></lightning-icon>
+                                           
+                                                </div>
+                                                <div class="slds-col slds-text-heading_large">{usageLastMonth} </div>
+                                            </div><br>
+                                            <div class="slds-text-heading_small" style="padding: 0px;"> API Calls Consumed Last Month </div>
+                                        </div>
+                                    </div> -->
+                                    <div class="slds-col"><div class="slds-box">
+                                        <div class="slds-align_absolute-center slds-grid slds-gutters">
+                                            <div class="slds-col slds-p-top_xxx-small">
+                                                <lightning-icon icon-name="standard:user" alternative-text="Approved" size="large" title="Approved"></lightning-icon>
+
+                                                <!-- <lightning-icon class="slds-icon-standard-customers slds-icon_container" size="large"> -->
+                                    </div><div class="slds-col slds-text-heading_large">{usageLastMonth}</div>
+                                </div><br><div class="slds-text-heading_small"> API Calls Consumed Last Month </div></div></div>
+            
+                                    <!-- style="padding-right: 20px;max-width: 70%;margin-right: 30px" -->
+                                    <!-- <div class="slds-col slds-p-horizontal_medium slds-size_1-of-4" >
+                                        <div class="slds-box">
+                                            <div class="slds-align_absolute-center slds-grid slds-gutters">
+                                                <div class="slds-col slds-p-top_xxx-small">
+                                                    <lightning-icon icon-name="standard:user_role" alternative-text="Approved" title="Approved"></lightning-icon>
+                                           
+                                                </div>
+                                                <div class="slds-col slds-text-heading_large">{usageMTD} </div>
+                                            </div><br>
+                                            <div class="slds-text-heading_small">API Calls Consumed - Current Month to Date </div>
+                                        </div>
+                                    </div> -->
+                                    <div class="slds-col"><div class="slds-box">
+                                        <div class="slds-align_absolute-center slds-grid slds-gutters">
+                                            <div class="slds-col slds-p-top_xxx-small">
+                                                <lightning-icon icon-name="standard:user_role" alternative-text="Approved" size='large' title="Approved"></lightning-icon></div><div class="slds-col slds-text-heading_large">{usageMTD}</div>
+                                </div><br><div class="slds-text-heading_small"> API Calls Consumed - Current Month to Date </div></div></div>
+            
+                                </div>
+
+                            </div>
+                            
+                        </slot>
+                        
+                    </div>
+        
+                    
+                    
+            </lightning-card>
+        </template>
+        
+    </template>
+    
+</template>
