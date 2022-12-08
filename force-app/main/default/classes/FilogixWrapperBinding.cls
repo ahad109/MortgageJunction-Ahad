@@ -1027,10 +1027,10 @@ global with sharing class FilogixWrapperBinding {
             string SubPrpId = rlaRecord.get('Subject_Property__c') != null? string.Valueof(rlaRecord.get('Subject_Property__c')): null;
             
             // Precautionary check
-            if(SubPrpId == null && !requiredFieldError.contains('Subject Property field')){
+            /*if(SubPrpId == null && !requiredFieldError.contains('Subject Property field')){
                  //throw createCustomException('Subject Property field is Required: Please make sure the Subject Property field is populated');
                  requiredFieldError +='Please make sure the <b>Subject Property field</b> is populated</br>';
-            }
+            }*/
             
             if(!string.isEmpty(SubPrpId)){
 
@@ -1153,7 +1153,7 @@ global with sharing class FilogixWrapperBinding {
                     rInc.incomeAmount = rlaRecord.getSObject('Subject_Property__r').get('ExpMonthlyRentalIncome') != null? Double.valueOf(rlaRecord.getSObject('Subject_Property__r').get('ExpMonthlyRentalIncome')): null;
                     rInc.incomePeriodDd = string.valueof(rlaRecord.getSObject('Subject_Property__r').get('Rental_Income_Period__c'));
                     rInc.incomeTypeDd = string.valueof(rlaRecord.getSObject('Subject_Property__r').get('Rental_Income_Type__c'));
-                    rInc.incPercentInTds = rlaRecord.getSObject('Subject_Property__r').get('Rental_IncPercentInTds__c') != null? Double.valueOf(rlaRecord.getSObject('Subject_Property__r').get('Rental_IncPercentInTds__c')): null;
+                    rInc.incPercentInTds = rInc.incPercentInGds = rlaRecord.getSObject('Subject_Property__r').get('Rental_IncPercentInTds__c') != null? Double.valueOf(rlaRecord.getSObject('Subject_Property__r').get('Rental_IncPercentInTds__c')): null;
                     //rInc.incomeDescription (Missing Mappping)
                     
                     //Required fields check
@@ -1208,6 +1208,11 @@ global with sharing class FilogixWrapperBinding {
                 subPrp.waterTypeDd = string.Valueof(rlaRecord.getSObject('Subject_Property__r').get('Water_Type__c'));
                 subPrp.propertyExpense = ListExpenses;
             //}
+            } else { // Adding the Filogix Default values
+                FilogixPOSTJSONWrapper.Address addr = new FilogixPOSTJSONWrapper.Address();
+                addr.provinceDd = 'Ontario';
+                addr.countryTypeDd = 'Canada';
+                subPrp.address = addr;
             } // END IF
         } // END FOR
         return subPrp;
@@ -1443,26 +1448,32 @@ global with sharing class FilogixWrapperBinding {
                     if (mapofApplicantIdAndAsset.containsKey(applicantId)) {
                         map<string, sObject> mapOfAssets = mapofApplicantIdAndAsset.get(applicantId);
                         for (string asstId : mapOfAssets.keyset()) {
-                            FilogixPOSTJSONWrapper.Asset asst = new FilogixPOSTJSONWrapper.Asset();
-                            asst.assetDescription = String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('Description__c'));//String.valueof(mapOfAssets.get(asstId).get('Name'));
-                            asst.assetTypeDd = String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('AssetType'));
-                            asst.assetValue =  mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('CashOrMarketValue') != null? Double.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('CashOrMarketValue')): null;
-                            asst.downpaymentAmount = mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get(appNameSpace+'Down_Payment_Amount__c') != null? Double.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get(appNameSpace+'Down_Payment_Amount__c')): null;
-                            
-                            //Required fields check
-                            if (string.Valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('Description__c')) == null ||String.isBlank(String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('Description__c')))) {
-                                requiredFieldsError('LoanApplicationAsset','Description__c',String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('Name')),String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('Id')));
+                            // As of v.1.6.1 Filogix POST Schema - These values are not supported but available in GET
+                            // Making sure to not process the assets having this value to prevent error on user-end.
+                            if(String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('AssetType')) !=null && 
+                              String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('AssetType'))!='Property' && 
+                              String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('AssetType'))!= 'Rental Property'){
+                                FilogixPOSTJSONWrapper.Asset asst = new FilogixPOSTJSONWrapper.Asset();
+                                asst.assetDescription = String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('Description__c'));//String.valueof(mapOfAssets.get(asstId).get('Name'));
+                                asst.assetTypeDd = String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('AssetType'));
+                                asst.assetValue =  mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('CashOrMarketValue') != null? Double.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('CashOrMarketValue')): null;
+                                asst.downpaymentAmount = mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get(appNameSpace+'Down_Payment_Amount__c') != null? Double.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get(appNameSpace+'Down_Payment_Amount__c')): null;
+                                
+                                //Required fields check
+                                if (string.Valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('Description__c')) == null ||String.isBlank(String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('Description__c')))) {
+                                    requiredFieldsError('LoanApplicationAsset','Description__c',String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('Name')),String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('Id')));
+                                }
+                                //Required fields check
+                                if (string.Valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('AssetType')) == null ||String.isBlank(String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('AssetType')))) {
+                                    requiredFieldsError('LoanApplicationAsset','AssetType',String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('Name')),String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('Id')));
+                                }
+                                //Required fields check
+                                if (string.Valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('CashOrMarketValue')) == null ||String.isBlank(String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('CashOrMarketValue')))) {
+                                    requiredFieldsError('LoanApplicationAsset','CashOrMarketValue',String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('Name')),String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('Id')));
+                                }
+    
+                                listOfAssets.add(asst);
                             }
-                            //Required fields check
-                            if (string.Valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('AssetType')) == null ||String.isBlank(String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('AssetType')))) {
-                                requiredFieldsError('LoanApplicationAsset','AssetType',String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('Name')),String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('Id')));
-                            }
-                            //Required fields check
-                            if (string.Valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('CashOrMarketValue')) == null ||String.isBlank(String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('CashOrMarketValue')))) {
-                                requiredFieldsError('LoanApplicationAsset','CashOrMarketValue',String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('Name')),String.valueof(mapOfAssets.get(asstId).getSObject('LoanApplicationAsset').get('Id')));
-                            }
-
-                            listOfAssets.add(asst);
                         }
                         
                         
@@ -1795,7 +1806,7 @@ global with sharing class FilogixWrapperBinding {
                                     renInc.incomeAmount = mapOfProps.get(propId).get('ExpMonthlyRentalIncome') != null? Double.valueof(mapOfProps.get(propId).get('ExpMonthlyRentalIncome')): 0;
                                     renInc.incomePeriodDd = String.valueof(mapOfProps.get(propId).get('Rental_Income_Period__c'));
                                     renInc.incomeTypeDd = String.valueof(mapOfProps.get(propId).get('Rental_Income_Type__c'));
-                                    renInc.incPercentInTds = Double.valueof(mapOfProps.get(propId).get('Rental_IncPercentInTds__c')) != null? Double.valueof(mapOfProps.get(propId).get('Rental_IncPercentInTds__c')): 0;
+                                    renInc.incPercentInTds = renInc.incPercentInGds = Double.valueof(mapOfProps.get(propId).get('Rental_IncPercentInTds__c')) != null? Double.valueof(mapOfProps.get(propId).get('Rental_IncPercentInTds__c')): 0;
                                     //renInc.incomeDescription (Missing Mappping)
                                     //Required fields check
                                     if (mapOfProps.get(propId).get('ExpMonthlyRentalIncome') == null) {
