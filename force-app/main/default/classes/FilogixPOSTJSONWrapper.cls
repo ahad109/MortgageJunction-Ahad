@@ -517,12 +517,12 @@ public class FilogixPOSTJSONWrapper {
     }
     
     public class RentalIncome {
-        public Decimal incomeAmount {get;set;} 
+        public Double incomeAmount {get;set;} 
         public String incomePeriodDd {get;set;} 
+        public String incomeDescription {get;set;} 
         public String incomeTypeDd {get;set;} 
-        public Decimal incPercentInTds {get;set;} 
-
-        
+        public Double incPercentInTds {get;set;} 
+        public Double incPercentInGds {get;set;}
     }
     
   /*  public class Address_X {
