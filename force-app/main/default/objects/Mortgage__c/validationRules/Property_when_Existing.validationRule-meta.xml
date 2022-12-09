@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Property_when_Existing</fullName>
+    <active>true</active>
+    <description>Property is required when Property is Existing</description>
+    <errorConditionFormula>AND(
+Existing_Mortgage__c==true,
+OR(ISNULL(Loan_Application_Property__c),
+ISBLANK(Loan_Application_Property__c)
+)
+)</errorConditionFormula>
+    <errorDisplayField>Loan_Application_Property__c</errorDisplayField>
+    <errorMessage>Please select the Property</errorMessage>
+</ValidationRule>

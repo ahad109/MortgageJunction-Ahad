@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Routing_Sender__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Sending User Routing Details</description>
+    <externalId>false</externalId>
+    <label>Routing Sender</label>
+    <length>32</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

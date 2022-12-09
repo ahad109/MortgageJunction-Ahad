@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type__c</fullName>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <label>Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Administration fee</fullName>
+                <default>false</default>
+                <label>Administration fee</label>
+            </value>
+            <value>
+                <fullName>Application Fee</fullName>
+                <default>false</default>
+                <label>Application Fee</label>
+            </value>
+            <value>
+                <fullName>Appraisal</fullName>
+                <default>false</default>
+                <label>Appraisal</label>
+            </value>
+            <value>
+                <fullName>Bonus</fullName>
+                <default>false</default>
+                <label>Bonus</label>
+            </value>
+            <value>
+                <fullName>Broker Fee</fullName>
+                <default>false</default>
+                <label>Broker Fee</label>
+            </value>
+            <value>
+                <fullName>Brokerage Fee</fullName>
+                <default>false</default>
+                <label>Brokerage Fee</label>
+            </value>
+            <value>
+                <fullName>Disability Insurance Fee</fullName>
+                <default>false</default>
+                <label>Disability Insurance Fee</label>
+            </value>
+            <value>
+                <fullName>Evaluation</fullName>
+                <default>false</default>
+                <label>Evaluation</label>
+            </value>
+            <value>
+                <fullName>Fee to Register Mortgage</fullName>
+                <default>false</default>
+                <label>Fee to Register Mortgage</label>
+            </value>
+            <value>
+                <fullName>Fire Insurance</fullName>
+                <default>false</default>
+                <label>Fire Insurance</label>
+            </value>
+            <value>
+                <fullName>Insurance Fees</fullName>
+                <default>false</default>
+                <label>Insurance Fees</label>
+            </value>
+            <value>
+                <fullName>Legal Fees and Disbursements</fullName>
+                <default>false</default>
+                <label>Legal Fees and Disbursements</label>
+            </value>
+            <value>
+                <fullName>Mortgage Insurance Application Fee</fullName>
+                <default>false</default>
+                <label>Mortgage Insurance Application Fee</label>
+            </value>
+            <value>
+                <fullName>Mortgage Insurance Premium - Tax</fullName>
+                <default>false</default>
+                <label>Mortgage Insurance Premium - Tax</label>
+            </value>
+            <value>
+                <fullName>Mortgage Insurance Premium</fullName>
+                <default>false</default>
+                <label>Mortgage Insurance Premium</label>
+            </value>
+            <value>
+                <fullName>Mortgage Renewal Fee</fullName>
+                <default>false</default>
+                <label>Mortgage Renewal Fee</label>
+            </value>
+            <value>
+                <fullName>Other Lender Fees</fullName>
+                <default>false</default>
+                <label>Other Lender Fees</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+            <value>
+                <fullName>Payout Interest Penalty</fullName>
+                <default>false</default>
+                <label>Payout Interest Penalty</label>
+            </value>
+            <value>
+                <fullName>Property Tax Holdback</fullName>
+                <default>false</default>
+                <label>Property Tax Holdback</label>
+            </value>
+            <value>
+                <fullName>Shares Purchased to Join Credit Union</fullName>
+                <default>false</default>
+                <label>Shares Purchased to Join Credit Union</label>
+            </value>
+            <value>
+                <fullName>Survey Costs</fullName>
+                <default>false</default>
+                <label>Survey Costs</label>
+            </value>
+            <value>
+                <fullName>Title Insurance Fee</fullName>
+                <default>false</default>
+                <label>Title Insurance Fee</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>propertyExpenseType__c</fullName>
+    <externalId>false</externalId>
+    <label>Expense Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Condo Fees</fullName>
+                <default>false</default>
+                <label>Condo Fees</label>
+            </value>
+            <value>
+                <fullName>General Expenses</fullName>
+                <default>false</default>
+                <label>General Expenses</label>
+            </value>
+            <value>
+                <fullName>Heating Expense</fullName>
+                <default>false</default>
+                <label>Heating Expense</label>
+            </value>
+            <value>
+                <fullName>Hydro</fullName>
+                <default>false</default>
+                <label>Hydro</label>
+            </value>
+            <value>
+                <fullName>Insurance</fullName>
+                <default>false</default>
+                <label>Insurance</label>
+            </value>
+            <value>
+                <fullName>Interest Charges</fullName>
+                <default>false</default>
+                <label>Interest Charges</label>
+            </value>
+            <value>
+                <fullName>Management Expenses</fullName>
+                <default>false</default>
+                <label>Management Expenses</label>
+            </value>
+            <value>
+                <fullName>Municipal Taxes</fullName>
+                <default>false</default>
+                <label>Municipal Taxes</label>
+            </value>
+            <value>
+                <fullName>Repairs</fullName>
+                <default>false</default>
+                <label>Repairs</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

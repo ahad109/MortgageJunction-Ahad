@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Actual_Payment_Term__c</fullName>
+    <deprecated>false</deprecated>
+    <description>The period of time over which the interest rate, payment and other mortgage conditions are set. At the end of the term the mortgage is due and payable unless renewed. (Months)</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The period of time over which the interest rate, payment and other mortgage conditions are set. At the end of the term the mortgage is due and payable unless renewed. (Months)</inlineHelpText>
+    <label>Term</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>
