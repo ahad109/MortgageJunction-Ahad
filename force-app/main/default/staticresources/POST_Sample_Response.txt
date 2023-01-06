@@ -1,0 +1,7 @@
+{
+    "result": {
+        "setMortgageAppDataResponse": {
+            "mortgageApplicationId": "CLJT-92"
+        }
+    }
+}

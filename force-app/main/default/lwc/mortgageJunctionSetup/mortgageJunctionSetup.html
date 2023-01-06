@@ -1,0 +1,286 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 11-16-2021
+  @last modified by  : M Hamza Siddiqui @ mhamzas.com
+  Modifications Log 
+  Ver   Date         Author                               Modification
+  1.0   05-07-2021   ChangeMeIn@UserSettingsUnder.SFDoc   Initial Version
+-->
+<template>
+  <lightning-tabset variant="scoped">
+    <lightning-tab label="Setup">
+      <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_1-of-3">
+          <lightning-card
+            variant="Narrow"
+            title="Filogix App Credentials for Integration"
+            icon-name="custom:custom67"
+          >
+            <!-- <p  class="slds-p-horizontal_small"> </p> -->
+
+            <!-- <br /> -->
+            <template if:true={loaded}>
+              <!-- Grid Start -->
+              <!-- <div class="slds-grid slds-gutters slds-p-horizontal_small"> -->
+              <!-- Col Start -->
+              <!-- <div class="slds-col"> -->
+              <div class="slds-p-around_medium">
+                <lightning-input
+                  type="text"
+                  variant="standard"
+                  name="name"
+                  class="checkValid"
+                  label="Firm Code"
+                  field-level-help="Enter your Filogix Firm Code"
+                  value={config.FirmCode__c}
+                  required
+                  onchange={handleFirmCodeChange}
+                >
+                </lightning-input>
+                <!-- </div> -->
+                <!-- Col End -->
+
+                <!-- COL START -->
+                <!-- <div class="slds-col"> -->
+                <lightning-input
+                  type="text"
+                  variant="standard"
+                  name="name"
+                  class="checkValid"
+                  label="Filogix Org ID"
+                  field-level-help="Enter your Filogix Org ID"
+                  value={config.OrgId__c}
+                  onchange={handleFilogixIdChange}
+                  required
+                >
+                </lightning-input>
+                <!-- </div> -->
+                <!-- Col END -->
+
+                <!-- COL START -->
+                <!-- <div class="slds-col"> -->
+                <lightning-input
+                  type="text"
+                  variant="standard"
+                  class="checkValid"
+                  label="Username"
+                  field-level-help="Enter your Mortgage Junction Authentication Username"
+                  value={auth.Username__c}
+                  onchange={handleUsernameChange}
+                  required
+                >
+                </lightning-input>
+                <!-- </div> -->
+                <!-- Col END -->
+
+                <!-- COL START -->
+                <!-- <div class="slds-col"> -->
+                <lightning-input
+                  type="password"
+                  variant="standard"
+                  class="checkValid"
+                  label="Password"
+                  field-level-help="Enter your Mortgage Junction Authentication Password"
+                  value={auth.Password__c}
+                  onchange={handlePasswordChange}
+                  required
+                >
+                </lightning-input>
+                <!-- </div> -->
+                <!-- Col END -->
+
+                <!-- Col start -->
+
+                <!-- <div class="slds-col"> -->
+                <div>Is Live</div>
+                <div>
+                  <lightning-input
+                    type="checkbox"
+                    label="Live Mode"
+                    checked={config.Is_Live__c}
+                    onchange={handleIsLiveChange}
+                  ></lightning-input>
+                </div>
+                <!-- </div> -->
+                <!-- Col End -->
+              </div>
+              <!-- Grid End -->
+            </template>
+            <template if:false={loaded}>
+              <lightning-spinner alternative-text="Loading"></lightning-spinner>
+            </template>
+
+            <!-- <br />
+        <br /> -->
+
+            <!--<div class="slds-card__header slds-float_left">
+          <h2 class="slds-card__header-title">Filogix User Mapping</h2>
+        </div>
+        
+        <div class="slds-clearfix slds-card__header slds-float_right">
+          <lightning-button
+            label="Add Filogix User"
+            icon-name="action:add_relationship"
+            lternative-text="Add"
+            title="Add"
+            disabled={disabled}
+            onclick={addUser}
+            size="small"
+            variant="brand"
+          ></lightning-button>
+        </div>
+
+        <div class="tableResponsive">
+          <div class="slds-clearfix">
+            <div class="slds-float_right"></div>
+          </div>
+
+          <table
+            class="slds-table slds-table_bordered slds-table_cell-buffer slds-var-m-bottom_large tableResponsive"
+          >
+            <thead>
+              <tr></tr>
+              <tr class="slds-text-title_caps">
+                <th>
+                  <div class="slds-truncate">Salesforce User</div>
+                </th>
+                <th>
+                  <div class="slds-truncate">Filogix User ID</div>
+                </th>
+                <th>
+                  <div class="slds-m-horizontal_xx-large slds-size_1-of-12">
+                    Actions
+                  </div>
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <template for:each={records} for:item="row">
+                <tr class="inputRows slds-text-align_right" key={row.RowIndex}>
+                  <td data-id={row.RowIndex}>
+                    <template if:true={row.showUserCombo}>
+                      <template if:true={SelectionCheck}>
+                        <c-lookup
+                          data-id={row.RowIndex}
+                          onsearch={handleSearch}
+                          label="Salesforce User"
+                          required
+                          selection={Selection}
+                          errors={errors_lookup}
+                          onselectionchange={handleSelectionChange}
+                          placeholder="Search User"
+                        >
+                        </c-lookup>
+                      </template>
+                      <template if:false={SelectionCheck}>
+                        <c-lookup
+                          data-id={row.RowIndex}
+                          onsearch={handleSearch}
+                          label="Salesforce User"
+                          required
+                          onselectionchange={handleSelectionChange}
+                          placeholder="Search User"
+                        >
+                        </c-lookup>
+                      </template>
+                    </template>
+
+                    <template if:false={row.showUserCombo}>
+                      {row.Name}
+                      <p style="font-size: 10px;">{row.Email} - {row.Profile}</p>
+                    </template>
+                  </td>
+                  <td data-id={row.RowIndex}>
+                    <template if:true={row.showUserCombo}>
+                      <lightning-input
+                        data-id={row.RowIndex}
+                        type="text"
+                        variant="standard"
+                        name="name"
+                        class="checkvalidation"
+                        value={row.Filogix_Id__c}
+                        onblur={handleChangeinFilogixId}
+                        label="Enter Filogix User ID"
+                        required
+                      ></lightning-input>
+                    </template>
+
+                    <template if:false={row.showUserCombo}>
+                      {row.Filogix_Id__c}
+                    </template>
+                  </td>
+
+                  <td
+                    data-id={row.RowIndex}
+                    class="slds-m-horizontal_xx-large slds-size_1-of-12"
+                  >
+                    <lightning-button-group>
+                      <template if:true={row.showUserCombo}>
+                        <lightning-button
+                          data-id={row.RowIndex}
+                          label="Save"
+                          icon-name="utility:save"
+                          onclick={toggleUserComboCheck}
+                          size="small"
+                        ></lightning-button>
+                        <lightning-button
+                          data-id={row.RowIndex}
+                          label="Cancel"
+                          icon-name="utility:cancel_file_request"
+                          onclick={toggleUserComboCancel}
+                          size="small"
+                        ></lightning-button>
+                      </template>
+                      <template if:false={row.showUserCombo}>
+                        <lightning-button
+                          data-id={row.RowIndex}
+                          label="Edit"
+                          icon-name="utility:edit"
+                          onclick={toggleUserComboCheck}
+                          size="small"
+                          disabled={disabled}
+                        ></lightning-button>
+                        <lightning-button
+                          data-id={row.RowIndex}
+                          label="Delete"
+                          icon-name="utility:delete"
+                          onclick={handleUserDelete}
+                          size="small"
+                        ></lightning-button>
+                      </template>
+                    </lightning-button-group>
+
+                  
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div> -->
+
+            <div class="slds-clearfix slds-card__footer">
+              <div class="slds-float_right">
+                <lightning-button
+                  variant="brand"
+                  label="Save"
+                  title="Save Config Settings"
+                  onclick={handleDataSave}
+                ></lightning-button>
+              </div>
+            </div>
+            <!-- <lightning-icon icon-name="action:add_relationship"  alternative-text="Add" title="Add" onclick={addUser}></lightning-icon> -->
+          </lightning-card>
+        </div>
+        <div class="slds-col slds-size_2-of-3 slds-grid_vertical-stretch">
+          <c-user-mapping></c-user-mapping>
+        </div>
+      </div>
+    </lightning-tab>
+
+    <lightning-tab lightning-tab label="Usage">
+      <c-usage-track></c-usage-track>
+    </lightning-tab>
+  </lightning-tabset>
+</template>

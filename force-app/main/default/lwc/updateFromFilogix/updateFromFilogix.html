@@ -1,0 +1,47 @@
+<!--
+  @description       : 
+  @author            : M Hamza Siddiqui
+  @group             : 
+  @last modified on  : 10-07-2021
+  @last modified by  : M Hamza Siddiqui @ mhamzas.com
+  Modifications Log 
+  Ver   Date         Author             Modification
+  1.0   05-18-2021   M Hamza Siddiqui   Initial Version
+-->
+<template>
+    <!-- <lightning-card  variant="Narrow" >
+       
+        <lightning-button variant="base" label="Update from Filogix" title="titleName" 
+        onclick={handleupdateFromFilogix} slot="actions"></lightning-button>
+        <template  if:true={processedRla}>
+            <lightning-record-form
+                record-id={recordId}
+                object-api-name='ResidentialLoanApplication'
+                layout-type="Full"
+                mode="view">
+            </lightning-record-form>
+        </template>
+        
+    </lightning-card>  -->
+    <template if:true={loaded}>
+        <template if:true={iconVisibility}>
+            <div class="slds-align_absolute-center">
+                <lightning-icon icon-name="action:approval" alternative-text="Success" title="Success"></lightning-icon>
+            </div>
+        </template>
+        <template if:false={iconVisibility}>
+            <div class="slds-align_absolute-center">
+                <lightning-icon icon-name="action:close" alternative-text="Error" title="Error"></lightning-icon>
+            </div>
+        </template>
+        <lightning-formatted-rich-text value={rlaMessage}></lightning-formatted-rich-text>
+        <template if:true={showbutton}>
+            <lightning-button class="slds-align_absolute-center" label="Send Error Report to CJA" variant="destructive-text" onclick={sendReport}></lightning-button>
+        </template>
+    </template>
+    <template if:false={loaded}>
+        <div class="slds-m-vertical_large" style="height:5rem;" >
+            <lightning-spinner alternative-text="Loading"></lightning-spinner>
+        </div>
+    </template>
+</template>

@@ -1,0 +1,73 @@
+:host {
+	display: grid;
+	height: 100%;
+}
+
+@media only screen and (min-width: 761px) {
+  .actions-column {
+    text-align: end;
+  }
+	.filogix-users-table {
+		height: 100%;
+		display: grid;
+		width: 100%;
+	}
+}
+@media only screen and (max-width: 760px) {
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+  }
+
+  tbody tr {
+    border: 1px solid rgb(201, 201, 201);
+    border-radius: 10px;
+  }
+
+  tbody td {
+    border: 0;
+  }
+
+  table {
+    padding-bottom: 4rem !important;
+    border: 0;
+  }
+
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  tr {
+    margin: 0 0 1rem 0;
+  }
+
+  td {
+    border: none;
+    position: relative;
+  }
+
+  td:before {
+    position: relative;
+    top: 0;
+    white-space: nowrap;
+  }
+
+  tr > td:first-child {
+    padding-left: 0.5rem;
+  }
+
+  tbody td:nth-of-type(2):before {
+    content: "Email: ";
+    color: var(--lwc-colorTextLabel);
+  }
+  tbody td:nth-of-type(3):before {
+    content: "Filogix ID: ";
+    color: var(--lwc-colorTextLabel);
+  }
+}

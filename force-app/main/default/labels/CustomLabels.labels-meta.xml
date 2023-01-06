@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>Package_Restrict</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Package Restrict</shortDescription>
+        <value>Callouts are not allowed. Please contact the Package Manager.</value>
+    </labels>
+    <labels>
+        <fullName>Success_Message</fullName>
+        <categories>mortgagejunction, success</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Success Message</shortDescription>
+        <value>Your request has been processed successfully.</value>
+    </labels>
+</CustomLabels>
