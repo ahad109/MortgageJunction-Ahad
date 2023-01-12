@@ -3278,6 +3278,36 @@ global with sharing class FilogixWrapperBinding {
                   );
                 }
 
+                //Filogix Schema 1.60 Change
+                //Filogix Removed "Property" and "Rental Property" from POST
+                //Adding a validation rule instead of removing from picklist values
+                //Reason: These values are still valid for GET
+                if (
+                  !String.isBlank(String.valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('AssetType' + customFieldSuffix)))
+                  && (
+                      string.Valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('AssetType' + customFieldSuffix)) == 'Property' 
+                      ||
+                      string.Valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('AssetType' + customFieldSuffix)) == 'Rental Property'
+                     )
+                ) {
+                  requiredFieldError +='The Asset Type should not be a "Property" or "Rental Property". Please create the Property record(s) instead.</br>';
+                  /*requiredFieldsError(
+                    objNamePrefix + 'LoanApplicationAsset' + customFieldSuffix,
+                    'AssetType' + customFieldSuffix,
+                    String.valueof(
+                      mapOfAssets.get(asstId)
+                        .getSObject(LoanApplicationAssetRelation)
+                        .get('Name')
+                    ),
+                    String.valueof(
+                      mapOfAssets.get(asstId)
+                        .getSObject(LoanApplicationAssetRelation)
+                        .get('Id')
+                    )
+                  );*/
+
+                }
+
                 listOfAssets.add(asst);
               }
             }
