@@ -1,1 +1,199 @@
-[]
+[
+  {
+    "_id": "4acbc748-de98-4ebb-befb-5ade136e50cb",
+    "colId": "51beb818-cba7-4b25-85e1-f85319094930",
+    "containerId": "",
+    "name": "MJ POST APP",
+    "url": "https://filogix-middleware.herokuapp.com/api/v1/post",
+    "method": "POST",
+    "sortNum": 10000,
+    "created": "2023-01-12T14:21:01.995Z",
+    "modified": "2023-01-12T14:21:27.617Z",
+    "headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n\t\"payload\": {\n\t\t\"mortgageApplication\": {\n\t\t\t\"subjectProperty\": {\n\t\t\t\t\"waterTypeDd\": \"Well\",\n\t\t\t\t\"taxationYear\": 2020,\n\t\t\t\t\"structureAge\": 10,\n\t\t\t\t\"rentalIncome\": {\n\t\t\t\t\t\"incPercentInTds\": 10,\n\t\t\t\t\t\"incomeTypeDd\": \"Rental Income\",\n\t\t\t\t\t\"incomePeriodDd\": \"Annual\",\n\t\t\t\t\t\"incomeAmount\": 3120\n\t\t\t\t},\n\t\t\t\t\"propertyTypeDd\": \"Condo\",\n\t\t\t\t\"propertyExpense\": [],\n\t\t\t\t\"occupancyTypeDd\": \"Owner Occupied\",\n\t\t\t\t\"numberOfUnits\": 30,\n\t\t\t\t\"newConstructionDd\": \"Existing\",\n\t\t\t\t\"mlsListingFlag\": \"Y\",\n\t\t\t\t\"lotSizeUnitOfMeasureDd\": \"Acres\",\n\t\t\t\t\"lotSize\": 20,\n\t\t\t\t\"livingSpaceUnitOfMeasurDd\": \"Sq Ft\",\n\t\t\t\t\"includetds\": \"Y\",\n\t\t\t\t\"heatTypeDd\": \"Electric Baseboard\",\n\t\t\t\t\"garageTypeDd\": \"Attached\",\n\t\t\t\t\"garageSizeDd\": \"Double\",\n\t\t\t\t\"feesIncludeHeat\": \"N\",\n\t\t\t\t\"estimatedAppraisalValue\": 5200,\n\t\t\t\t\"dwellingTypeDd\": \"Apartment High Rise\",\n\t\t\t\t\"dwellingStyleDd\": \"BiLevel\",\n\t\t\t\t\"appraisalDateAct\": \"2021-02-18T17:00:00-00:00\",\n\t\t\t\t\"address\": {\n\t\t\t\t\t\"unitNumber\": \"unit 432\",\n\t\t\t\t\t\"streetTypeDd\": \"Allee\",\n\t\t\t\t\t\"streetNumber\": \"12\",\n\t\t\t\t\t\"streetName\": \"553 franklin d. roosevelt\",\n\t\t\t\t\t\"streetDirectionDd\": \"E\",\n\t\t\t\t\t\"provinceDd\": \"Ontario\",\n\t\t\t\t\t\"postalLdu\": \"2M2\",\n\t\t\t\t\t\"postalFsa\": \"M2M\",\n\t\t\t\t\t\"countryTypeDd\": \"Canada\",\n\t\t\t\t\t\"city\": \"Toronto\"\n\t\t\t\t},\n\t\t\t\t\"actualAppraisalValue\": 21520\n\t\t\t},\n\t\t\t\"notes\": [\n\t\t\t\t{}\n\t\t\t],\n\t\t\t\"mortgage\": [\n\t\t\t\t{\n\t\t\t\t\t\"subprimeFlag\": \"N\",\n\t\t\t\t\t\"reverseFlag\": \"N\",\n\t\t\t\t\t\"requestedRate\": 30.0,\n\t\t\t\t\t\"refiBlendedAmortization\": \"N\",\n\t\t\t\t\t\"rate\": {},\n\t\t\t\t\t\"qualifyDetail\": {\n\t\t\t\t\t\t\"interestOnlyFlag\": \"N\",\n\t\t\t\t\t\t\"interestCompoundDd\": \"Monthly\"\n\t\t\t\t\t},\n\t\t\t\t\t\"mtgInsIncludeFlag\": \"N\",\n\t\t\t\t\t\"mortgageTypeDd\": \"First\",\n\t\t\t\t\t\"interestOnlyFlag\": \"N\",\n\t\t\t\t\t\"interestCompoundDd\": \"Monthly\",\n\t\t\t\t\t\"insuredFlag\": \"N\",\n\t\t\t\t\t\"helocFlag\": \"N\",\n\t\t\t\t\t\"existingMortgageFlag\": \"N\",\n\t\t\t\t\t\"constructionFlag\": \"N\",\n\t\t\t\t\t\"commercialFlag\": \"N\",\n\t\t\t\t\t\"cashBackOverride\": \"N\",\n\t\t\t\t\t\"borrowerIds\": [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"borrowerId\": 1\n\t\t\t\t\t\t}\n\t\t\t\t\t],\n\t\t\t\t\t\"balanceRemaining\": 90755.0,\n\t\t\t\t\t\"actualPaymentTerm\": 84\n\t\t\t\t}\n\t\t\t],\n\t\t\t\"deal\": {\n\t\t\t\t\"taxPayorDd\": \"Borrower\",\n\t\t\t\t\"sourceApplicationId\": \"0cd4W000000bwJeQAI\",\n\t\t\t\t\"refiImprovementsFlag\": \"N\",\n\t\t\t\t\"referralReferenceNo\": \"5634234\",\n\t\t\t\t\"financingWaiverDate\": \"2021-03-08T17:00:00-00:00\",\n\t\t\t\t\"estimatedClosingDate\": \"2021-03-03T00:00:00-00:00\",\n\t\t\t\t\"downPaymentSource\": [],\n\t\t\t\t\"dealTypeDd\": \"Approval\",\n\t\t\t\t\"dealPurposeDd\": \"Purchase\"\n\t\t\t},\n\t\t\t\"applicantGroup\": [\n\t\t\t\t{\n\t\t\t\t\t\"mailingAddr\": {\n\t\t\t\t\t\t\"unitNumber\": \"678\",\n\t\t\t\t\t\t\"streetTypeDd\": \"Abbey\",\n\t\t\t\t\t\t\"streetNumber\": \"452\",\n\t\t\t\t\t\t\"streetName\": \"5 Augustusplatz\",\n\t\t\t\t\t\t\"streetDirectionDd\": \"E\",\n\t\t\t\t\t\t\"provinceDd\": \"Ontario\",\n\t\t\t\t\t\t\"postalLdu\": \"2M2\",\n\t\t\t\t\t\t\"postalFsa\": \"M2M\",\n\t\t\t\t\t\t\"countryTypeDd\": \"Canada\",\n\t\t\t\t\t\t\"city\": \"Toronto\"\n\t\t\t\t\t},\n\t\t\t\t\t\"applicantGroupTypeDd\": \"Applicant\",\n\t\t\t\t\t\"applicant\": [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"socialInsuranceNumber\": \"9713456347\",\n\t\t\t\t\t\t\t\"primaryApplicantFlag\": \"Y\",\n\t\t\t\t\t\t\t\"otherProperty\": [],\n\t\t\t\t\t\t\t\"otherIncome\": [],\n\t\t\t\t\t\t\t\"name\": {\n\t\t\t\t\t\t\t\t\"lastName\": \"Adam\",\n\t\t\t\t\t\t\t\t\"firstName\": \"Bryan\"\n\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\"liability\": [],\n\t\t\t\t\t\t\t\"identification\": [\n\t\t\t\t\t\t\t\t{}\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t\"firstTimeBuyer\": \"N\",\n\t\t\t\t\t\t\t\"existingClient\": \"N\",\n\t\t\t\t\t\t\t\"employmentHistory\": [\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\"selfEmploymentFlag\": \"N\",\n\t\t\t\t\t\t\t\t\t\"operatingAs\": \"Test\",\n\t\t\t\t\t\t\t\t\t\"monthsOfService\": 2,\n\t\t\t\t\t\t\t\t\t\"jobTitle\": \"23234\",\n\t\t\t\t\t\t\t\t\t\"industrySectorDd\": \"Banking Finance\",\n\t\t\t\t\t\t\t\t\t\"income\": {\n\t\t\t\t\t\t\t\t\t\t\"incomeTypeDd\": \"Salary\",\n\t\t\t\t\t\t\t\t\t\t\"incomePeriodDd\": \"Monthly\",\n\t\t\t\t\t\t\t\t\t\t\"incomeAmount\": 2333\n\t\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t\t\"grossRevenue\": 13998,\n\t\t\t\t\t\t\t\t\t\"employmentHistoryTypeDd\": \"Full Time\",\n\t\t\t\t\t\t\t\t\t\"employmentHistoryStatusDd\": \"Current\",\n\t\t\t\t\t\t\t\t\t\"employerName\": \"tet\",\n\t\t\t\t\t\t\t\t\t\"contact\": {\n\t\t\t\t\t\t\t\t\t\t\"contactPhoneNumber\": \"8023934729\",\n\t\t\t\t\t\t\t\t\t\t\"address\": {\n\t\t\t\t\t\t\t\t\t\t\t\"provinceDd\": \"Ontario\",\n\t\t\t\t\t\t\t\t\t\t\t\"postalLdu\": \"2M2\",\n\t\t\t\t\t\t\t\t\t\t\t\"postalFsa\": \"M2M\",\n\t\t\t\t\t\t\t\t\t\t\t\"countryTypeDd\": \"Canada\",\n\t\t\t\t\t\t\t\t\t\t\t\"city\": \"Toronto\",\n\t\t\t\t\t\t\t\t\t\t\t\"addressLine1\": \"S Quebec St.\"\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t\"clientReferenceNumber\": \"0cU4W000000bwJPUAY\",\n\t\t\t\t\t\t\t\"borrowerWorkPhoneNumber\": \"+4934121460\",\n\t\t\t\t\t\t\t\"borrowerSpouseId\": 0,\n\t\t\t\t\t\t\t\"borrowerId\": 1,\n\t\t\t\t\t\t\t\"asset\": [],\n\t\t\t\t\t\t\t\"addressDetail\": [\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\"residentialStatusDd\": \"Rent\",\n\t\t\t\t\t\t\t\t\t\"monthsAtAddress\": 4,\n\t\t\t\t\t\t\t\t\t\"addressTypeDd\": \"Current\",\n\t\t\t\t\t\t\t\t\t\"address\": {\n\t\t\t\t\t\t\t\t\t\t\"streetName\": \"5 Augustusplatz\",\n\t\t\t\t\t\t\t\t\t\t\"provinceDd\": \"Ontario\",\n\t\t\t\t\t\t\t\t\t\t\"countryTypeDd\": \"Canada\",\n\t\t\t\t\t\t\t\t\t\t\"city\": \"Toronto\"\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t]\n\t\t\t\t\t\t}\n\t\t\t\t\t]\n\t\t\t\t}\n\t\t\t]\n\t\t}\n\t},\n\t\"endpoint\": \"https://uat-dpw-gateway.dhltd.com:3202/cmt/rest-apis/mortgage/v1/mortgage-applications/\",\n\t\"identifier\": \"http://uat.expert.filogix.com/ExpertBrokerDataAPI/api/deals\",\n\t\"authconfig\": \"clientSystem=CJUNCTION,orgId=0,firmCode=CLJT,userId=AGENT1\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "058af938-c03e-4bf1-b268-1e8d93e2209c",
+    "colId": "51beb818-cba7-4b25-85e1-f85319094930",
+    "containerId": "",
+    "name": "MJ Get App -  Live",
+    "url": "http://filogix-middleware.herokuapp.com/api/v1/get?id=BFIN-185&authconfig=clientSystem=CJUNCTION,orgId=13215,firmCode=BFIN,userId=BURKEJ&live=true",
+    "method": "GET",
+    "sortNum": 20000,
+    "created": "2023-01-12T14:21:01.996Z",
+    "modified": "2023-01-12T14:21:01.996Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "id",
+        "value": "BFIN-185"
+      },
+      {
+        "name": "authconfig",
+        "value": "clientSystem=CJUNCTION,orgId=13215,firmCode=BFIN,userId=BURKEJ"
+      },
+      {
+        "name": "live",
+        "value": "true"
+      }
+    ],
+    "body": {
+      "form": [],
+      "files": [],
+      "type": "formdata"
+    }
+  },
+  {
+    "_id": "663c8123-b9b1-4ab5-9d8d-7ad60947833f",
+    "colId": "51beb818-cba7-4b25-85e1-f85319094930",
+    "containerId": "",
+    "name": "MJ Get pp UAT",
+    "url": "https://filogix-middleware.herokuapp.com/api/v1/get/?id=CLJT-263&endpoint=https://uat-dpw-gateway.dhltd.com:3202/cmt/rest-apis/mortgage/v1/mortgage-applications/&identifier=http://uat.expert.filogix.com/ExpertBrokerDataAPI/api/deals&authconfig=clientSystem=CJUNCTION,orgId=0,firmCode=CLJT,userId=AGENT2",
+    "method": "GET",
+    "sortNum": 30000,
+    "created": "2023-01-12T14:21:01.997Z",
+    "modified": "2023-01-12T14:21:01.997Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "id",
+        "value": "CLJT-263"
+      },
+      {
+        "name": "endpoint",
+        "value": "https://uat-dpw-gateway.dhltd.com:3202/cmt/rest-apis/mortgage/v1/mortgage-applications/"
+      },
+      {
+        "name": "identifier",
+        "value": "http://uat.expert.filogix.com/ExpertBrokerDataAPI/api/deals"
+      },
+      {
+        "name": "authconfig",
+        "value": "clientSystem=CJUNCTION,orgId=0,firmCode=CLJT,userId=AGENT2"
+      }
+    ],
+    "body": {
+      "form": [],
+      "files": [],
+      "type": "formdata"
+    }
+  },
+  {
+    "_id": "4e2095c0-6942-4921-be26-7090a3c1e681",
+    "colId": "51beb818-cba7-4b25-85e1-f85319094930",
+    "containerId": "",
+    "name": "MJ Token",
+    "url": "",
+    "method": "POST",
+    "sortNum": 40000,
+    "created": "2023-01-12T14:21:01.998Z",
+    "modified": "2023-01-12T14:21:01.998Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Basic QnVya2VGaW5hbmNpYWxzOmY5UFlhYXlzaFolSyN2N3FGbm5ASw=="
+      },
+      {
+        "name": "Content-Type",
+        "value": "application/x-www-form-urlencoded"
+      }
+    ],
+    "body": {
+      "form": [
+        {
+          "name": "grant_type",
+          "value": "client_credentials"
+        },
+        {
+          "name": "username",
+          "value": "pedroetb",
+          "isDisabled": true
+        },
+        {
+          "name": "password",
+          "value": "password",
+          "isDisabled": true
+        }
+      ],
+      "type": "formencoded"
+    }
+  },
+  {
+    "_id": "4c45efc6-06ce-456d-88f2-dad4e1bb52f3",
+    "colId": "51beb818-cba7-4b25-85e1-f85319094930",
+    "containerId": "",
+    "name": "MJ Refresh Token",
+    "url": "https://filogix-middleware.herokuapp.com/api/v1/post",
+    "method": "POST",
+    "sortNum": 50000,
+    "created": "2023-01-12T14:21:01.999Z",
+    "modified": "2023-01-12T14:21:41.882Z",
+    "headers": [
+      {
+        "name": "Authorization",
+        "value": "Basic QnVya2VGaW5hbmNpYWxzOmY5UFlhYXlzaFolSyN2N3FGbm5ASw=="
+      },
+      {
+        "name": "Content-Type",
+        "value": "application/x-www-form-urlencoded"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "formencoded",
+      "raw": "",
+      "form": [
+        {
+          "name": "grant_type",
+          "value": "client_credentials"
+        },
+        {
+          "name": "username",
+          "value": "pedroetb",
+          "isDisabled": true
+        },
+        {
+          "name": "password",
+          "value": "password",
+          "isDisabled": true
+        }
+      ]
+    },
+    "tests": []
+  },
+  {
+    "_id": "5d8c0a44-7a85-4ec1-b9b7-9df315e40d75",
+    "colId": "51beb818-cba7-4b25-85e1-f85319094930",
+    "containerId": "",
+    "name": "MJ POST APP LIVE",
+    "url": "https://filogix-middleware.herokuapp.com/api/v1/post",
+    "method": "POST",
+    "sortNum": 60000,
+    "created": "2023-01-12T14:21:02.000Z",
+    "modified": "2023-01-12T14:21:45.374Z",
+    "headers": [
+      {
+        "name": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n\t\"payload\": {\n\t\t\"mortgageApplication\": {\n\t\t\t\"subjectProperty\": {\n\t\t\t\t\"waterTypeDd\": \"Well\",\n\t\t\t\t\"taxationYear\": 2020,\n\t\t\t\t\"structureAge\": 10,\n\t\t\t\t\"rentalIncome\": {\n\t\t\t\t\t\"incPercentInTds\": 10,\n\t\t\t\t\t\"incomeTypeDd\": \"Rental Income\",\n\t\t\t\t\t\"incomePeriodDd\": \"Annual\",\n\t\t\t\t\t\"incomeAmount\": 3120\n\t\t\t\t},\n\t\t\t\t\"propertyTypeDd\": \"Condo\",\n\t\t\t\t\"propertyExpense\": [],\n\t\t\t\t\"occupancyTypeDd\": \"Owner Occupied\",\n\t\t\t\t\"numberOfUnits\": 30,\n\t\t\t\t\"newConstructionDd\": \"Existing\",\n\t\t\t\t\"mlsListingFlag\": \"Y\",\n\t\t\t\t\"lotSizeUnitOfMeasureDd\": \"Acres\",\n\t\t\t\t\"lotSize\": 20,\n\t\t\t\t\"livingSpaceUnitOfMeasurDd\": \"Sq Ft\",\n\t\t\t\t\"includetds\": \"Y\",\n\t\t\t\t\"heatTypeDd\": \"Electric Baseboard\",\n\t\t\t\t\"garageTypeDd\": \"Attached\",\n\t\t\t\t\"garageSizeDd\": \"Double\",\n\t\t\t\t\"feesIncludeHeat\": \"N\",\n\t\t\t\t\"estimatedAppraisalValue\": 5200,\n\t\t\t\t\"dwellingTypeDd\": \"Apartment High Rise\",\n\t\t\t\t\"dwellingStyleDd\": \"BiLevel\",\n\t\t\t\t\"appraisalDateAct\": \"2021-02-18T17:00:00-00:00\",\n\t\t\t\t\"address\": {\n\t\t\t\t\t\"unitNumber\": \"unit 432\",\n\t\t\t\t\t\"streetTypeDd\": \"Allee\",\n\t\t\t\t\t\"streetNumber\": \"12\",\n\t\t\t\t\t\"streetName\": \"553 franklin d. roosevelt\",\n\t\t\t\t\t\"streetDirectionDd\": \"E\",\n\t\t\t\t\t\"provinceDd\": \"Ontario\",\n\t\t\t\t\t\"postalLdu\": \"2M2\",\n\t\t\t\t\t\"postalFsa\": \"M2M\",\n\t\t\t\t\t\"countryTypeDd\": \"Canada\",\n\t\t\t\t\t\"city\": \"Toronto\"\n\t\t\t\t},\n\t\t\t\t\"actualAppraisalValue\": 21520\n\t\t\t},\n\t\t\t\"notes\": [\n\t\t\t\t{}\n\t\t\t],\n\t\t\t\"mortgage\": [\n\t\t\t\t{\n\t\t\t\t\t\"subprimeFlag\": \"N\",\n\t\t\t\t\t\"reverseFlag\": \"N\",\n\t\t\t\t\t\"requestedRate\": 30.0,\n\t\t\t\t\t\"refiBlendedAmortization\": \"N\",\n\t\t\t\t\t\"rate\": {},\n\t\t\t\t\t\"qualifyDetail\": {\n\t\t\t\t\t\t\"interestOnlyFlag\": \"N\",\n\t\t\t\t\t\t\"interestCompoundDd\": \"Monthly\"\n\t\t\t\t\t},\n\t\t\t\t\t\"mtgInsIncludeFlag\": \"N\",\n\t\t\t\t\t\"mortgageTypeDd\": \"First\",\n\t\t\t\t\t\"interestOnlyFlag\": \"N\",\n\t\t\t\t\t\"interestCompoundDd\": \"Monthly\",\n\t\t\t\t\t\"insuredFlag\": \"N\",\n\t\t\t\t\t\"helocFlag\": \"N\",\n\t\t\t\t\t\"existingMortgageFlag\": \"N\",\n\t\t\t\t\t\"constructionFlag\": \"N\",\n\t\t\t\t\t\"commercialFlag\": \"N\",\n\t\t\t\t\t\"cashBackOverride\": \"N\",\n\t\t\t\t\t\"borrowerIds\": [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"borrowerId\": 1\n\t\t\t\t\t\t}\n\t\t\t\t\t],\n\t\t\t\t\t\"balanceRemaining\": 90755.0,\n\t\t\t\t\t\"actualPaymentTerm\": 84\n\t\t\t\t}\n\t\t\t],\n\t\t\t\"deal\": {\n\t\t\t\t\"taxPayorDd\": \"Borrower\",\n\t\t\t\t\"sourceApplicationId\": \"0cd4W000000bwJeQAI\",\n\t\t\t\t\"refiImprovementsFlag\": \"N\",\n\t\t\t\t\"referralReferenceNo\": \"5634234\",\n\t\t\t\t\"financingWaiverDate\": \"2021-03-08T17:00:00-00:00\",\n\t\t\t\t\"estimatedClosingDate\": \"2021-03-03T00:00:00-00:00\",\n\t\t\t\t\"downPaymentSource\": [],\n\t\t\t\t\"dealTypeDd\": \"Approval\",\n\t\t\t\t\"dealPurposeDd\": \"Purchase\"\n\t\t\t},\n\t\t\t\"applicantGroup\": [\n\t\t\t\t{\n\t\t\t\t\t\"mailingAddr\": {\n\t\t\t\t\t\t\"unitNumber\": \"678\",\n\t\t\t\t\t\t\"streetTypeDd\": \"Abbey\",\n\t\t\t\t\t\t\"streetNumber\": \"452\",\n\t\t\t\t\t\t\"streetName\": \"5 Augustusplatz\",\n\t\t\t\t\t\t\"streetDirectionDd\": \"E\",\n\t\t\t\t\t\t\"provinceDd\": \"Ontario\",\n\t\t\t\t\t\t\"postalLdu\": \"2M2\",\n\t\t\t\t\t\t\"postalFsa\": \"M2M\",\n\t\t\t\t\t\t\"countryTypeDd\": \"Canada\",\n\t\t\t\t\t\t\"city\": \"Toronto\"\n\t\t\t\t\t},\n\t\t\t\t\t\"applicantGroupTypeDd\": \"Applicant\",\n\t\t\t\t\t\"applicant\": [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"socialInsuranceNumber\": \"9713456347\",\n\t\t\t\t\t\t\t\"primaryApplicantFlag\": \"Y\",\n\t\t\t\t\t\t\t\"otherProperty\": [],\n\t\t\t\t\t\t\t\"otherIncome\": [],\n\t\t\t\t\t\t\t\"name\": {\n\t\t\t\t\t\t\t\t\"lastName\": \"Hamza\",\n\t\t\t\t\t\t\t\t\"firstName\": \"Test\"\n\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\"liability\": [],\n\t\t\t\t\t\t\t\"identification\": [\n\t\t\t\t\t\t\t\t{}\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t\"firstTimeBuyer\": \"N\",\n\t\t\t\t\t\t\t\"existingClient\": \"N\",\n\t\t\t\t\t\t\t\"employmentHistory\": [\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\"selfEmploymentFlag\": \"N\",\n\t\t\t\t\t\t\t\t\t\"operatingAs\": \"Test\",\n\t\t\t\t\t\t\t\t\t\"monthsOfService\": 2,\n\t\t\t\t\t\t\t\t\t\"jobTitle\": \"23234\",\n\t\t\t\t\t\t\t\t\t\"industrySectorDd\": \"Banking Finance\",\n\t\t\t\t\t\t\t\t\t\"income\": {\n\t\t\t\t\t\t\t\t\t\t\"incomeTypeDd\": \"Salary\",\n\t\t\t\t\t\t\t\t\t\t\"incomePeriodDd\": \"Monthly\",\n\t\t\t\t\t\t\t\t\t\t\"incomeAmount\": 2333\n\t\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t\t\"grossRevenue\": 13998,\n\t\t\t\t\t\t\t\t\t\"employmentHistoryTypeDd\": \"Full Time\",\n\t\t\t\t\t\t\t\t\t\"employmentHistoryStatusDd\": \"Current\",\n\t\t\t\t\t\t\t\t\t\"employerName\": \"tet\",\n\t\t\t\t\t\t\t\t\t\"contact\": {\n\t\t\t\t\t\t\t\t\t\t\"contactPhoneNumber\": \"8023934729\",\n\t\t\t\t\t\t\t\t\t\t\"address\": {\n\t\t\t\t\t\t\t\t\t\t\t\"provinceDd\": \"Ontario\",\n\t\t\t\t\t\t\t\t\t\t\t\"postalLdu\": \"2M2\",\n\t\t\t\t\t\t\t\t\t\t\t\"postalFsa\": \"M2M\",\n\t\t\t\t\t\t\t\t\t\t\t\"countryTypeDd\": \"Canada\",\n\t\t\t\t\t\t\t\t\t\t\t\"city\": \"Toronto\",\n\t\t\t\t\t\t\t\t\t\t\t\"addressLine1\": \"S Quebec St.\"\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t],\n\t\t\t\t\t\t\t\"clientReferenceNumber\": \"0cU4W000000bwJPUAY\",\n\t\t\t\t\t\t\t\"borrowerWorkPhoneNumber\": \"+4934121460\",\n\t\t\t\t\t\t\t\"borrowerSpouseId\": 0,\n\t\t\t\t\t\t\t\"borrowerId\": 1,\n\t\t\t\t\t\t\t\"asset\": [],\n\t\t\t\t\t\t\t\"addressDetail\": [\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\"residentialStatusDd\": \"Rent\",\n\t\t\t\t\t\t\t\t\t\"monthsAtAddress\": 4,\n\t\t\t\t\t\t\t\t\t\"addressTypeDd\": \"Current\",\n\t\t\t\t\t\t\t\t\t\"address\": {\n\t\t\t\t\t\t\t\t\t\t\"streetName\": \"5 Augustusplatz\",\n\t\t\t\t\t\t\t\t\t\t\"provinceDd\": \"Ontario\",\n\t\t\t\t\t\t\t\t\t\t\"countryTypeDd\": \"Canada\",\n\t\t\t\t\t\t\t\t\t\t\"city\": \"Toronto\"\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t]\n\t\t\t\t\t\t}\n\t\t\t\t\t]\n\t\t\t\t}\n\t\t\t]\n\t\t}\n\t},\n\t\"endpoint\": \"https://uat-dpw-gateway.dhltd.com:3202/cmt/rest-apis/mortgage/v1/mortgage-applications/\",\n\t\"identifier\": \"http://uat.expert.filogix.com/ExpertBrokerDataAPI/api/deals\",\n\t\"authconfig\": \"clientSystem=CJUNCTION,orgId=13215,firmCode=BFIN,userId=BURKEJ\",\n\t\"live\": \"true\"\n}",
+      "form": []
+    },
+    "tests": []
+  }
+]
