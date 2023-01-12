@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    paths:
+      - 'force-app/**'
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: ubuntu
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v3
+      - name: Pushes to FSC repository
+        uses: CloudJunctionTeam/push-to-another-repo-rsync@master
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY_FSC }}
+        with:
+          srcdir: 'force-app'
+          destdir: 'force-app'
+          dest-gh-username: 'CloudJunctionTeam'
+          dest-repo-name: 'MortgageJunction-FSC'
+          user-email: appdev@cloudjunction.cloud
+          target-branch: master
+      - name: Pushes to Non FSC repository
+        uses: CloudJunctionTeam/push-to-another-repo-rsync@master
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY_NON_FSC }}
+        with:
+          srcdir: 'force-app'
+          destdir: 'force-app'
+          dest-gh-username: 'CloudJunctionTeam'
+          dest-repo-name: 'MortgageJunction-Non-FSC'
+          user-email: appdev@cloudjunction.cloud
+          target-branch: master
