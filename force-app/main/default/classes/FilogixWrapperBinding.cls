@@ -1086,7 +1086,7 @@ global with sharing class FilogixWrapperBinding {
           }
         }
       }
-
+      /* Filogix V.1.6.1 - Not required anymore*/
       /*if(addressList.size() == 0 ){
                 //throw createCustomException('Please make sure the at-least one record of Mortgage is created.');
                 requiredFieldError +='Please make sure the at-least one record of Loan Applicant <b>Address</b> is created.</br>';
@@ -3450,6 +3450,16 @@ global with sharing class FilogixWrapperBinding {
                   )
                 );
               }
+
+              // Filogix v.1.6.1 Changes
+              if (
+                String.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('OtherLiabilityType' + customFieldSuffix)) == 'Mortgage on a Rental Property' ||
+                String.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('OtherLiabilityType' + customFieldSuffix)) == 'Mortgage' ||
+                String.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('OtherLiabilityType' + customFieldSuffix)) == 'Rent'
+              ) {
+                requiredFieldError +='Please Choose Liability Type other than "Mortgage on a Rental Property", "Mortgage","Rent"';
+              }
+
             }
           }
           list<FilogixPOSTJSONWrapper.OtherIncome> listOfOtherIncomes = new List<FilogixPOSTJSONWrapper.OtherIncome>();
@@ -4491,7 +4501,8 @@ global with sharing class FilogixWrapperBinding {
                   )
                 )
               : '';
-            if (
+            
+             * if (
               !String.isBlank(
                 String.valueOf(
                   mapApplicants.get(applicantId)
@@ -4506,7 +4517,7 @@ global with sharing class FilogixWrapperBinding {
                     .get('Birthdate')
                 )
                 .removeEnd(' 00:00:00');
-            } else {
+            } /* Filogix V.1.6.1 - Not required anymoreelse {
               requiredFieldsError(
                 'Contact',
                 'Birthdate',
@@ -4522,7 +4533,7 @@ global with sharing class FilogixWrapperBinding {
                 )
               );
               // requiredFieldsError('Account','PersonBirthdate',String.valueof(mapApplicants.get(applicantId).getSObject('contact').get('Name')),String.valueof(mapApplicants.get(applicantId).getSObject('contact').get('Id')));
-            }
+            }*/
             Applicant.emailAddress = String.valueof(
               mapApplicants.get(applicantId)
                 .getsObject(ContactRelation)
@@ -4558,7 +4569,8 @@ global with sharing class FilogixWrapperBinding {
                 appPhoneval
               );
             }
-            Applicant.birthDate = '2000-01-01'; //Adding a dummy birthDate because the field is required and Corporate doesn't have the birthdate.
+            /* Filogix V.1.6.1 - Not required anymore */
+            //Applicant.birthDate = '2000-01-01'; //Adding a dummy birthDate because the field is required and Corporate doesn't have the birthdate.
             Applicant.borrowerCellNumber = removeSpeacialChar(
               String.valueof(
                 mapApplicants.get(applicantId)
