@@ -4502,7 +4502,7 @@ global with sharing class FilogixWrapperBinding {
                 )
               : '';
             
-             * if (
+             if (
               !String.isBlank(
                 String.valueOf(
                   mapApplicants.get(applicantId)
@@ -4517,7 +4517,8 @@ global with sharing class FilogixWrapperBinding {
                     .get('Birthdate')
                 )
                 .removeEnd(' 00:00:00');
-            } /* Filogix V.1.6.1 - Not required anymoreelse {
+            } /* Filogix V.1.6.1 - Not required anymore
+               * else {
               requiredFieldsError(
                 'Contact',
                 'Birthdate',
