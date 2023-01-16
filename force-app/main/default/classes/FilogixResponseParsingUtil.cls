@@ -3534,6 +3534,7 @@ rla.putSObject(loanAppParentLookupforApplicant.getDescribe().getRelationshipName
                         ? loanApplicantotherIncome.incomeTypeDd
                         : String.valueof(loanApplicantotherIncome.incomeId));
                   loanAppOI.put('Name', IncName);
+                  loanAppOI.put('Description__c', loanApplicantotherIncome.incomeDescription);
                   loanAppOI.put(
                     appNameSpace + 'Income_Period__c',
                     loanApplicantotherIncome.incomePeriodDd
