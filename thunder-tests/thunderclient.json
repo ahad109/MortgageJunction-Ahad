@@ -59,35 +59,35 @@
     "colId": "51beb818-cba7-4b25-85e1-f85319094930",
     "containerId": "",
     "name": "MJ Get pp UAT",
-    "url": "https://filogix-middleware.herokuapp.com/api/v1/get/?id=CLJT-263&endpoint=https://uat-dpw-gateway.dhltd.com:3202/cmt/rest-apis/mortgage/v1/mortgage-applications/&identifier=http://uat.expert.filogix.com/ExpertBrokerDataAPI/api/deals&authconfig=clientSystem=CJUNCTION,orgId=0,firmCode=CLJT,userId=AGENT2",
+    "url": "https://filogix-middleware.herokuapp.com/api/v1/get/?id=CLJT-1275&endpoint=https://uat-dpw-gateway.dhltd.com:3202/cmt/rest-apis/mortgage/v1/mortgage-applications/&identifier=http://uat.expert.filogix.com/ExpertBrokerDataAPI/api/deals&authconfig=clientSystem=CJUNCTION,orgId=0,firmCode=CLJT,userId=AGENT2",
     "method": "GET",
     "sortNum": 30000,
     "created": "2023-01-12T14:21:01.997Z",
-    "modified": "2023-01-12T14:21:01.997Z",
+    "modified": "2023-01-16T09:19:37.260Z",
     "headers": [],
     "params": [
       {
         "name": "id",
-        "value": "CLJT-263"
+        "value": "CLJT-1275",
+        "isPath": false
       },
       {
         "name": "endpoint",
-        "value": "https://uat-dpw-gateway.dhltd.com:3202/cmt/rest-apis/mortgage/v1/mortgage-applications/"
+        "value": "https://uat-dpw-gateway.dhltd.com:3202/cmt/rest-apis/mortgage/v1/mortgage-applications/",
+        "isPath": false
       },
       {
         "name": "identifier",
-        "value": "http://uat.expert.filogix.com/ExpertBrokerDataAPI/api/deals"
+        "value": "http://uat.expert.filogix.com/ExpertBrokerDataAPI/api/deals",
+        "isPath": false
       },
       {
         "name": "authconfig",
-        "value": "clientSystem=CJUNCTION,orgId=0,firmCode=CLJT,userId=AGENT2"
+        "value": "clientSystem=CJUNCTION,orgId=0,firmCode=CLJT,userId=AGENT2",
+        "isPath": false
       }
     ],
-    "body": {
-      "form": [],
-      "files": [],
-      "type": "formdata"
-    }
+    "tests": []
   },
   {
     "_id": "4e2095c0-6942-4921-be26-7090a3c1e681",

@@ -695,6 +695,10 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
             mortgage.repaymentTypeDd
           );
           propMortgage.put(
+              appNameSpace + 'Status__c',
+              mortgage.statusDd
+          );
+          propMortgage.put(
             appNameSpace + 'Status_Date__c',
             FilogixGETJSONWrapper.returnGMTformat(mortgage.statusDate)
           );
@@ -3373,6 +3377,7 @@ rla.putSObject(loanAppParentLookupforApplicant.getDescribe().getRelationshipName
                         postalFSA + postalLDU
                       );
                     }
+                    System.debug('Employmer Phone='+loanApplicantEmploymentHistory.contact.contactPhoneNumber);
                     loanAppEmp.put(
                       'EmployerPhone' + customFieldSuffix,
                       loanApplicantEmploymentHistory.contact.contactPhoneNumber
