@@ -1967,7 +1967,7 @@ global with sharing class FilogixWrapperBinding {
           );
 
           listMortgages.add(mortgage);
-
+          /*
           //Required fields Check
           if (mortgageRecord.get('Existing_Mortgage__c') == null) {
             requiredFieldsError(
@@ -2030,9 +2030,15 @@ global with sharing class FilogixWrapperBinding {
               String.valueof(mortgageRecord.get('Name')),
               String.valueof(mortgageRecord.get('Id'))
             );
-          }
+          } */
         }
       }
+    } else {
+      // Creating a Blank Requesting Mortgage for PUSH
+      // Initializing Mortgages
+      FilogixPOSTJSONWrapper.Mortgage_Requesting mortgage = new FilogixPOSTJSONWrapper.Mortgage_Requesting();
+      mortgage.existingMortgageFlag = 'false';
+      listMortgages.add(mortgage);
     }
     return listMortgages;
   }
@@ -4615,7 +4621,7 @@ global with sharing class FilogixWrapperBinding {
             mapApplicants.get(applicantId)
               .get('DependentCount' + customFieldSuffix)
           );
-          /* Filogix v.1.6.1
+          /* Filogix v.1.6.1*/
           if(listOfAddresses.size() >0 && listOfAddresses!=null){
             Applicant.addressDetail = listOfAddresses;
           }
