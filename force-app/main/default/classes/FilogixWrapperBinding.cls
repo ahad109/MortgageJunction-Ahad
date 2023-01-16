@@ -1516,6 +1516,8 @@ global with sharing class FilogixWrapperBinding {
         // Validating if Opportunity Id is present in the record
         //if(rlaRecord.getSObject('Opportunity') !=null){
         // Required fields check
+
+        /* Filogix V.1.6.1 - Not required anymore
         if (
           mapOfLoanApplication.containsKey(rlaId) &&
           string.isBlank(String.valueof(rlaRecord.get('Deal_Purpose__c')))
@@ -1526,7 +1528,7 @@ global with sharing class FilogixWrapperBinding {
             String.valueof(rlaRecord.get('Name')),
             String.valueof(rlaRecord.get('Id'))
           );
-        }
+        }*/
 
         if (
           mapOfLoanApplication.containsKey(rlaId) &&
@@ -1540,7 +1542,7 @@ global with sharing class FilogixWrapperBinding {
             String.valueof(rlaRecord.get('Id'))
           );
         }
-
+        /* Filogix V.1.6.1 - Not required anymore
         if (
           mapOfLoanApplication.containsKey(rlaId) &&
           (Datetime) rlaRecord.get('Estimated_Closing_Date__c') == null
@@ -1551,7 +1553,7 @@ global with sharing class FilogixWrapperBinding {
             String.valueof(rlaRecord.get('Name')),
             String.valueof(rlaRecord.get('Id'))
           );
-        }
+        }*/
 
         // if (mapOfLoanApplication.containsKey(rlaId) && (String.valueof(rlaRecord.get('Ref_Purpose__c')) == null || string.isBlank(String.valueof(rlaRecord.get('Ref_Purpose__c'))))) {
         //     requiredFieldsError('ResidentialLoanApplication','Ref_Purpose__c',String.valueof(rlaRecord.get('Name')),String.valueof(rlaRecord.get('Id')));
@@ -2263,21 +2265,20 @@ global with sharing class FilogixWrapperBinding {
         );
 
         //Required fields check
-        if (
-          rlaRecord.getSObject('Subject_Property__r').get('Country__c') == null
-        ) {
+        if (rlaRecord.getSObject('Subject_Property__r').get('Country__c') == null) {
           requiredFieldsError(
-            objNamePrefix + 'LoanApplicationProperty' + customFieldSuffix,
-            'Country__c',
-            String.valueof(
-              rlaRecord.getSObject('Subject_Property__r').get('Name')
-            ),
-            String.valueof(
-              rlaRecord.getSObject('Subject_Property__r').get('Id')
-            )
-          );
+            objNamePrefix + 'LoanApplicationProperty' + customFieldSuffix,'Country__c',
+            String.valueof(rlaRecord.getSObject('Subject_Property__r').get('Name')),
+            String.valueof(rlaRecord.getSObject('Subject_Property__r').get('Id')));
         }
-        //Required fields check
+
+        /* Filogix V.1.6.1 - US Address not accepted anymore for SubjProp */
+        if (string.valueof(rlaRecord.getSObject('Subject_Property__r').get('Country__c')).contains('US')
+        || string.valueof(rlaRecord.getSObject('Subject_Property__r').get('Country__c')).contains('United')) {
+          requiredFieldError += 'Subject Property should not be in United States';
+        }
+        /* Filogix V.1.6.1 - Not required anymore
+         * //Required fields check
         if (
           rlaRecord.getSObject('Subject_Property__r').get('Province__c') == null
         ) {
@@ -2291,7 +2292,7 @@ global with sharing class FilogixWrapperBinding {
               rlaRecord.getSObject('Subject_Property__r').get('Id')
             )
           );
-        }
+        } */
         //Required fields check
         if (
           rlaRecord.getSObject('Subject_Property__r').get('PostalCode__c') ==
@@ -3019,6 +3020,8 @@ global with sharing class FilogixWrapperBinding {
 
               listOfAddresses.add(addrDet);
               //Required fields check
+
+              /* Filogix V.1.6.1 - Not required anymore
               if (
                 string.Valueof(
                   mapOfAddr.get(addrId).get(appNameSpace + 'Province__c')
@@ -3035,7 +3038,7 @@ global with sharing class FilogixWrapperBinding {
                   String.valueof(mapOfAddr.get(addrId).get('Name')),
                   String.valueof(mapOfAddr.get(addrId).get('Id'))
                 );
-              }
+              }*/
 
               if (
                 mapOfAddr.get(addrId).get(appNameSpace + 'PostalCode__c') ==
