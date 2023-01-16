@@ -829,10 +829,13 @@ global with sharing class FilogixWrapperBinding {
           //    requiredFieldError +='Please make sure the <b>Subject Property field</b> is populated</br>';
           //}
           //Checking if Mortgage(s) available
-          if (sobj.getSObjects(appNameSpace + 'Mortgages__r') == null) {
+          
+          // Removing a check of having a Requested Mortgage Required and replacing with default values.
+          // As there is no need of Requested Mortgage during PUSH
+          /*if (sobj.getSObjects(appNameSpace + 'Mortgages__r') == null) {
             //throw createCustomException('Please make sure the at-least one record of Mortgage is created');
             requiredFieldError += 'Please make sure the at-least one record of Requesting <b>Mortgage</b> is created.</br>';
-          }
+          }*/
 
           Boolean requestingExists = false;
 
@@ -928,17 +931,16 @@ global with sharing class FilogixWrapperBinding {
                         }
                     }*/
 
-            // Checking if the Loan Application has Requesting Mortgage
-            if (
-              listOfMortgages == null ||
-              listOfMortgages.size() == 0 ||
-              requestingExists == false
-            ) {
+            // Removing a check of having a Requested Mortgage Required and replacing with default values.
+            // As there is no need of Requested Mortgage during PUSH
+
+            /*// Checking if the Loan Application has Requesting Mortgage
+            if (listOfMortgages == null || listOfMortgages.size() == 0 || requestingExists == false) {
               // Preventing Same error message to show up
               if (!requiredFieldError.contains('Requesting')) {
                 requiredFieldError += 'Please make sure the at-least one record of Requesting <b>Mortgage</b> is created</br>';
               }
-            }
+            } */
           }
         }
       }
@@ -1044,7 +1046,7 @@ global with sharing class FilogixWrapperBinding {
       }
 
       /*if(loanApplicantList.size()>2){  
-            	 requiredFieldError +='Please make sure to add not more then <b> Two </b> applicants for same application.';  
+                 requiredFieldError +='Please make sure to add not more then <b> Two </b> applicants for same application.';  
                 requiredFieldError +='<br>';  
 
             }*/
@@ -1516,8 +1518,6 @@ global with sharing class FilogixWrapperBinding {
         // Validating if Opportunity Id is present in the record
         //if(rlaRecord.getSObject('Opportunity') !=null){
         // Required fields check
-
-        /* Filogix V.1.6.1 - Not required anymore
         if (
           mapOfLoanApplication.containsKey(rlaId) &&
           string.isBlank(String.valueof(rlaRecord.get('Deal_Purpose__c')))
@@ -1528,7 +1528,7 @@ global with sharing class FilogixWrapperBinding {
             String.valueof(rlaRecord.get('Name')),
             String.valueof(rlaRecord.get('Id'))
           );
-        }*/
+        }
 
         if (
           mapOfLoanApplication.containsKey(rlaId) &&
@@ -1542,7 +1542,7 @@ global with sharing class FilogixWrapperBinding {
             String.valueof(rlaRecord.get('Id'))
           );
         }
-        /* Filogix V.1.6.1 - Not required anymore
+
         if (
           mapOfLoanApplication.containsKey(rlaId) &&
           (Datetime) rlaRecord.get('Estimated_Closing_Date__c') == null
@@ -1553,7 +1553,7 @@ global with sharing class FilogixWrapperBinding {
             String.valueof(rlaRecord.get('Name')),
             String.valueof(rlaRecord.get('Id'))
           );
-        }*/
+        }
 
         // if (mapOfLoanApplication.containsKey(rlaId) && (String.valueof(rlaRecord.get('Ref_Purpose__c')) == null || string.isBlank(String.valueof(rlaRecord.get('Ref_Purpose__c'))))) {
         //     requiredFieldsError('ResidentialLoanApplication','Ref_Purpose__c',String.valueof(rlaRecord.get('Name')),String.valueof(rlaRecord.get('Id')));
@@ -2265,20 +2265,21 @@ global with sharing class FilogixWrapperBinding {
         );
 
         //Required fields check
-        if (rlaRecord.getSObject('Subject_Property__r').get('Country__c') == null) {
+        if (
+          rlaRecord.getSObject('Subject_Property__r').get('Country__c') == null
+        ) {
           requiredFieldsError(
-            objNamePrefix + 'LoanApplicationProperty' + customFieldSuffix,'Country__c',
-            String.valueof(rlaRecord.getSObject('Subject_Property__r').get('Name')),
-            String.valueof(rlaRecord.getSObject('Subject_Property__r').get('Id')));
+            objNamePrefix + 'LoanApplicationProperty' + customFieldSuffix,
+            'Country__c',
+            String.valueof(
+              rlaRecord.getSObject('Subject_Property__r').get('Name')
+            ),
+            String.valueof(
+              rlaRecord.getSObject('Subject_Property__r').get('Id')
+            )
+          );
         }
-
-        /* Filogix V.1.6.1 - US Address not accepted anymore for SubjProp */
-        if (string.valueof(rlaRecord.getSObject('Subject_Property__r').get('Country__c')).contains('US')
-        || string.valueof(rlaRecord.getSObject('Subject_Property__r').get('Country__c')).contains('United')) {
-          requiredFieldError += 'Subject Property should not be in United States';
-        }
-        /* Filogix V.1.6.1 - Not required anymore
-         * //Required fields check
+        //Required fields check
         if (
           rlaRecord.getSObject('Subject_Property__r').get('Province__c') == null
         ) {
@@ -2292,7 +2293,7 @@ global with sharing class FilogixWrapperBinding {
               rlaRecord.getSObject('Subject_Property__r').get('Id')
             )
           );
-        } */
+        }
         //Required fields check
         if (
           rlaRecord.getSObject('Subject_Property__r').get('PostalCode__c') ==
@@ -3020,8 +3021,6 @@ global with sharing class FilogixWrapperBinding {
 
               listOfAddresses.add(addrDet);
               //Required fields check
-
-              /* Filogix V.1.6.1 - Not required anymore
               if (
                 string.Valueof(
                   mapOfAddr.get(addrId).get(appNameSpace + 'Province__c')
@@ -3038,7 +3037,7 @@ global with sharing class FilogixWrapperBinding {
                   String.valueof(mapOfAddr.get(addrId).get('Name')),
                   String.valueof(mapOfAddr.get(addrId).get('Id'))
                 );
-              }*/
+              }
 
               if (
                 mapOfAddr.get(addrId).get(appNameSpace + 'PostalCode__c') ==
@@ -3124,14 +3123,16 @@ global with sharing class FilogixWrapperBinding {
                 //requiredFieldError +='Please make sure the field <b> "Years in Residence" </b> or <b> "Additional Months in Residence"</b> is populated on your applicant(s) address record.</br>';
               }
             }
-          } else {
+          } 
+          /* Filogix v.1.6.1 - Not needed anymore
+           * else {
             requiredFieldError +=
               'Please create at least 1 Loan Applicant Address record against <a href="/' +
               applicantId +
               '">' +
               String.valueof(mapApplicants.get(applicantId).get('Name')) +
               '</a> Applicant. </br>';
-          }
+          } */
           list<FilogixPOSTJSONWrapper.Asset> listOfAssets = new List<FilogixPOSTJSONWrapper.Asset>();
           if (mapofApplicantIdAndAsset.containsKey(applicantId)) {
             map<string, sObject> mapOfAssets = mapofApplicantIdAndAsset.get(
@@ -4614,7 +4615,10 @@ global with sharing class FilogixWrapperBinding {
             mapApplicants.get(applicantId)
               .get('DependentCount' + customFieldSuffix)
           );
-          Applicant.addressDetail = listOfAddresses;
+          /* Filogix v.1.6.1
+          if(listOfAddresses.size() >0 && listOfAddresses!=null){
+            Applicant.addressDetail = listOfAddresses;
+          }
           Applicant.clientReferenceNumber = mapApplicants.get(applicantId).id;
           Applicant.existingClient = 'Y'; //Handle by code
           Applicant.firstTimeBuyer = 'N'; //Handle by code
