@@ -1518,7 +1518,9 @@ global with sharing class FilogixWrapperBinding {
         // Validating if Opportunity Id is present in the record
         //if(rlaRecord.getSObject('Opportunity') !=null){
         // Required fields check
-        if (
+        
+        /* Filogix v.1.6.1 */
+        /*if (
           mapOfLoanApplication.containsKey(rlaId) &&
           string.isBlank(String.valueof(rlaRecord.get('Deal_Purpose__c')))
         ) {
@@ -1528,7 +1530,7 @@ global with sharing class FilogixWrapperBinding {
             String.valueof(rlaRecord.get('Name')),
             String.valueof(rlaRecord.get('Id'))
           );
-        }
+        }*/
 
         if (
           mapOfLoanApplication.containsKey(rlaId) &&
@@ -1543,7 +1545,8 @@ global with sharing class FilogixWrapperBinding {
           );
         }
 
-        if (
+        /* Filogix v.1.6.1 */
+        /*if (
           mapOfLoanApplication.containsKey(rlaId) &&
           (Datetime) rlaRecord.get('Estimated_Closing_Date__c') == null
         ) {
@@ -1553,7 +1556,7 @@ global with sharing class FilogixWrapperBinding {
             String.valueof(rlaRecord.get('Name')),
             String.valueof(rlaRecord.get('Id'))
           );
-        }
+        }*/
 
         // if (mapOfLoanApplication.containsKey(rlaId) && (String.valueof(rlaRecord.get('Ref_Purpose__c')) == null || string.isBlank(String.valueof(rlaRecord.get('Ref_Purpose__c'))))) {
         //     requiredFieldsError('ResidentialLoanApplication','Ref_Purpose__c',String.valueof(rlaRecord.get('Name')),String.valueof(rlaRecord.get('Id')));
@@ -2037,7 +2040,7 @@ global with sharing class FilogixWrapperBinding {
       // Creating a Blank Requesting Mortgage for PUSH
       // Initializing Mortgages
       FilogixPOSTJSONWrapper.Mortgage_Requesting mortgage = new FilogixPOSTJSONWrapper.Mortgage_Requesting();
-      mortgage.existingMortgageFlag = 'false';
+      mortgage.existingMortgageFlag = 'N';
       listMortgages.add(mortgage);
     }
     return listMortgages;
@@ -2286,6 +2289,7 @@ global with sharing class FilogixWrapperBinding {
           );
         }
         //Required fields check
+        /*Filogix API v1.6.1
         if (
           rlaRecord.getSObject('Subject_Property__r').get('Province__c') == null
         ) {
@@ -2299,7 +2303,7 @@ global with sharing class FilogixWrapperBinding {
               rlaRecord.getSObject('Subject_Property__r').get('Id')
             )
           );
-        }
+        } */
         //Required fields check
         if (
           rlaRecord.getSObject('Subject_Property__r').get('PostalCode__c') ==
@@ -2652,7 +2656,7 @@ global with sharing class FilogixWrapperBinding {
                     .getSObject(ContactRelation)
                     .get('firstname')
                 )
-              : '';
+              : ' ';
             appName.lastName = string.valueof(
                 mapApplicants.get(applicantId).getSObject(ContactRelation)
               ) != null
@@ -2725,6 +2729,7 @@ global with sharing class FilogixWrapperBinding {
           }
 
           appName.middleInitial = null;
+          //Handling Salutation
           String salutation = string.valueof(
               mapApplicants.get(applicantId).getSObject(ContactRelation)
             ) != null
@@ -2734,6 +2739,8 @@ global with sharing class FilogixWrapperBinding {
                   .get('Salutation')
               )
             : null;
+            appName.salutationDd =null;
+            // When Salutation contains ".", Remove it as Filogix doesn't support it.
           if (
             salutation != null &&
             salutation != '' &&
@@ -2741,9 +2748,24 @@ global with sharing class FilogixWrapperBinding {
           ) {
             appName.salutationDd = salutation.replace('.', '');
           } else {
-            appName.salutationDd = null;
+            appName.salutationDd =salutation;
           }
           appName.suffixDd = null;
+
+          // Making sure the Salutation value is from the Supported values
+          if(appName.salutationDd!=null){
+            // Set of Acceptable values
+            Set<String> salutationValues = new set<String>{'Dr','Judge','Miss','Mr','Mrs','Ms','Rev'};
+            //Showing an error if the selected salutation value is other than the accepted value by Filogix
+            if(!salutationValues.contains(appName.salutationDd)){
+              requiredFieldError +=
+                'Please select the valid Saluatation for Account <a href="/' +
+                mapApplicants.get(applicantId).getSObject(ContactRelation).get('Id') +
+                '">' +
+                String.valueof(mapApplicants.get(applicantId).getSObject(ContactRelation).get('Name')) +
+                '</a></br>';
+            }
+          }
 
           if (
             mapApplicants.get(applicantId)
@@ -3027,7 +3049,8 @@ global with sharing class FilogixWrapperBinding {
 
               listOfAddresses.add(addrDet);
               //Required fields check
-              if (
+              /*Filogix API v1.6.1
+               * if (
                 string.Valueof(
                   mapOfAddr.get(addrId).get(appNameSpace + 'Province__c')
                 ) == null ||
@@ -3044,7 +3067,9 @@ global with sharing class FilogixWrapperBinding {
                   String.valueof(mapOfAddr.get(addrId).get('Id'))
                 );
               }
+              */
 
+              /*Filogix API v1.6.1
               if (
                 mapOfAddr.get(addrId).get(appNameSpace + 'PostalCode__c') ==
                 null ||
@@ -3060,7 +3085,7 @@ global with sharing class FilogixWrapperBinding {
                   String.valueof(mapOfAddr.get(addrId).get('Name')),
                   String.valueof(mapOfAddr.get(addrId).get('Id'))
                 );
-              }
+              }*/
 
               if (
                 mapOfAddr.get(addrId).get(appNameSpace + 'Country__c') ==
@@ -3098,12 +3123,14 @@ global with sharing class FilogixWrapperBinding {
                 );
               }
 
+              // NO NEED to show validation error as the defaul 0 will be passed.
               /*      if (monthsCal == null && monthsVal == null) {
                                 //requiredFieldsError('LoanApplicantAddress','ResidenceYearCount',String.valueof(mapOfAddr.get(addrId).get('Name')),String.valueof(mapOfAddr.get(addrId).get('Id')));
                                 requiredFieldError +='Please make sure the field "Years in Residence"  <b> or "Additional Months in Residence"</b> is populated on your applicant(s) address record.</br>';
                             }*/
 
-              if (
+              
+              /*if (
                 string.Valueof(
                   mapOfAddr.get(addrId)
                     .get('ResidenceYearCount' + customFieldSuffix)
@@ -3121,13 +3148,13 @@ global with sharing class FilogixWrapperBinding {
                 String.isBlank(
                   String.valueof(
                     mapOfAddr.get(addrId)
-                      .get('ResidenceYearCount' + customFieldSuffix)
+                      .get('ResidenceAdditionalMonthCount' + customFieldSuffix)
                   )
                 )
               ) {
                 //requiredFieldsError('LoanApplicantAddress','ResidenceYearCount',String.valueof(mapOfAddr.get(addrId).get('Name')),String.valueof(mapOfAddr.get(addrId).get('Id')));
                 //requiredFieldError +='Please make sure the field <b> "Years in Residence" </b> or <b> "Additional Months in Residence"</b> is populated on your applicant(s) address record.</br>';
-              }
+              }*/
             }
           } 
           /* Filogix v.1.6.1 - Not needed anymore
@@ -3139,13 +3166,15 @@ global with sharing class FilogixWrapperBinding {
               String.valueof(mapApplicants.get(applicantId).get('Name')) +
               '</a> Applicant. </br>';
           } */
+
+          // Loan Applicant Asset
           list<FilogixPOSTJSONWrapper.Asset> listOfAssets = new List<FilogixPOSTJSONWrapper.Asset>();
           if (mapofApplicantIdAndAsset.containsKey(applicantId)) {
             map<string, sObject> mapOfAssets = mapofApplicantIdAndAsset.get(
               applicantId
             );
             for (string asstId : mapOfAssets.keyset()) {
-              // As of v.1.6.1 Filogix POST Schema - These values are not supported but available in GET
+              /*// As of v.1.6.1 Filogix POST Schema - These values are not supported but available in GET
               // Making sure to not process the assets having this value to prevent error on user-end.
               if (
                 String.valueof(
@@ -3163,7 +3192,7 @@ global with sharing class FilogixWrapperBinding {
                     .getSObject(LoanApplicationAssetRelation)
                     .get('AssetType' + customFieldSuffix)
                 ) != 'Rental Property'
-              ) {
+              ) {*/
                 FilogixPOSTJSONWrapper.Asset asst = new FilogixPOSTJSONWrapper.Asset();
                 asst.assetDescription = String.valueof(
                   mapOfAssets.get(asstId)
@@ -3288,6 +3317,8 @@ global with sharing class FilogixWrapperBinding {
                   );
                 }
 
+                system.debug('AssetType='+string.Valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('AssetType' + customFieldSuffix)));
+
                 //Filogix Schema 1.60 Change
                 //Filogix Removed "Property" and "Rental Property" from POST
                 //Adding a validation rule instead of removing from picklist values
@@ -3295,31 +3326,16 @@ global with sharing class FilogixWrapperBinding {
                 if (
                   !String.isBlank(String.valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('AssetType' + customFieldSuffix)))
                   && (
-                      string.Valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('AssetType' + customFieldSuffix)) == 'Property' 
+                      String.valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('AssetType' + customFieldSuffix)) == 'Property' 
                       ||
                       string.Valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('AssetType' + customFieldSuffix)) == 'Rental Property'
                      )
                 ) {
                   requiredFieldError +='The Asset Type should not be a "Property" or "Rental Property". Please create the Property record(s) instead.</br>';
-                  /*requiredFieldsError(
-                    objNamePrefix + 'LoanApplicationAsset' + customFieldSuffix,
-                    'AssetType' + customFieldSuffix,
-                    String.valueof(
-                      mapOfAssets.get(asstId)
-                        .getSObject(LoanApplicationAssetRelation)
-                        .get('Name')
-                    ),
-                    String.valueof(
-                      mapOfAssets.get(asstId)
-                        .getSObject(LoanApplicationAssetRelation)
-                        .get('Id')
-                    )
-                  );*/
-
                 }
 
                 listOfAssets.add(asst);
-              }
+              /*}*/
             }
           }
 
@@ -4023,6 +4039,7 @@ global with sharing class FilogixWrapperBinding {
                 );
 
                 //Required fields check
+                /*Filogix API v1.6.1
                 if (
                   mapOfProps.get(propId).get(appNameSpace + 'Province__c') ==
                   null ||
@@ -4041,6 +4058,7 @@ global with sharing class FilogixWrapperBinding {
                     String.valueof(mapOfProps.get(propId).get('Id'))
                   );
                 }
+                */
                 if (
                   mapOfProps.get(propId).get(appNameSpace + 'Country__c') ==
                   null ||

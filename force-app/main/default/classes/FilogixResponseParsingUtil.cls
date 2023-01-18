@@ -694,10 +694,12 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
             appNameSpace + 'Repayment_Type__c',
             mortgage.repaymentTypeDd
           );
+
           propMortgage.put(
               appNameSpace + 'Status__c',
               mortgage.statusDd
           );
+
           propMortgage.put(
             appNameSpace + 'Status_Date__c',
             FilogixGETJSONWrapper.returnGMTformat(mortgage.statusDate)
@@ -721,6 +723,7 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
               appNameSpace + 'Net_Rate__c',
               mortgage.rate.netRate
             );
+            
           }
 
           if (mortgage.qualifyDetail != null) {
@@ -2934,7 +2937,7 @@ MapofEmailandAccount.put(string.valueof(la.get('Email__c')).toLowerCase(),tempsO
 
                 // Salutation Mapping
                 if (loanApplicant.name.salutationDd != null) {
-                  Acc.put('Salutation', loanApplicant.name.salutationDd);
+                  Acc.put('Salutation', loanApplicant.name.salutationDd); //+'.'); //Appending "." because Salesforce has . in Salutations and Filogix doesn't.
                 }
               } else {
                 lApp.put('Name', 'Empty/Null Name');
