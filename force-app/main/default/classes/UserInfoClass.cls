@@ -166,7 +166,7 @@ public with sharing class UserInfoClass {
         List<User> users = [
             SELECT Name, Email, UserType, SmallPhotoUrl, Filogix_Id__c
             FROM User
-            WHERE UserType = 'Standard' OR UserType = 'PowerPartner'
+            WHERE UserType = 'Standard' OR UserType = 'PowerPartner' OR UserType = 'CspLitePortal'
         ];
         //   WITH SECURITY_ENFORCED
         
