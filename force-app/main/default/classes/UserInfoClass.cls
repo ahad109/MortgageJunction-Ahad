@@ -168,6 +168,8 @@ public with sharing class UserInfoClass {
             FROM User
             WHERE UserType = 'Standard' OR UserType = 'PowerPartner' OR UserType = 'CspLitePortal'
         ];
+        
+        /// CspLitePortal = ExternalApp User
         //   WITH SECURITY_ENFORCED
         
         for (User user : users) {

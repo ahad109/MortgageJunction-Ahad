@@ -40,7 +40,7 @@ public class Communication_Handler_Test {
         // Getting App Namespace
         String appNameSpace = FilogixWrapperBinding.getAppNameSpace();
         
-        String accountObjectApiName =appNameSpace+'Account';
+        String accountObjectApiName ='Account';
         sObject acc = Schema.getGlobalDescribe().get(accountObjectApiName).newSObject();
         //Account acc = New Account();
         acc.put('FirstName','Test First Name');
@@ -63,7 +63,7 @@ public class Communication_Handler_Test {
         //System.assertEquals(acc.LastName, con.LastName);
 
         //Opportunity opp = New Opportunity ();
-        String opportunityObjectApiName =appNameSpace+'Opportunity';
+        String opportunityObjectApiName ='Opportunity';
         sObject opp = Schema.getGlobalDescribe().get(opportunityObjectApiName).newSObject();
         
         opp.put('Name', 'New Opportunity');
@@ -160,7 +160,8 @@ public class Communication_Handler_Test {
         string body = '{"mortgageApplication":{"subjectProperty":{"waterTypeDd":"Well","taxationYear":2020,"structureAge":10,"rentalIncome":{"incPercentInTds":10,"incomeTypeDd":"Rental Income","incomePeriodDd":"Annual","incomeAmount":3120},"propertyTypeDd":"Condo","propertyExpense":[],"occupancyTypeDd":"Owner Occupied","numberOfUnits":30,"newConstructionDd":"Existing","mlsListingFlag":"Y","lotSizeUnitOfMeasureDd":"Acres","lotSize":20,"livingSpaceUnitOfMeasurDd":"Sq Ft","includetds":"Y","heatTypeDd":"Electric Baseboard","garageTypeDd":"Attached","garageSizeDd":"Double","feesIncludeHeat":"N","estimatedAppraisalValue":5200,"dwellingTypeDd":"Apartment High Rise","dwellingStyleDd":"BiLevel","appraisalDateAct":"2021-02-18T17:00:00-00:00","address":{"unitNumber":"unit 432","streetTypeDd":"Allee","streetNumber":"12","streetName":"553 franklin d. roosevelt","streetDirectionDd":"E","provinceDd":"Ontario","postalLdu":"2M2","postalFsa":"M2M","countryTypeDd":"Canada","city":"Toronto"},"actualAppraisalValue":21520},"notes":[{}],"mortgage":[{"subprimeFlag":"N","reverseFlag":"N","requestedRate":30,"refiBlendedAmortization":"N","rate":{},"qualifyDetail":{"interestOnlyFlag":"N","interestCompoundDd":"Monthly"},"mtgInsIncludeFlag":"N","mortgageTypeDd":"First","interestOnlyFlag":"N","interestCompoundDd":"Monthly","insuredFlag":"N","helocFlag":"N","existingMortgageFlag":"N","constructionFlag":"N","commercialFlag":"N","cashBackOverride":"N","borrowerIds":[{"borrowerId":1}],"balanceRemaining":90755,"actualPaymentTerm":84}],"deal":{"taxPayorDd":"Borrower","sourceApplicationId":"0cd4W000000bwJeQAI","refiImprovementsFlag":"N","referralReferenceNo":"5634234","financingWaiverDate":"2021-03-08T17:00:00-00:00","estimatedClosingDate":"2021-03-03T00:00:00-00:00","downPaymentSource":[],"dealTypeDd":"Approval","dealPurposeDd":"Purchase"},"applicantGroup":[{"mailingAddr":{"unitNumber":"678","streetTypeDd":"Abbey","streetNumber":"452","streetName":"5 Augustusplatz","streetDirectionDd":"E","provinceDd":"Ontario","postalLdu":"2M2","postalFsa":"M2M","countryTypeDd":"Canada","city":"Toronto"},"applicantGroupTypeDd":"Applicant","applicant":[{"socialInsuranceNumber":"9713456347","primaryApplicantFlag":"Y","otherProperty":[],"otherIncome":[],"name":{"lastName":"Adam","firstName":"Bryan"},"liability":[],"identification":[{}],"firstTimeBuyer":"N","existingClient":"N","employmentHistory":[{"selfEmploymentFlag":"N","operatingAs":"Test","monthsOfService":2,"jobTitle":"23234","industrySectorDd":"Banking Finance","income":{"incomeTypeDd":"Salary","incomePeriodDd":"Monthly","incomeAmount":2333},"grossRevenue":13998,"employmentHistoryTypeDd":"Full Time","employmentHistoryStatusDd":"Current","employerName":"tet","contact":{"contactPhoneNumber":"8023934729","address":{"provinceDd":"Ontario","postalLdu":"2M2","postalFsa":"M2M","countryTypeDd":"Canada","city":"Toronto","addressLine1":"S Quebec St."}}}],"clientReferenceNumber":"0cU4W000000bwJPUAY","borrowerWorkPhoneNumber":"+4934121460","borrowerSpouseId":0,"borrowerId":1,"asset":[],"addressDetail":[{"residentialStatusDd":"Rent","monthsAtAddress":4,"addressTypeDd":"Current","address":{"streetName":"5 Augustusplatz","provinceDd":"Ontario","countryTypeDd":"Canada","city":"Toronto"}}]}]}]}}';
         
         Test.startTest();
-        string responseforPost = Communication_Handler.insertFilogixApp(body,(ID)testRLA.get('Id'),'User',String.valueof(testuser.get('Filogix_Id__c')));
+        //string responseforPost = Communication_Handler.insertFilogixApp(body,(ID)testRLA.get('Id'),'User',String.valueof(testuser.get('Filogix_Id__c')));
+        string responseforPost = Communication_Handler.insertFilogixApp(body,(ID)testRLA.get('Id'),'User','Agent2');
         Test.stopTest();
         
     }
@@ -185,7 +186,8 @@ public class Communication_Handler_Test {
         Test.setMock(HttpCalloutMock.class, new Mock());
         
 		Test.startTest();
-        string responseforPost = Communication_Handler.getFilogixApp((String)testRLA.get('Id'),(String)testRLA.get('FilogixId__c'),'User',String.valueof(testuser.get('Filogix_Id__c')));
+        //string responseforPost = Communication_Handler.getFilogixApp((String)testRLA.get('Id'),(String)testRLA.get('FilogixId__c'),'User',String.valueof(testuser.get('Filogix_Id__c')));
+        string responseforPost = Communication_Handler.getFilogixApp((String)testRLA.get('Id'),(String)testRLA.get('FilogixId__c'),'User','');
         Test.stopTest();
         
     }

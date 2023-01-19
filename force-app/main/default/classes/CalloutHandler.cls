@@ -43,6 +43,14 @@ public with sharing class CalloutHandler {
             // Instantiate a new HTTP request, specify the method (GET) as well as the endpoint
             HttpRequest req = new HttpRequest();
             
+            if (Test.isRunningTest()) {
+                  Firm = new MortgageJunction_Config__mdt();
+                  Firm.Label = 'Mortgage Junction Config';
+                  Firm.DeveloperName = 'Mortgage_Junction_Config';
+                  Firm.FirmCode__c = 'CLJT';
+                  //Firm.Password__c = 'CLJT';
+            }
+            
             if(!String.Isblank(Firm.FirmCode__c) && !String.Isblank(UserInfo.getOrganizationId())){
                 
                 url = url+'&FirmCode='+Firm.FirmCode__c.replaceAll(' ','%20') +'&subscriberId='+UserInfo.getOrganizationId();

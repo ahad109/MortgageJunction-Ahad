@@ -39,6 +39,14 @@ public with sharing class Communication_Handler implements Queueable {
 
   // AUTHCONFIG Generator
   public static String authConfigGenerator(String userFilogixId) {
+      
+    if (Test.isRunningTest()) {
+        appConfig = new MortgageJunction_Config__mdt();
+        appConfig.Label = 'Mortgage Junction Config';
+        appConfig.DeveloperName = 'Mortgage_Junction_Config';
+        appConfig.FirmCode__c = 'CLJT';
+        appConfig.OrgId__c = '0';
+    }
     //System.debug('LoanAppId::' + appId);
     // Generating Filogix AuthConfig String with information provided by the customer.
     return 'clientSystem=CJUNCTION,orgId=' +
