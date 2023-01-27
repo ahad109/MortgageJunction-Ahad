@@ -55,11 +55,7 @@ public with sharing class ApplicationSync {
         System.debug('Filogix id exists');
         //Filogix id exists
         mapOfFXIDandAppId.put(
-          String.valueof(
-            rla.getRecords()[0].get(appNameSpace + 'FilogixId__c')
-          ),
-          rla.getRecords()[0]
-        );
+          String.valueof(rla.getRecords()[0].get(appNameSpace + 'FilogixId__c')).toUppercase(),rla.getRecords()[0]);
         //if(requestObj.mode == 'User'){
         FilogixResponseParsingUtil.getAppStatus(mapOfFXIDandAppId);
         //}

@@ -70,7 +70,7 @@ public with sharing class FilogixResponseParsingUtil implements Queueable, Datab
     .Filogix_Id__c;
     //checkHeapSize('Before Callout');
     appId = String.valueof(rla.get('Id'));
-    filogixId = String.valueof(rla.get(appNameSpace + 'FilogixId__c'));
+    filogixId = String.valueof(rla.get(appNameSpace + 'FilogixId__c')).toUppercase();
     string res;
     try {
       res = Communication_Handler.getFilogixApp(
@@ -133,7 +133,7 @@ public with sharing class FilogixResponseParsingUtil implements Queueable, Datab
         ID jobID = System.enqueueJob(
           new FilogixResponseParsingUtil(
             String.valueof(rla.get('Id')),
-            String.valueof(rla.get(appNameSpace + 'FilogixId__c')),
+            String.valueof(rla.get(appNameSpace + 'FilogixId__c')).toUppercase(),
             deal
           )
         );
@@ -1936,6 +1936,7 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
         'PropertyValue' + customFieldSuffix,
         app.result.mortgageApplication.subjectProperty.estimatedAppraisalValue
       );
+        
       lAproperty.put(
         appNameSpace + 'feesIncludeHeat__c',
         booleanFormatting(
@@ -2022,7 +2023,7 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
       );
       lAproperty.put(
         appNameSpace + 'Original_Purchase_Price__c',
-        app.result.mortgageApplication.subjectProperty.purchasePrice
+        app.result.mortgageApplication.subjectProperty.originalPurchasePrice
       );
       lAproperty.put(
         appNameSpace + 'realtorInfo__c',
@@ -2035,7 +2036,7 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
         );
         lAproperty.put(
           appNameSpace + 'Rental_IncPercentInTds__c',
-          app.result.mortgageApplication.subjectProperty.rentalIncome.incPercentInTds
+          app.result.mortgageApplication.subjectProperty.rentalIncome.incPercentInGds
         );
 
         lAproperty.put(
@@ -3159,6 +3160,93 @@ rla.putSObject(loanAppParentLookupforApplicant.getDescribe().getRelationshipName
                   updateApp.add(loanAppIdentity);
                 }
               }
+                
+                
+                
+                /*system.debug('applicantGroup.mailingAddressIndicator='+applicantGroup.mailingAddressIndicator);
+                // Mailing Address Handling for Group When indicator is missing.
+                if(applicantGroup.mailingAddressIndicator==null || applicantGroup.mailingAddressIndicator=='O' && applicantGroup.mailingAddr!=null){
+                    FilogixGETJSONWrapper.MailingAddr mailingaddressDetails = (FilogixGETJSONWrapper.MailingAddr) applicantGroup.MailingAddr;
+              		
+                    sObject mailingAdd = Schema.getGlobalDescribe()
+                    .get(loanAppAddressObjectApiName)
+                    .newSObject();
+                  //Loan Applicant Record Mapping
+                  SObjectField loanApplicantLookup1a1 = Schema.getGlobalDescribe()
+                    .get(loanAppAddressObjectApiName)
+                    .getDescribe()
+                    .fields.getMap()
+                    .get(objNamePrefix + 'LoanApplicantId' + customFieldSuffix);
+                  mailingAdd.putSObject(
+                    loanApplicantLookup1a1.getDescribe().getRelationshipName(),
+                    lAppClone
+                  );
+                  mailingAdd.put(
+                    objNamePrefix + 'LoanApplicationId' + customFieldSuffix,
+                    appId
+                  );
+
+                  mailingAdd.put('Name', 'Mailing Address');
+                    
+                    mailingAdd.put(
+                      appNameSpace + 'FilogixId__c',
+                      String.valueof(mailingaddressDetails.addrId)
+                    );
+                    
+                    mailingAdd.put(
+                      appNameSpace + 'Unit_Number__c',
+                      mailingaddressDetails.unitNumber
+                    );
+                    mailingAdd.put(
+                      appNameSpace + 'Street_Number__c',
+                      mailingaddressDetails.streetNumber
+                    );
+                    mailingAdd.put(
+                      appNameSpace + 'Street_Name__c',
+                      mailingaddressDetails.streetName
+                    );
+                    mailingAdd.put(
+                      appNameSpace + 'Street_Type__c',
+                      mailingaddressDetails.streetTypeDd
+                    );
+                    mailingAdd.put(
+                      appNameSpace + 'Street_Direction__c',
+                      mailingaddressDetails.streetDirectionDd
+                    );
+                    mailingAdd.put(
+                      appNameSpace + 'City__c',
+                      mailingaddressDetails.city
+                    );
+                    mailingAdd.put(
+                      appNameSpace + 'Province__c',
+                      mailingaddressDetails.provinceDd
+                    );
+                    mailingAdd.put(
+                      appNameSpace + 'PostalCode__c',
+                      mailingaddressDetails.internationalPostalCode
+                    );
+                    mailingAdd.put(
+                      appNameSpace + 'Country__c',
+                      mailingaddressDetails.countryTypeDd
+                    );
+                    
+                    String postalFSA = '';
+                    String postalLDU = '';
+
+                    if (mailingaddressDetails.postalFsa != null) {
+                      postalFSA = mailingaddressDetails.postalFsa;
+                    }
+                    if (mailingaddressDetails.postalLdu != null) {
+                      postalLDU = mailingaddressDetails.postalLdu;
+                    }
+                    mailingAdd.put(
+                      appNameSpace + 'PostalCode__c',
+                      postalFSA + postalLDU
+                    );
+                   
+                   
+                  updateApp.add(mailingAdd);
+                }*/	
 
               // Applicant Address
               List<FilogixGETJSONWrapper.addressDetail> loanApplicantaddressDetails = (List<FilogixGETJSONWrapper.addressDetail>) loanApplicant.addressDetail;
@@ -5096,9 +5184,8 @@ and Remove all the objects and fields doesn't have the create/update rights */
       SELECT Id, DeveloperName
       FROM CustomNotificationType
       WHERE DeveloperName = 'MJ_Notify'
-      WITH SECURITY_ENFORCED
       LIMIT 1
-    ];
+    ]; // Removed WITH SECURITY_ENFORCED due to the issue for non-admin users 
     if (TemplateInfoDetail != null) {
       Set<String> currentUser = new Set<String>{ UserInfo.getUserId() };
       // Create a new custom notification

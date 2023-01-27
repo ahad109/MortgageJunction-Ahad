@@ -409,7 +409,7 @@ public class FilogixResponseParsingUtil_test {
       lap.put(appNameSpace + 'livingSpaceUnitOfMeasurDd__c', 'Sq Ft');
       lap.put('RequestedLoanAmount' + customFieldSuffix, 45000);
       //lap.put('PropertyExtIdentifier'+customFieldSuffix,'PropertyExtIdentifier Test External ID');
-      lap.put('LoanPurposeType' + customFieldSuffix, 'Purchase');
+      //lap.put('LoanPurposeType' + customFieldSuffix, 'Purchase');
 
       lap.put(appNameSpace + 'lotSize__c', 7);
       lap.put(appNameSpace + 'lotSizeUnitOfMeasure__c', 'Hectares');
@@ -749,7 +749,7 @@ public class FilogixResponseParsingUtil_test {
     );
     loanApplicationProp.put('RequestedLoanAmount' + customFieldSuffix, 190000);
     //loanApplicationProp.put('PropertyExtIdentifier'+customFieldSuffix, 'Test External Id');
-    loanApplicationProp.put('LoanPurposeType' + customFieldSuffix, 'Purchase');
+    //loanApplicationProp.put('LoanPurposeType' + customFieldSuffix, 'Purchase');
 
     loanApplicationProp.put(appNameSpace + 'lotSize__c', 2300);
     loanApplicationProp.put(
@@ -877,7 +877,7 @@ public class FilogixResponseParsingUtil_test {
     loanApplicationProp2.put('livingSpaceUnitOfMeasurDd__c', 'Sq Ft');
     loanApplicationProp2.put('RequestedLoanAmount' + customFieldSuffix, 190000);
     // loanApplicationProp2.put('PropertyExtIdentifier'+customFieldSuffix, 'Test External Id 2');
-    loanApplicationProp2.put('LoanPurposeType' + customFieldSuffix, 'Purchase');
+    //loanApplicationProp2.put('LoanPurposeType' + customFieldSuffix, 'Purchase');
 
     loanApplicationProp2.put('lotSize__c', 2300);
     loanApplicationProp2.put('lotSizeUnitOfMeasure__c', 'Hectares');
@@ -1049,6 +1049,7 @@ public class FilogixResponseParsingUtil_test {
     // Getting App Namespace
     appNameSpace = FilogixWrapperBinding.getAppNameSpace();
     sObject rla = testData();
+    rla.put(appNameSpace + 'FilogixId__c', 'CLJT-111');
     map<string, sObject> mapOfFXIDandAppId = new Map<string, sObject>();
     mapOfFXIDandAppId.put(
       String.valueof(rla.get(appNameSpace + 'FilogixId__c')),

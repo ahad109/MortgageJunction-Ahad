@@ -1114,7 +1114,10 @@ public class FilogixGETJSONWrapper {
 		public String city {get;set;} 
 		public String internationalPostalCode {get;set;} 
 		public String countryTypeDd {get;set;} 
-
+        public String provinceDd {get;set;} 
+        public String postalFsa {get;set;} 
+        public String postalLdu {get;set;} 
+            
 		public MailingAddr(JSONParser parser) {
 			while (parser.nextToken() != System.JSONToken.END_OBJECT) {
 				if (parser.getCurrentToken() == System.JSONToken.FIELD_NAME) {

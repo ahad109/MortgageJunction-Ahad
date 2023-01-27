@@ -413,7 +413,7 @@ global with sharing class FilogixWrapperBinding {
     string rlaCustFields = 'Deal_Purpose__c,Deal_Type__c,Third_Party_Application_Flag__c,Financing_Waiver_Date__c,Referral_Reference_Number__c,Ref_Improvement_Amount__c,Ref_Improvement_Description__c,Ref_Improvements_Flag__c,Ref_Purpose__c,Estimated_Closing_Date__c,Tax_Payor__c,Subject_Property__c,Subject_Property__r.AppraisedValue__c,Subject_Property__r.Appraisal_Date__c,Subject_Property__r.Style__c,Subject_Property__r.feesIncludeHeat__c,Subject_Property__r.Garage_Size__c,Subject_Property__r.Garage_Type__c,Subject_Property__r.Heat__c,Subject_Property__r.includetds__c,Subject_Property__r.insulatedWithUffi__c,Subject_Property__r.purchasePrice__c,Subject_Property__r.lot__c,Subject_Property__r.block__c,Subject_Property__r.Conc_Township__c,Subject_Property__r.livingSpace__c,Subject_Property__r.livingSpaceUnitOfMeasurDd__c,Subject_Property__r.lotSize__c,Subject_Property__r.lotSizeUnitOfMeasure__c,Subject_Property__r.mlsListingFlag__c,Subject_Property__r.Construction_Type__c,Subject_Property__r.numberOfUnits__c,Subject_Property__r.Property_Type__c,Subject_Property__r.Original_Purchase_Price__c,Subject_Property__r.realtorInfo__c,Subject_Property__r.rentalOffsetOption__c,Subject_Property__r.Sewage_Type__c,Subject_Property__r.structureAge__c,Subject_Property__r.taxationYear__c,Subject_Property__r.Water_Type__c,Subject_Property__r.Street_Number__c,Subject_Property__r.Street_Name__c,Subject_Property__r.Street_Type__c,Subject_Property__r.Structure_Type__c,Subject_Property__r.PropertyUnitNumber__c,Subject_Property__r.Direction__c,Subject_Property__r.Rental_Income_Period__c,Subject_Property__r.Rental_Income_Type__c,Subject_Property__r.Rental_IncPercentInTds__c,Subject_Property__r.City__c,Subject_Property__r.Country__c,Subject_Property__r.Province__c,Subject_Property__r.PostalCode__c,Subject_Property__r.Annual_Taxes__c,Subject_Property__r.Insurance_Expenses__c,Subject_Property__r.Heating_Expenses__c,Subject_Property__r.Hydro_Expenses__c,Subject_Property__r.Interest_Expenses__c,Subject_Property__r.Management_Expenses__c, Subject_Property__r.Other_Expenses__c,Subject_Property__r.Repairs_Expenses__c,Subject_Property__r.Total_Condo_Fees__c';
     //Commenting the old query for future reference
     //string rlaStdFields = 'Subject_Property__r.LoanApplicationId,Subject_Property__r.PropertyValue,Subject_Property__r.ExpNetMonthlyRentalInc,Subject_Property__r.LoanPurposeType,Subject_Property__r.PropertyUseType,Subject_Property__r.UnitsFinancedCount,Subject_Property__r.PropertyStreet,Subject_Property__r.PropertyCity,Subject_Property__r.PropertyPostalCode,Subject_Property__r.PropertyCountry,Subject_Property__r.PropertyState,Subject_Property__r.ExpMonthlyRentalIncome';
-    string rlaStdFields = 'Subject_Property__r.LoanApplicationId,Subject_Property__r.PropertyValue,Subject_Property__r.ExpNetMonthlyRentalInc,Subject_Property__r.LoanPurposeType,Subject_Property__r.PropertyUseType,Subject_Property__r.UnitsFinancedCount,Subject_Property__r.ExpMonthlyRentalIncome';
+    string rlaStdFields = 'Subject_Property__r.LoanApplicationId,Subject_Property__r.PropertyValue,Subject_Property__r.ExpNetMonthlyRentalInc,Subject_Property__r.PropertyUseType,Subject_Property__r.UnitsFinancedCount,Subject_Property__r.ExpMonthlyRentalIncome';
 
     if (!String.Isblank(objNameSuffix) || isNonFSC == true) {
       accFieldsOnRLA = removeStdRelationWithCustom(
@@ -696,7 +696,7 @@ global with sharing class FilogixWrapperBinding {
     //String applicantliabilityStdRelationFields = 'LoanApplicationLiability.CreditLimitAmount,LoanApplicationLiability.Name,LoanApplicationLiability.MonthlyPaymentAmount,LoanApplicationLiability.OtherLiabilityType';
     String applicantliabilityStdRelationFields = 'LoanApplicationLiability.CreditLimitAmount,LoanApplicationLiability.MonthlyPaymentAmount,LoanApplicationLiability.OtherLiabilityType';
 
-    String applicantliabilityCustRelationFields = 'LoanApplicationLiability.Pay_Off__c,LoanApplicationLiability.Credit_Bureau__c,LoanApplicationLiability.Maturity_Date__c,LoanApplicationLiability.Monthly_Payment_Override__c,LoanApplicationLiability.Liability_Amount__c';
+    String applicantliabilityCustRelationFields = 'LoanApplicationLiability.Pay_Off__c,LoanApplicationLiability.Credit_Bureau__c,LoanApplicationLiability.Maturity_Date__c,LoanApplicationLiability.Monthly_Payment_Override__c,LoanApplicationLiability.Liability_Amount__c,LoanApplicationLiability.Liability_Description__c';
     String applicantliabilityStdFields = 'LoanApplicantId';
     String applicationLiabilityName = 'LoanApplicationLiability.Name';
 
@@ -747,7 +747,7 @@ global with sharing class FilogixWrapperBinding {
     //**Loan Application Property**//
     //Commenting Old query for future referance
     //String applicationPropStdFields = 'LoanApplicationId,PropertyValue,ExpNetMonthlyRentalInc,LoanPurposeType,PropertyUseType,UnitsFinancedCount,PropertyStreet,PropertyCity,PropertyPostalCode,PropertyCountry,PropertyState,ExpMonthlyRentalIncome';
-    String applicationPropStdFields = 'LoanApplicationId,PropertyValue,ExpNetMonthlyRentalInc,LoanPurposeType,PropertyUseType,UnitsFinancedCount,ExpMonthlyRentalIncome';
+    String applicationPropStdFields = 'LoanApplicationId,PropertyValue,ExpNetMonthlyRentalInc,PropertyUseType,UnitsFinancedCount,ExpMonthlyRentalIncome';
     String applicationPropCustomFields = 'Loan_Applicant__c,Is_Subject_Property__c,AppraisedValue__c,Appraisal_Date__c,Style__c,feesIncludeHeat__c,Garage_Size__c,Garage_Type__c,Heat__c,includetds__c,insulatedWithUffi__c,lot__c,block__c,Conc_Township__c,livingSpace__c,livingSpaceUnitOfMeasurDd__c,lotSize__c,lotSizeUnitOfMeasure__c,mlsListingFlag__c,Construction_Type__c,numberOfUnits__c,Property_Type__c,realtorInfo__c,rentalOffsetOption__c,Sewage_Type__c,structureAge__c,taxationYear__c,Water_Type__c,Street_Number__c,Street_Name__c,PropertyUnitNumber__c,Direction__c,Rental_Income_Period__c,Rental_Income_Type__c,Rental_IncPercentInTds__c,Structure_Type__c,Street_Type__c,Original_Purchase_Price__c,Purchase_Date__c,City__c,PostalCode__c,Country__c,Province__c,Annual_Taxes__c,Insurance_Expenses__c,Heating_Expenses__c,Hydro_Expenses__c,Interest_Expenses__c,Management_Expenses__c,Other_Expenses__c,Repairs_Expenses__c,Total_Condo_Fees__c';
 
     if (!String.Isblank(objNameSuffix) || isNonFSC == true) {
@@ -2151,7 +2151,7 @@ global with sharing class FilogixWrapperBinding {
           FilogixPOSTJSONWrapper.PropertyExpense GeneralExpense = new FilogixPOSTJSONWrapper.PropertyExpense();
           GeneralExpense.propertyExpenseAmount = General; //Double.valueOf(rlaRecord.getSObject('Subject_Property__r').get('Annual_Taxes__c')): 0;
           GeneralExpense.propertyExpensePeriodDd = 'Monthly'; ///String.valueof(mapOfPropExp.get(expId).get('propertyExpensePeriod__c'));
-          GeneralExpense.propertyExpenseTypeDd = 'General Expenses';
+          GeneralExpense.propertyExpenseTypeDd = 'Management Expenses';
           ListExpenses.add(GeneralExpense);
         }
         if (Heat != 0) {
@@ -2186,7 +2186,7 @@ global with sharing class FilogixWrapperBinding {
           FilogixPOSTJSONWrapper.PropertyExpense OtherExpense = new FilogixPOSTJSONWrapper.PropertyExpense();
           OtherExpense.propertyExpenseAmount = Other; //Double.valueOf(rlaRecord.getSObject('Subject_Property__r').get('Annual_Taxes__c')): 0;
           OtherExpense.propertyExpensePeriodDd = 'Monthly'; ///String.valueof(mapOfPropExp.get(expId).get('propertyExpensePeriod__c'));
-          OtherExpense.propertyExpenseTypeDd = 'Management Expenses';
+          OtherExpense.propertyExpenseTypeDd = 'General Expenses';
           ListExpenses.add(OtherExpense);
         }
 
@@ -3374,7 +3374,7 @@ global with sharing class FilogixWrapperBinding {
               lia.liabilityDescription = String.valueof(
                 mapOfLia.get(liaId)
                   .getSObject(LoanApplicationLiabilityRelation)
-                  .get('Name')
+                  .get(appNameSpace + 'Liability_Description__c')
               );
               lia.liabilityMonthlyPayment = mapOfLia.get(liaId)
                   .getSObject(LoanApplicationLiabilityRelation)
@@ -3399,6 +3399,8 @@ global with sharing class FilogixWrapperBinding {
                       .get(appNameSpace + 'Maturity_Date__c')
                   )
                 : null;
+                
+                
               lia.monthlyPaymentOverride = BooleantoString(
                 string.valueOf(
                   mapOfLia.get(liaId)
@@ -3947,7 +3949,7 @@ global with sharing class FilogixWrapperBinding {
                   FilogixPOSTJSONWrapper.PropertyExpense GeneralExpense = new FilogixPOSTJSONWrapper.PropertyExpense();
                   GeneralExpense.propertyExpenseAmount = General; //Double.valueOf(mapOfProps.get(propId).get('Annual_Taxes__c')): 0;
                   GeneralExpense.propertyExpensePeriodDd = 'Monthly'; ///String.valueof(mapOfPropExp.get(expId).get('propertyExpensePeriod__c'));
-                  GeneralExpense.propertyExpenseTypeDd = 'General Expenses';
+                  GeneralExpense.propertyExpenseTypeDd = 'Management Expenses';
                   listPrpExp.add(GeneralExpense);
                 }
                 if (Heat != 0) {
@@ -3982,7 +3984,7 @@ global with sharing class FilogixWrapperBinding {
                   FilogixPOSTJSONWrapper.PropertyExpense OtherExpense = new FilogixPOSTJSONWrapper.PropertyExpense();
                   OtherExpense.propertyExpenseAmount = Other; //Double.valueOf(mapOfProps.get(propId).get('Annual_Taxes__c')): 0;
                   OtherExpense.propertyExpensePeriodDd = 'Monthly'; ///String.valueof(mapOfPropExp.get(expId).get('propertyExpensePeriod__c'));
-                  OtherExpense.propertyExpenseTypeDd = 'Management Expenses';
+                  OtherExpense.propertyExpenseTypeDd = 'General Expenses';
                   listPrpExp.add(OtherExpense);
                 }
 
@@ -4789,13 +4791,13 @@ global with sharing class FilogixWrapperBinding {
 
   public static string cityNamegen(string cityName) {
     if (cityName == null || String.isBlank(cityName)) {
-      return '';
+      return null;
     }
     return cityName.length() > 20 ? cityName.substring(0, 20) : cityName;
   }
 
   public static string postalFSAGen(string postalCode) {
-    string fsa = '';
+    string fsa = null;
 
     if (
       !string.isBlank(postalCode) &&
@@ -4816,7 +4818,7 @@ global with sharing class FilogixWrapperBinding {
   }
 
   public static string postalLDUGen(string postalCode) {
-    string ldu = '';
+    string ldu = null;
     if (
       !string.isBlank(postalCode) &&
       postalCode.length() >= 6 &&
@@ -4843,7 +4845,8 @@ System.debug('Display name: ' + tz.getDisplayName());
 System.debug('ID: ' + tz.getID());
 */
       string formattedDate = '';
-      formattedDate = dt.formatGMT('yyyy-MM-dd\'T\'HH:mm:ss-00:00');
+      //formattedDate = dt.formatGMT('yyyy-MM-dd\'T\'HH:mm:ss-00:00');
+      formattedDate = dt.formatGMT('yyyy-MM-dd\'T\'HH:mm:ss.0');
       system.debug('form=' + formattedDate);
       return formattedDate;
     }
@@ -4891,7 +4894,59 @@ System.debug('ID: ' + tz.getID());
         'BC' => 'British Columbia',
         'YT' => 'Yukon',
         'NT' => 'Northwest Territories',
-        'NU' => 'Nunavut'
+        'NU' => 'Nunavut',
+            
+        'AL' => 'Alabama',
+        'AK' => 'Alaska',
+        'AZ' => 'Arizona',
+        'AR' => 'Arkansas',
+        'CA' => 'California',
+        'CO' => 'Colorado',
+        'CT' => 'Connecticut',
+        'DE' => 'Delaware',
+        'DC' => 'District of Columbia',
+        'FL' => 'Florida',
+        'GA' => 'Georgia',
+        'HI' => 'Hawaii',
+        'ID' => 'Idaho',
+        'IL' => 'Illinois',
+        'IN' => 'Indiana',
+        'IA' => 'Iowa',
+        'KS' => 'Kansas',
+        'KY' => 'Kentucky',
+        'LA' => 'Louisiana',
+        'ME' => 'Maine',
+        'MD' => 'Maryland',
+        'MA' => 'Massachusetts',
+        'MI' => 'Michigan',
+        'MN' => 'Minnesota',
+        'MS' => 'Mississippi',
+        'MO' => 'Missouri',
+        'MT' => 'Montana',
+        'NE' => 'Nebraska',
+        'NV' => 'Nevada',
+        'NH' => 'New Hampshire',
+        'NJ' => 'New Jersey',
+        'NM' => 'New Mexico',
+        'NY' => 'New York',
+        'NC' => 'North Carolina',
+        'ND' => 'North Dakota',
+        'OH' => 'Ohio',
+        'OK' => 'Oklahoma',
+        'OR' => 'Oregon',
+        'PA' => 'Pennsylvania',
+        'RI' => 'Rhode Island',
+        'SC' => 'South Carolina',
+        'SD' => 'South Dakota',
+        'TN' => 'Tennessee',
+        'TX' => 'Texas',
+        'UT' => 'Utah',
+        'VT' => 'Vermont',
+        'VA' => 'Virginia',
+        'WA' => 'Washington',
+        'WV' => 'West Virginia',
+        'WI' => 'Wisconsin',
+        'WY' => 'Wyoming'
       };
 
       if (shortCode.length() < 3) {
