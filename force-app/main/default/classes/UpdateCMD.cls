@@ -21,7 +21,7 @@ public with sharing class UpdateCMD implements Metadata.DeployCallback {
         try {
             //Looking for existing Metadata Record available
             String metaDataName = 'Mortgage_Junction_Config';
-            String query = 'Select Id, '+appNameSpace+'OrgId__c, '+appNameSpace+'FirmCode__c, '+appNameSpace+'Is_Live__c,Label,DeveloperName from '+appNameSpace+'MortgageJunction_Config__mdt where DeveloperName=:metaDataName Limit 1';
+            String query = 'Select Id, '+appNameSpace+'PersonAccount_RecordType__c, '+appNameSpace+'OrgId__c, '+appNameSpace+'FirmCode__c, '+appNameSpace+'Is_Live__c,Label,DeveloperName from '+appNameSpace+'MortgageJunction_Config__mdt where DeveloperName=:metaDataName Limit 1';
             System.debug('Query::'+query);
             listofConfig = database.query(String.escapeSingleQuotes(query));
             

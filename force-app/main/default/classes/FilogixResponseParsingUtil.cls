@@ -11,7 +11,7 @@
  * 1.2   12-30-2021   M Hamza Siddiqui @ mhamzas.com   Dynamic Loan Applicants
  * 1.3   02-26-2022   M Hamza Siddiqui @ mhamzas.com   Bug & Mapping Fixes + Account Mapping code change
  **/
-public with sharing class FilogixResponseParsingUtil implements Queueable, Database.AllowsCallouts {
+public without sharing class FilogixResponseParsingUtil implements Queueable, Database.AllowsCallouts {
   //ErrorJSON Wrapper Class
   public class errorJSON {
     public result result { get; set; }
@@ -35,15 +35,18 @@ public with sharing class FilogixResponseParsingUtil implements Queueable, Datab
   public String rlaId;
   public FilogixGETJSONWrapper app;
   public sObject rla;
+  public string rlaOwnerId;
 
   public FilogixResponseParsingUtil(
     String rlaId,
     String filogix_Id,
-    FilogixGETJSONWrapper app
+    FilogixGETJSONWrapper app,
+    String rlaOwner_Id
   ) {
     this.rlaId = rlaId;
     this.app = app;
     this.filogix_Id = filogix_Id;
+    this.rlaOwnerId = rlaOwner_Id;
   }
 
   public static void checkHeapSize(String tag) {
@@ -59,7 +62,7 @@ public with sharing class FilogixResponseParsingUtil implements Queueable, Datab
   public static FilogixGETJSONWrapper parseResponseGETApp(sObject rla) {
     //string appId,string ownerId,String filogixId) {
     FilogixGETJSONWrapper deal;
-    String appNameSpace = FilogixWrapperBinding.getAppNameSpace();
+    String appNameSpace = MJ_Helper.getAppNameSpace();
     // Getting Filogix Mapping for this User
     String userFilogixId = [
       SELECT Id, Filogix_Id__c
@@ -121,7 +124,7 @@ public with sharing class FilogixResponseParsingUtil implements Queueable, Datab
   }
 
   public static void getAppStatus(map<string, sObject> mapOfFXIDandAppId) {
-    String appNameSpace = FilogixWrapperBinding.getAppNameSpace();
+    String appNameSpace = MJ_Helper.getAppNameSpace();
     if (!mapOfFXIDandAppId.isEmpty()) {
       // Creating a map to get JSON response for each APPID
       map<string, FilogixGETJSONWrapper> mapOfFxIDandResponse = new Map<string, FilogixGETJSONWrapper>();
@@ -134,7 +137,8 @@ public with sharing class FilogixResponseParsingUtil implements Queueable, Datab
           new FilogixResponseParsingUtil(
             String.valueof(rla.get('Id')),
             String.valueof(rla.get(appNameSpace + 'FilogixId__c')).toUppercase(),
-            deal
+            deal,
+            String.valueof(rla.get('ownerId'))
           )
         );
       }
@@ -148,7 +152,7 @@ public with sharing class FilogixResponseParsingUtil implements Queueable, Datab
       !Schema.sObjectType.Account.fields.getMap().containsKey('isPersonAccount')
     ) {
       String errorMsg = 'Please <a target="_blank" href="https://developer.salesforce.com/docs/atlas.en-us.financial_services_cloud_admin_guide.meta/financial_services_cloud_admin_guide/fsc_admin_enable_person_acct.htm">Enable the Person Account</a>.';
-      throw FilogixWrapperBinding.createCustomException(errorMsg);
+      throw MJ_Helper.createCustomException(errorMsg);
     }
   }
 
@@ -157,7 +161,7 @@ public with sharing class FilogixResponseParsingUtil implements Queueable, Datab
     String appNameSpace = MJ_Helper.getAppNameSpace();
     system.debug('NameSpace::' + appNameSpace);
 
-    //String appNameSpace = '';//FilogixWrapperBinding.getAppNameSpace();
+    //String appNameSpace = '';//MJ_Helper.getAppNameSpace();
     // Retrieving custom metadata to get env type
     boolean isNonFSC = false;
     String envType;
@@ -184,7 +188,7 @@ public with sharing class FilogixResponseParsingUtil implements Queueable, Datab
 
     if (envType == null || envType == '') {
       String errorMsg = 'Please specify environment type under Custom MetaData Type.';
-      throw FilogixWrapperBinding.createCustomException(errorMsg);
+      throw MJ_Helper.createCustomException(errorMsg);
     }
 
     if (envType == 'NON-FSC') {
@@ -195,7 +199,7 @@ public with sharing class FilogixResponseParsingUtil implements Queueable, Datab
 
   public void execute(QueueableContext context) {
     FilogixGETJSONWrapper deal;
-    String appNameSpace = FilogixWrapperBinding.getAppNameSpace();
+    String appNameSpace = MJ_Helper.getAppNameSpace();
     appId = rlaId;
     filogixId = filogix_Id;
 
@@ -325,13 +329,13 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
       );
       rla.put(
         appNameSpace + 'Estimated_Closing_Date__c',
-        FilogixGETJSONWrapper.returnGMTformat(
+        MJ_Helper.returnGMTformat(
           app.result.mortgageApplication.deal.estimatedClosingDate
         )
       );
       rla.put(
         appNameSpace + 'Financing_Waiver_Date__c',
-        FilogixGETJSONWrapper.returnGMTformat(
+        MJ_Helper.returnGMTformat(
           app.result.mortgageApplication.deal.financingWaiverDate
         )
       );
@@ -377,7 +381,7 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
       /*Added by Zain Abbas - Start*/
       rla.put(
         appNameSpace + 'Application_Date__c',
-        FilogixGETJSONWrapper.returnGMTformat(
+        MJ_Helper.returnGMTformat(
           app.result.mortgageApplication.deal.applicationDate
         )
       );
@@ -409,7 +413,7 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
       );
       rla.put(
         appNameSpace + 'Status_Date__c',
-        FilogixGETJSONWrapper.returnGMTformat(
+        MJ_Helper.returnGMTformat(
           app.result.mortgageApplication.deal.statusDate
         )
       );
@@ -444,6 +448,10 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
             'Name',
             mortgage.mortgageTypeDd + ' - ' + mortgage.loanTypeDd
           );
+            
+          // Setting RLA OwnerId as Record OwnerId
+          PropMortgage.put('ownerId',rlaOwnerId);
+            
           propMortgage.put(
             appNameSpace + 'Actual_Payment_Term__c',
             mortgage.actualPaymentTerm
@@ -488,7 +496,7 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
             appNameSpace + 'Is_Insured__c',
             booleanFormatting(mortgage.insuredFlag)
           );
-          datetime insuranceAdjustDate = FilogixGETJSONWrapper.returnGMTformat(
+          datetime insuranceAdjustDate = MJ_Helper.returnGMTformat(
             mortgage.interestAdjustmentDate
           );
           //propMortgage.put(appNameSpace+'Insurance_Adjustment_Date__c', insuranceAdjustDate);
@@ -569,7 +577,7 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
           propMortgage.put(
             appNameSpace + 'Maturity_Date__c',
             Date.valueof(
-              FilogixGETJSONWrapper.returnGMTformat(mortgage.maturityDate)
+              MJ_Helper.returnGMTformat(mortgage.maturityDate)
             )
           );
 
@@ -606,7 +614,7 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
           propMortgage.put(
             appNameSpace + 'First_Payment_Date__c',
             mortgage.firstPaymentDate != null
-              ? Date.valueof(mortgage.firstPaymentDate)
+              ? Date.valueof(MJ_Helper.returnGMTformat(mortgage.firstPaymentDate))
               : null
           );
 
@@ -676,7 +684,7 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
           if (mortgage.pricingRateInventory != null) {
             propMortgage.put(
               appNameSpace + 'PRIIndexEffectiveDate__c',
-              FilogixGETJSONWrapper.returnGMTformat(
+              MJ_Helper.returnGMTformat(
                 mortgage.pricingRateInventory.indexEffectiveDate
               )
             );
@@ -702,7 +710,7 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
 
           propMortgage.put(
             appNameSpace + 'Status_Date__c',
-            FilogixGETJSONWrapper.returnGMTformat(mortgage.statusDate)
+            MJ_Helper.returnGMTformat(mortgage.statusDate)
           );
           propMortgage.put(appNameSpace + 'Status__c', mortgage.statusDd);
           if (mortgage.rate != null) {
@@ -861,7 +869,7 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
               );
               loanAppSubmission.put(
                 appNameSpace + 'Request_Time__c',
-                FilogixGETJSONWrapper.returnGMTformat(
+                MJ_Helper.returnGMTformat(
                   loanSubmission.submission.submitRequestTime
                 )
               );
@@ -934,7 +942,7 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
                   //loanAppConditionUpdate.put(appNameSpace+'Branch_Toll_Free-Phone__c',loanconditionStatusUpdate.branchTollFreePhone);
                   loanAppConditionUpdate.put(
                     appNameSpace + 'Condition_Time__c',
-                    FilogixGETJSONWrapper.returnGMTformat(
+                    MJ_Helper.returnGMTformat(
                       loanconditionStatusUpdate.conditionTimeStamp
                     )
                   );
@@ -972,7 +980,7 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
                   );
                   loanAppConditionUpdate.put(
                     appNameSpace + 'Ingestion_Time__c',
-                    FilogixGETJSONWrapper.returnGMTformat(
+                    MJ_Helper.returnGMTformat(
                       loanconditionStatusUpdate.ingestionTimeStamp
                     )
                   );
@@ -1095,7 +1103,7 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
                   );
                   loanAppDealUpdate.put(
                     appNameSpace + 'Ingestion_Time__c',
-                    FilogixGETJSONWrapper.returnGMTformat(
+                    MJ_Helper.returnGMTformat(
                       loanSubmissionDealUpdate.ingestionTimeStamp
                     )
                   );
@@ -1105,7 +1113,7 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
                   );
                   loanAppDealUpdate.put(
                     appNameSpace + 'Status_Time__c',
-                    FilogixGETJSONWrapper.returnGMTformat(
+                    MJ_Helper.returnGMTformat(
                       loanSubmissionDealUpdate.dealStatusTimeStamp
                     )
                   );
@@ -1247,7 +1255,7 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
                   );
                   loanAppResponse.put(
                     appNameSpace + 'Closing_Date__c',
-                    FilogixGETJSONWrapper.returnGMTformat(
+                    MJ_Helper.returnGMTformat(
                       loanResponse.closingDate
                     )
                   );
@@ -1257,7 +1265,7 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
                   );
                   loanAppResponse.put(
                     appNameSpace + 'Commit_Expiry_Date__c',
-                    FilogixGETJSONWrapper.returnGMTformat(
+                    MJ_Helper.returnGMTformat(
                       loanResponse.commitExpiryDate
                     )
                   );
@@ -1269,7 +1277,7 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
                   }
                   loanAppResponse.put(
                     appNameSpace + 'Decision_Date__c',
-                    FilogixGETJSONWrapper.returnGMTformat(
+                    MJ_Helper.returnGMTformat(
                       loanResponse.decisionDate
                     )
                   );
@@ -1328,7 +1336,7 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
                   );
                   loanAppResponse.put(
                     appNameSpace + 'Offer_Expiry_Date__c',
-                    FilogixGETJSONWrapper.returnGMTformat(
+                    MJ_Helper.returnGMTformat(
                       loanResponse.offerExpiryDate
                     )
                   );
@@ -1409,7 +1417,7 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
                   }
                   loanAppResponse.put(
                     appNameSpace + 'Response_Time__c',
-                    FilogixGETJSONWrapper.returnGMTformat(
+                    MJ_Helper.returnGMTformat(
                       loanResponse.responseTime
                     )
                   );
@@ -1920,7 +1928,7 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
       );
       lAproperty.put(
         'Appraisal_Date__c',
-        FilogixGETJSONWrapper.returnGMTformat(
+        MJ_Helper.returnGMTformat(
           app.result.mortgageApplication.subjectProperty.appraisalDateAct
         )
       ); // Illegal assignment from String to Datetime
@@ -2093,7 +2101,7 @@ throw FilogixWrapperBinding.createCustomException(errorMsg);
       );
       lAproperty.put(
         appNameSpace + 'Purchase_Date__c',
-        FilogixGETJSONWrapper.returnGMTformat(
+        MJ_Helper.returnGMTformat(
           app.result.mortgageApplication.subjectProperty.refiOrigPurchaseDate
         )
       );
@@ -2963,22 +2971,36 @@ MapofEmailandAccount.put(string.valueof(la.get('Email__c')).toLowerCase(),tempsO
               //Id personAccountRecordTypeId =  Schema.SObjectType.Account.getRecordTypeInfosByDeveloperName().get('PersonAccount').getRecordTypeId();
               // Because the Person Account RecordType can have a differrent name.
               Id personAccountRecordTypeId;
-              String sObjT = 'Account';
-              String personAccountQuery = 'SELECT Id, Name, SobjectType,IsPersonType FROM RecordType WHERE SobjectType=:sObjT AND IsPersonType=True limit 1';
-              sObject personAccountData = Database.query(
-                String.escapeSingleQuotes(personAccountQuery)
-              );
-              if (personAccountData != null) {
-                personAccountRecordTypeId = String.valueof(
-                  personAccountData.Id
-                );
-              } else {
-                String errorMsg = 'Please <a target="_blank" href="https://developer.salesforce.com/docs/atlas.en-us.financial_services_cloud_admin_guide.meta/financial_services_cloud_admin_guide/fsc_admin_enable_person_acct.htm">Enable the Person Account</a>.';
-                throw FilogixWrapperBinding.createCustomException(errorMsg);
+              String personAccountRecordTypeName='PersonAccount'; // Setting default RecordType DeveloperName
+              // Error Handling for Multiple Record Type
+              // Now Using a DEFAULT RECORD TYPE field and Keeping the PERSONACCOUNT default where NONE selected.
+              // Getting Current ORG's MJ Integration Info
+  			  MortgageJunction_Config__mdt appConfig = MJ_Helper.getMJConfig();
+                
+              
+                
+              try {
+                  
+                  personAccountRecordTypeName = appConfig?.PersonAccount_RecordType__c!=null?appConfig?.PersonAccount_RecordType__c:personAccountRecordTypeName;
+                  
+                  String personAccountQuery = 'SELECT Id, Name, SobjectType,IsPersonType FROM RecordType WHERE DeveloperName=:personAccountRecordTypeName AND IsPersonType=True limit 1';
+                  sObject personAccountData = Database.query(String.escapeSingleQuotes(personAccountQuery));
+                    
+                  if (personAccountData != null) {
+                    personAccountRecordTypeId = String.valueof(personAccountData.get('Id'));
+                  } 
+              } catch(Exception e){
+                //String errorMsg = 'Please <a target="_blank" href="/n/MJ_Setup">Enable the Set Default Person Account</a>.';
+                String errorMsg = 'Error: Please set the Default Person Account Record Type from the <a target="_blank" href="/lightning/n/' +appNameSpace +'MortgageJunction_Setup">MortgageJunction Setup</a> screen.';
+                throw MJ_Helper.createCustomException(errorMsg);
               }
-              //personAccountRecordTypeId = [SELECT Id, Name, SobjectType,IsPersonType FROM RecordType WHERE SobjectType='Account' AND IsPersonType=True].Id;
-
-              Acc.put('RecordTypeID', personAccountRecordTypeId);
+                
+                // Only set the RecordType & OwnerId for New Record.
+                if(!Acc.isSet('Id')){
+                    Acc.put('RecordTypeID', personAccountRecordTypeId); //Assigning Record Type
+                    Acc.put('ownerId', rlaOwnerId); // Assigning Owner.
+                }
+                
               Acc.put(
                 'Work_Phone_Extension__pc',
                 loanApplicant.borrowerWorkPhoneExtension
@@ -3309,13 +3331,13 @@ rla.putSObject(loanAppParentLookupforApplicant.getDescribe().getRelationshipName
                     'AddressOwnership' + customFieldSuffix,
                     loanApplicantaddress.residentialStatusDd
                   );
-
+				  String AddressName = loanApplicantaddress.address.streetNumber + ' ' +loanApplicantaddress.address.streetName;
+                  //Replacing null from AddressName - Ticket#5693 - v1.45
+                  AddressName = AddressName.replaceAll('null','');
                   if (loanApplicantaddress.address != null) {
                     loanAppAdd.put(
                       'Name',
-                      loanApplicantaddress.address.streetNumber +
-                        ' ' +
-                        loanApplicantaddress.address.streetName
+                      AddressName.trim()==''?'null':AddressName.trim()
                     );
                     loanAppAdd.put(
                       appNameSpace + 'FilogixId__c',
@@ -3808,7 +3830,7 @@ rla.putSObject(loanAppParentLookupforApplicant.getDescribe().getRelationshipName
                   loanAppLiabilityParent.put(
                     appNameSpace + 'Maturity_Date__c',
                     Date.valueof(
-                      FilogixGETJSONWrapper.returnGMTformat(
+                      MJ_Helper.returnGMTformat(
                         (loanApplicantLiability.maturityDate)
                       )
                     )
@@ -3946,7 +3968,7 @@ rla.putSObject(loanAppParentLookupforApplicant.getDescribe().getRelationshipName
                     );
                     loanOtherProp.put(
                       appNameSpace + 'Appraisal_Date__c',
-                      FilogixGETJSONWrapper.returnGMTformat(
+                      MJ_Helper.returnGMTformat(
                         loanApplicantotherProperty.property.appraisalDateAct
                       )
                     ); // Illegal assignment from String to Datetime
@@ -4083,7 +4105,7 @@ rla.putSObject(loanAppParentLookupforApplicant.getDescribe().getRelationshipName
                     /*Added by Zain Abbas - Start*/
                     loanOtherProp.put(
                       appNameSpace + 'Purchase_Date__c',
-                      FilogixGETJSONWrapper.returnGMTformat(
+                      MJ_Helper.returnGMTformat(
                         loanApplicantotherProperty.property.refiOrigPurchaseDate
                       )
                     );
@@ -4302,6 +4324,10 @@ peOtherProp.put(appNameSpace+'FilogixId__c',String.valueof(oPExpense.propertyExp
                           .get(mortgageObjectApiName)
                           .newSObject();
                         system.debug('mortgage=' + oPMortgage);
+                          
+                        // Setting RLA OwnerId as Record OwnerId
+                        oPropMortgage.put('ownerId',rlaOwnerId);
+                          
                         oPropMortgage.put(
                           'Name',
                           oPMortgage.mortgageTypeDd +
@@ -4352,7 +4378,7 @@ peOtherProp.put(appNameSpace+'FilogixId__c',String.valueof(oPExpense.propertyExp
                           appNameSpace + 'Is_Insured__c',
                           booleanFormatting(oPMortgage.insuredFlag)
                         );
-                        datetime insuranceAdjustDate = FilogixGETJSONWrapper.returnGMTformat(
+                        datetime insuranceAdjustDate = MJ_Helper.returnGMTformat(
                           oPMortgage.interestAdjustmentDate
                         );
                         //oPropMortgage.put(appNameSpace+'Insurance_Adjustment_Date__c', insuranceAdjustDate);
@@ -4440,7 +4466,7 @@ peOtherProp.put(appNameSpace+'FilogixId__c',String.valueof(oPExpense.propertyExp
                         oPropMortgage.put(
                           appNameSpace + 'First_Payment_Date__c',
                           oPMortgage.firstPaymentDate != null
-                            ? Date.valueof(oPMortgage.firstPaymentDate)
+                            ? Date.valueof(MJ_Helper.returnGMTformat(oPMortgage.firstPaymentDate))
                             : null
                         );
                         oPropMortgage.put(
@@ -4598,7 +4624,7 @@ peOtherProp.put(appNameSpace+'FilogixId__c',String.valueof(oPExpense.propertyExp
     string objNamePrefix
   ) {
     system.debug('Updating old Records');
-    String appNameSpace = FilogixWrapperBinding.getAppNameSpace();
+    String appNameSpace = MJ_Helper.getAppNameSpace();
 
     //Check the subscriber's org status
     boolean isNonFSC = getEnvironmentType();
@@ -4762,7 +4788,7 @@ peOtherProp.put(appNameSpace+'FilogixId__c',String.valueof(oPExpense.propertyExp
     string objNameSuffix,
     String objNamePrefix
   ) {
-    String appNameSpace = FilogixWrapperBinding.getAppNameSpace();
+    String appNameSpace = MJ_Helper.getAppNameSpace();
     saveSobjectSet(sObjList, '', objNameSuffix, objNamePrefix);
   }
 
@@ -4849,7 +4875,7 @@ peOtherProp.put(appNameSpace+'FilogixId__c',String.valueof(oPExpense.propertyExp
     string objNameSuffix,
     String objNamePrefix
   ) {
-    String appNameSpace = FilogixWrapperBinding.getAppNameSpace();
+    String appNameSpace = MJ_Helper.getAppNameSpace();
 
     Integer SFDC_CHUNK_LIMIT = 10;
     Map<String, List<Sobject>> dynamicMapWithObjNames = new Map<String, List<Sobject>>();
@@ -5053,9 +5079,11 @@ peOtherProp.put(appNameSpace+'FilogixId__c',String.valueof(oPExpense.propertyExp
     string myExternalIDField
   ) {
     // Filtering the data based on Object and Fields access level before DML
-    map<string, list<sObject>> dynamicMapOfsObjects = preDMLActivities(
-      mapOfsObjects
-    );
+    //map<string, list<sObject>> dynamicMapOfsObjects = preDMLActivities(mapOfsObjects);
+   
+      
+      // Bypassing the Security (as the code is running in System Mode - Feb 13,2023)
+      map<string, list<sObject>> dynamicMapOfsObjects = mapOfsObjects; //preDMLActivities(mapOfsObjects);
 
     String errorMessage = '';
 

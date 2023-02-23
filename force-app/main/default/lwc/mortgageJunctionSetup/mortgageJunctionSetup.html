@@ -105,6 +105,19 @@
                 </div>
                 <!-- </div> -->
                 <!-- Col End -->
+
+                <div>
+                  <lightning-combobox 
+                  name="Default Account Record Type" 
+                  label="Default Account Record Type"
+                  placeholder="Select the Record Type"
+                  field-level-help="Select the default Account Record Type for new Accounts"
+                  value={config.PersonAccount_RecordType__c} 
+                  options={RTvalues} 
+                  onchange={handleRTChange}
+                  required>
+            </lightning-combobox>
+                </div>
               </div>
               <!-- Grid End -->
             </template>

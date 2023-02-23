@@ -8,7 +8,7 @@
  * Ver   Date         Author             Modification
  * 1.0   05-20-2021   M Hamza Siddiqui   Initial Version
  **/
-public with sharing class ApplicationSync {
+public without sharing class ApplicationSync {
   public static string objectNameSuffix = '';
   public static string objectNamePrefix = '';
 

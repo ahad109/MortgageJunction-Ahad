@@ -249,7 +249,7 @@ public with sharing class Communication_Handler implements Queueable {
                 //system.debug('Error');
                 //return 'Error';
             } else {*/
-      if (userFilogixId != null) {
+      //if (userFilogixId != null) { // We do not need it for GET
         // Generating Filogix AuthConfig String with information provided by the customer.
         String authconfig = authConfigGenerator(userFilogixId);
         // Getting Subscriber's OrgId
@@ -309,9 +309,9 @@ public with sharing class Communication_Handler implements Queueable {
         }
         FilogixResponseParsingUtil.checkHeapSize('Before return');
         return resBody;
-      } else {
-        return '';
-      }
+      //} else {
+      //  return '';
+      //}
       //} If END
     } else {
       FilogixResponseParsingUtil.appId = appId;

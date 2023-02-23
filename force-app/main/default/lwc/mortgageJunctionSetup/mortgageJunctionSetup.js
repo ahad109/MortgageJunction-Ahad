@@ -1,4 +1,4 @@
-import { LightningElement } from "lwc";
+import { LightningElement,wire } from "lwc";
 import getUserInfo from "@salesforce/apex/UserInfoClass.getUserInfo";
 import updateUserInfo from "@salesforce/apex/UserInfoClass.updateUserInfo";
 import getConfig from "@salesforce/apex/UpdateCMD.getConfig";
@@ -6,6 +6,8 @@ import getAuth from "@salesforce/apex/UpdateCMD.getAuth";
 import apexSearch from "@salesforce/apex/UserInfoClass.search";
 import updateConfig from "@salesforce/apex/UpdateCMD.updateConfig";
 import getNamespace from "@salesforce/apex/FilogixWrapperBinding.getAppNameSpace";
+import getPersonAccountRecordTypes from "@salesforce/apex/MJ_Helper.getPersonAccountRecordTypes";
+
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
 import { FlowNavigationNextEvent } from "lightning/flowSupport";
 
@@ -36,6 +38,7 @@ export default class MortgageJunctionSetup extends LightningElement {
   config = {
     OrgId__c: "0",
     FirmCode__c: "",
+    PersonAccount_RecordType__c:"",
     Is_Live__c: false,
     Label: "Mortgage Junction Config",
     DeveloperName: "Mortgage_Junction_Config",
@@ -55,7 +58,33 @@ export default class MortgageJunctionSetup extends LightningElement {
   };
 
   loaded = false;
+  RTvalues;
 
+
+  @wire(getPersonAccountRecordTypes, {})
+    WiredObjects_Type({ error, data }) {
+ 
+        if (data) {
+            try {
+                this.l_All_Types = data; 
+                let options = [];
+                 
+                for (var key in data) {
+                    // Here key will have index of list of records starting from 0,1,2,....
+                    options.push({ label: data[key].Name, value: data[key].DeveloperName  });
+ 
+                    // Here Name and Id are fields from sObject list.
+                }
+                this.RTvalues = options;
+                 
+            } catch (error) {
+                console.error('check error here', error);
+            }
+        } else if (error) {
+            console.error('check error here', error);
+        }
+ 
+    }
   //Getters
   //Options for Selecting id
   // get options(){
@@ -263,6 +292,7 @@ export default class MortgageJunctionSetup extends LightningElement {
               console.log("Setting default values");
               this.config = {
                 OrgId__c: "",
+                PersonAccount_RecordType__c:"",
                 FirmCode__c: "",
                 Is_Live__c: false,
                 Label: "Mortgage Junction Config",
@@ -276,6 +306,7 @@ export default class MortgageJunctionSetup extends LightningElement {
                 OrgId__c: result[0][this.appNamespace+'OrgId__c'],
                 FirmCode__c: result[0][this.appNamespace+'FirmCode__c'],
                 Is_Live__c: result[0][this.appNamespace+'Is_Live__c'],
+                PersonAccount_RecordType__c: result[0][this.appNamespace+'PersonAccount_RecordType__c'],
                 Label: "Mortgage Junction Config",
                 DeveloperName: "Mortgage_Junction_Config",
                 QualifiedApiName: this.appNamespace+"Mortgage_Junction_Config",
@@ -462,6 +493,10 @@ export default class MortgageJunctionSetup extends LightningElement {
     this.config.Is_Live__c = e.target.checked;
   }
 
+  handleRTChange(e) {
+    this.config.PersonAccount_RecordType__c = e.target.value;
+  }
+
   handleUserChange(e) {
     let rowNumber = e.target.dataset.id;
     console.log("User Changed @" + rowNumber);
@@ -550,6 +585,7 @@ export default class MortgageJunctionSetup extends LightningElement {
       delete Object.assign(this.config, {[this.appNamespace+'FirmCode__c']: this.config['FirmCode__c'] })['FirmCode__c'];
       delete Object.assign(this.config, {[this.appNamespace+'OrgId__c']: this.config['OrgId__c'] })['OrgId__c'];
       delete Object.assign(this.config, {[this.appNamespace+'Is_Live__c']: this.config['Is_Live__c'] })['Is_Live__c'];
+      delete Object.assign(this.config, {[this.appNamespace+'PersonAccount_RecordType__c']: this.config['PersonAccount_RecordType__c'] })['PersonAccount_RecordType__c'];
 
       delete Object.assign(this.auth, {[this.appNamespace+'Username__c']: this.auth['Username__c'] })['Username__c'];
       delete Object.assign(this.auth, {[this.appNamespace+'Password__c']: this.auth['Password__c'] })['Password__c'];

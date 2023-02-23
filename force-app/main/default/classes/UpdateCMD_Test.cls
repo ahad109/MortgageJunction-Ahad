@@ -15,7 +15,7 @@ public with sharing class UpdateCMD_Test {
     
     static testmethod void Auth_Test(){
         UpdateCMD.getAuth();
-        String query = 'Select id from ' + appNameSpace + 'MJAuth__mdt WITH SECURITY_ENFORCED';
+        String query = 'Select id from ' + appNameSpace + 'MJAuth__mdt'; //WITH SECURITY_ENFORCED
         List<sObject> listofAuth = database.query(query);
         //List<sObject> listofAuth = [Select id from MJAuth__mdt WITH SECURITY_ENFORCED];
         if (Test.isRunningTest()) {
@@ -27,7 +27,7 @@ public with sharing class UpdateCMD_Test {
     
     static testmethod void Config_Test(){
         UpdateCMD.getConfig();
-        String query = 'Select id from ' + appNameSpace + 'MortgageJunction_Config__mdt WITH SECURITY_ENFORCED';
+        String query = 'Select id from ' + appNameSpace + 'MortgageJunction_Config__mdt'; //WITH SECURITY_ENFORCED
         List<sObject> listofConfig = database.query(query);
         //List<sObject> listofConfig = [Select id from MortgageJunction_Config__mdt WITH SECURITY_ENFORCED];
         if (Test.isRunningTest()) {

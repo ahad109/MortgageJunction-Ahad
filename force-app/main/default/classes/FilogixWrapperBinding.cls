@@ -16,7 +16,7 @@
  * 1.6   12-01-2022   M Hamza Siddiqui @ cloudjunction.cloud     Existing Mortgage check on Other Property
  * 1.7   04-02-2022   M Hamza Siddiqui @ cloudjunction.cloud     Custom Address fields.
  **/
-global with sharing class FilogixWrapperBinding {
+global without sharing class FilogixWrapperBinding {
   //  public static map<string, Opportunity> mapofOpp;
   public static map<string, sObject> mapOfLoanApplication;
   public static List<sObject> listOfMortgages;
@@ -568,7 +568,7 @@ global with sharing class FilogixWrapperBinding {
     string applicantAssetStdFieds = 'LoanApplicantId';
     //Commenting old query for future referance
     //string applicantAssetStdRelationFields = 'LoanApplicationAsset.Name,LoanApplicationAsset.AssetType,LoanApplicationAsset.CashOrMarketValue';
-    string applicantAssetStdRelationFields = 'LoanApplicationAsset.AssetType,LoanApplicationAsset.CashOrMarketValue';
+    string applicantAssetStdRelationFields = 'LoanApplicationAsset.Name, LoanApplicationAsset.AssetType,LoanApplicationAsset.CashOrMarketValue';
     string applicantAssetCustRelationFields =
       'LoanApplicationAsset.Description__c,LoanApplicationAsset.' +
       appNameSpace +
@@ -2287,6 +2287,12 @@ global with sharing class FilogixWrapperBinding {
               rlaRecord.getSObject('Subject_Property__r').get('Id')
             )
           );
+            
+        } 
+        
+        /*Filogix API v1.6.1*/
+        if (addr.countryTypeDd!=null && addr.countryTypeDd.contains('United')) {
+          requiredFieldError+='Subject Property should be Canadian Property only';
         }
         //Required fields check
         /*Filogix API v1.6.1
@@ -3241,7 +3247,6 @@ global with sharing class FilogixWrapperBinding {
                   requiredFieldsError(
                     objNamePrefix +
                       'LoanApplicationAsset' +
-                      customFieldSuffix +
                       customFieldSuffix,
                     'Description__c',
                     String.valueof(
@@ -3416,6 +3421,43 @@ global with sharing class FilogixWrapperBinding {
               listOfLiabilities.add(lia);
 
               //Required fields check
+              
+              // Required Liability_Description__c - liabilityDescription
+                
+              if (
+                String.valueof(
+                mapOfLia.get(liaId)
+                  .getSObject(LoanApplicationLiabilityRelation)
+                  .get(appNameSpace + 'Liability_Description__c')
+              ) == null ||
+                String.isBlank(
+                  String.valueof(
+                    mapOfLia.get(liaId)
+                      .getSObject(LoanApplicationLiabilityRelation)
+                      .get(appNameSpace + 'Liability_Description__c')
+                  )
+                )
+              ) {
+                requiredFieldsError(
+                  objNamePrefix +
+                    'LoanApplicationLiability' +
+                    customFieldSuffix,
+                  'Liability_Description__c',
+                  String.valueof(
+                    mapOfLia.get(liaId)
+                      .getSObject(LoanApplicationLiabilityRelation)
+                      .get('Name')
+                  ),
+                  String.valueof(
+                    mapOfLia.get(liaId)
+                      .getSObject(LoanApplicationLiabilityRelation)
+                      .get('Id')
+                  )
+                );
+              }
+                
+              // Required OtherLiabilityType - liabilityTypeDd  
+          
               if (
                 string.Valueof(
                   mapOfLia.get(liaId)
@@ -3447,6 +3489,9 @@ global with sharing class FilogixWrapperBinding {
                   )
                 );
               }
+               
+              // Required Liability_Amount__c - liabilityAmount
+              
               if (
                 string.Valueof(
                   mapOfLia.get(liaId)
@@ -3623,6 +3668,18 @@ global with sharing class FilogixWrapperBinding {
                   mapOfEmp.get(empId).get('EmployerState' + customFieldSuffix)
                 )
               );
+              
+              // For FSC
+              //Set of Countries Names accepted by Filogix.
+              Set<String> ListofCountryNames = new Set<String>{
+                  'Canada', 'United States'
+                  };
+              //Set of Province Names accepted by Filogix.
+              Set<String> ListofProvinceNames = new Set<String>{
+                  'Alabama', 'Alaska', 'Alberta', 'American Samoa', 'Arizona', 'Arkansas', 'Armed Forces Americas except Canada', 'Armed Forces Europe Africa The Middle East and Canada', 'Armed Forces Pacific', 'British Columbia', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District of Columbia', 'Federated States of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Manitoba', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Brunswick', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'Newfoundland and Labrador', 'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Northwest Territories', 'Nova Scotia', 'Nunavut', 'Ohio', 'Oklahoma', 'Ontario', 'Oregon', 'Palau', 'Pennsylvania', 'Prince Edward Island', 'Puerto Rico', 'Quebec', 'Rhode Island', 'Saskatchewan', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin islands', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming', 'Yukon'
+                  };
+              
+              
               //Required fields check
               if (
                 mapOfEmp.get(empId)
@@ -3642,6 +3699,15 @@ global with sharing class FilogixWrapperBinding {
                 );
                 //requiredFieldError += '<b>Object</b> : Loan Applicant Employment, <b>Field</b> : Employer Country \n';
               }
+              
+              // For FSC
+              // Making sure the Country value is correct - Specially for FSC because we're using the standard TEXT field.
+              if (mapOfEmp.get(empId).get('EmployerCountry' + customFieldSuffix)!=null) {
+                  if(!ListofCountryNames.contains(String.valueof(mapOfEmp.get(empId).get('EmployerCountry' + customFieldSuffix)))){
+                      requiredFieldError += '<b><u>Invalid Country</u></b> - <b>Object</b> : Loan Applicant Employment';
+                      requiredFieldError +=' , <b>Record Name</b> : <a href="/' +String.valueof(mapOfEmp.get(empId).get('Id')) +'"> ' + String.valueof(mapOfEmp.get(empId).get('Name')) + ' </a></br>';
+                  }
+              }
 
               if (
                 mapOfEmp.get(empId).get('EmployerState' + customFieldSuffix) ==
@@ -3660,7 +3726,16 @@ global with sharing class FilogixWrapperBinding {
                 );
                 //requiredFieldError += '<b>Object</b> : Loan Applicant Employment, <b>Field</b> : Employer State \n';
               }
-
+              
+              // For FSC
+              // Making sure the Province value is correct - Specially for FSC because we're using the standard TEXT field.
+              if (mapOfEmp.get(empId).get('EmployerState' + customFieldSuffix)!=null) {
+                  if(!ListofProvinceNames.contains(String.valueof(mapOfEmp.get(empId).get('EmployerState' + customFieldSuffix)))){
+                      requiredFieldError += '<b><u>Invalid Province</u></b> - <b>Object</b> : Loan Applicant Employment';
+                      requiredFieldError +=' , <b>Record Name</b> : <a href="/' +String.valueof(mapOfEmp.get(empId).get('Id')) +'"> ' + String.valueof(mapOfEmp.get(empId).get('Name')) + ' </a></br>';
+                  }
+              }
+                
               FilogixPOSTJSONWrapper.Contact con = new FilogixPOSTJSONWrapper.Contact();
               con.contactPhoneNumber = removeSpeacialChar(
                 String.valueof(
@@ -4952,7 +5027,17 @@ System.debug('ID: ' + tz.getID());
       if (shortCode.length() < 3) {
         return provMap.get(shortCode);
       } else {
-        return shortCode.capitalize();
+        if(shortCode.contains(' ')){
+          List<String> words = shortCode.split(' ');
+          String provinceName = '';
+          for (String x : words){
+            provinceName += x.capitalize() + ' ';
+          }
+          System.debug('provinceName='+provinceName);
+          return provinceName.trim();
+        } else {
+          return shortCode.capitalize();
+        }
       }
     }
     return shortCode;
@@ -4962,13 +5047,27 @@ System.debug('ID: ' + tz.getID());
     if (!String.isBlank(shortCode) && shortCode != null) {
       Map<String, String> provMap = new Map<String, String>{
         'CA' => 'Canada',
-        'US' => 'United States'
+        'US' => 'United States',
+        'USA' => 'United States'
       };
 
-      if (shortCode.length() < 3) {
+      if (shortCode.length() < 4) { // to support USA
         return provMap.get(shortCode);
       } else {
-        return shortCode.capitalize();
+        // For "united states"
+        // Making sure the output is "United States"
+        // Capitalizing every word in a string.
+        if(shortCode.contains(' ')){
+          List<String> words = shortCode.split(' ');
+          String countryName = '';
+          for (String x : words){
+            countryName += x.capitalize() + ' ';
+          }
+          System.debug('countryName='+countryName);
+          return countryName.trim();
+        } else {
+          return shortCode.capitalize();
+        }
       }
     }
     return shortCode;

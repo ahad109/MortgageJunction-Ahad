@@ -1,9 +1,18 @@
 global with sharing class MJ_Helper {
-  public static String appNameSpace = getAppNameSpace();
+  global static String appNameSpace = getAppNameSpace();
 
+  public class CustomException extends Exception {
+  }
+
+  public static CustomException createCustomException(String message) {
+    CustomException ex = new CustomException(message);
+    ex.setMessage(message);
+    return ex;
+  }
+    
   // Getting the Namespace of the current Package
   // Source: https://forcekingdom.wordpress.com/2013/07/08/handling-namespace-prefix-dynamically-in-apex/
-  public static String getAppNameSpace() {
+  global static String getAppNameSpace() {
     Integer indexOfToken = -1;
     String namespace = '';
     for (Schema.SObjectType type : Schema.getGlobalDescribe().values()) {
@@ -21,6 +30,26 @@ global with sharing class MJ_Helper {
 
     return namespace;
   }
+  
+    // Getting Current ORG's MJ Integration Info
+    global static MortgageJunction_Config__mdt getMJConfig(){
+        return MortgageJunction_Config__mdt.getInstance('Mortgage_Junction_Config');
+    }
+    
+    
+    @AuraEnabled(cacheable=true)
+    public static List<sObject> getPersonAccountRecordTypes(){
+        try {
+            List<sObject> l_Types = new List<sObject>();
+             
+            l_Types = [SELECT Id, Name, DeveloperName, SobjectType,IsPersonType FROM RecordType where IsPersonType=True]; // Can include multiple fields, 
+            // You can get values from custom setting also.
+            return l_Types;
+        } catch (Exception e) {
+            System.debug('Exception: '+e.getMessage());
+            return null;
+        }
+    } 
 
   global static void setEnvType(String type) {
     // Validating correct Param is passed
@@ -91,15 +120,6 @@ global with sharing class MJ_Helper {
       return isNonFSC = true;
     }
     return isNonFSC;
-  }
-
-  public class CustomException extends Exception {
-  }
-
-  public static CustomException createCustomException(String message) {
-    CustomException ex = new CustomException(message);
-    ex.setMessage(message);
-    return ex;
   }
 
   public static String getFieldValueFromJson(
@@ -269,6 +289,35 @@ global with sharing class MJ_Helper {
       newFieldSet.add(fieldName);
       theMap.put(ObjectName, newFieldSet);
     }
+  }
+    
+  Public static datetime returnGMTformat (string utcTime){
+      if(!String.isBlank(utcTime) && utcTime !=null){
+          DateTime dt = DateTime.valueOf(utcTime.replace('T',' '));
+          
+          Integer addyears=0;
+          Integer MaxYearsfromToday = 3999; // Max year allowed by Salesforce is 4000 //System.Today().year() + 100;
+          //https://help.salesforce.com/s/articleView?id=000318735&type=1
+          
+          // Making sure to have year 1900 minimum & max year to be 100 years from today
+          Integer currentYear = dt.year();    
+          if(currentYear < 1900){
+              addyears = 1900 - currentYear;
+          } else if(currentYear > MaxYearsfromToday){
+              addyears = MaxYearsfromToday- currentYear;
+          }
+          
+          // Adjusting the date w.r.t the years logic above
+          if(addyears!=0){
+              dt = dt.addYears(addyears);
+          }
+          
+          system.debug('UTC Formatted Date => ' + utcTime);
+          system.debug('GMT Formatted Date => ' + dt);
+          
+          return dt;
+      }
+      return null;
   }
 
   public static boolean UserHasAccessToObjectsAndFields(
