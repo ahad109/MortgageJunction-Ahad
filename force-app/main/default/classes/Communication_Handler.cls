@@ -16,13 +16,9 @@ public with sharing class Communication_Handler implements Queueable {
   }
 
   // Getting Current ORG's MJ Integration Info
-  public static MortgageJunction_Config__mdt appConfig = MortgageJunction_Config__mdt.getInstance(
-    'Mortgage_Junction_Config'
-  );
+  public static MortgageJunction_Config__mdt appConfig = MortgageJunction_Config__mdt.getInstance('Mortgage_Junction_Config');
   public static MJAuth__mdt authConfig = MJAuth__mdt.getInstance('MJ_Auth');
-  public static MJ_Setting__mdt settingsRec = MJ_Setting__mdt.getInstance(
-    'MJ_Setting'
-  );
+  public static MJ_Setting__mdt settingsRec = MJ_Setting__mdt.getInstance('MJ_Setting');
   public static string keyToVerify = 'accessToken';
   public static string expiryVariable = 'accessTokenExpiresAt';
   public static string accessToken;
@@ -39,22 +35,16 @@ public with sharing class Communication_Handler implements Queueable {
 
   // AUTHCONFIG Generator
   public static String authConfigGenerator(String userFilogixId) {
-      
     if (Test.isRunningTest()) {
-        appConfig = new MortgageJunction_Config__mdt();
-        appConfig.Label = 'Mortgage Junction Config';
-        appConfig.DeveloperName = 'Mortgage_Junction_Config';
-        appConfig.FirmCode__c = 'CLJT';
-        appConfig.OrgId__c = '0';
+      appConfig = new MortgageJunction_Config__mdt();
+      appConfig.Label = 'Mortgage Junction Config';
+      appConfig.DeveloperName = 'Mortgage_Junction_Config';
+      appConfig.FirmCode__c = 'CLJT';
+      appConfig.OrgId__c = '0';
     }
     //System.debug('LoanAppId::' + appId);
     // Generating Filogix AuthConfig String with information provided by the customer.
-    return 'clientSystem=CJUNCTION,orgId=' +
-      appConfig.OrgId__c +
-      ',firmCode=' +
-      appConfig.FirmCode__c +
-      ',userId=' +
-      userFilogixId;
+    return 'clientSystem=CJUNCTION,orgId=' + appConfig.OrgId__c + ',firmCode=' + appConfig.FirmCode__c + ',userId=' + userFilogixId;
   }
 
   public static String getToken() {
@@ -73,18 +63,12 @@ public with sharing class Communication_Handler implements Queueable {
     if (authConfig != null) {
       // Checking if authConfig.Token_Expiry__c is not expired and if it is, then we will generate a new token
       // Datetime.valueof(DateTime.now()) Generated current date and time in UTC
-      if (
-        authConfig.Token_Expiry__c != null &&
-        authConfig.Token_Expiry__c > Datetime.valueof(DateTime.now())
-      ) {
+      if (authConfig.Token_Expiry__c != null && authConfig.Token_Expiry__c > Datetime.valueof(DateTime.now())) {
         accessToken = authConfig.Access_Token__c;
         accessTokenExpiry = authConfig.Token_Expiry__c;
         return authConfig.Access_Token__c;
       } else {
-        if (
-          !String.Isblank(authConfig.Username__c) &&
-          !String.Isblank(authConfig.Password__c)
-        ) {
+        if (!String.Isblank(authConfig.Username__c) && !String.Isblank(authConfig.Password__c)) {
           // define basic information for later, store these in a protected custom setting
           string endpoint = settingsRec.Endpoint__c; // be sure this is configured in "Remote Site Settings"
           string resource = '/oauth/token';
@@ -101,10 +85,7 @@ public with sharing class Communication_Handler implements Queueable {
 
             // check for credentials error
           } else if (endpoint == null || username == null || password == null) {
-            outcomeMsg =
-              'Error: Please verify your API Credentials from the <a target="_blank" href="/lightning/n/' +
-              appNameSpace +
-              'MortgageJunction_Setup">MortgageJunction Setup</a> screen.';
+            outcomeMsg = 'Error: Please verify your API Credentials from the <a target="_blank" href="/lightning/n/' + appNameSpace + 'MortgageJunction_Setup">MortgageJunction Setup</a> screen.';
 
             // configure and perform the callout
           } else {
@@ -122,8 +103,7 @@ public with sharing class Communication_Handler implements Queueable {
             // Create blob of user:pass
             Blob headerValue = Blob.valueOf(username + ':' + password);
             // Base 64 Encode the blob and prepend "Basic "
-            String authorizationHeader =
-              'Basic ' + EncodingUtil.base64Encode(headerValue);
+            String authorizationHeader = 'Basic ' + EncodingUtil.base64Encode(headerValue);
             // Add the basic auth string to the Request Header
             req.setHeader('Authorization', authorizationHeader);
 
@@ -141,29 +121,17 @@ public with sharing class Communication_Handler implements Queueable {
               // Perform callout and set response
               res = h.send(req);
               // check response
-              if (
-                (res.getStatusCode() == 200 ||
-                res.getStatusCode() == 201) &&
-                res.getBody() != null &&
-                res.getBody() != null
-              ) {
+              if ((res.getStatusCode() == 200 || res.getStatusCode() == 201) && res.getBody() != null && res.getBody() != null) {
                 // Deserialize the response untyped
-                Map<String, Object> untypedMap = (Map<String, Object>) JSON.deserializeUntyped(
-                  res.getBody()
-                );
+                Map<String, Object> untypedMap = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
 
                 // Check success of deserialization
                 if (untypedMap.containsKey(keyToVerify)) {
                   // The deserialized response contains the expected key!
                   outcomeMsg = 'Success!';
-                  DateTime dt = (DateTime) JSON.deserialize(
-                    '"' + String.valueof(untypedMap.get(expiryVariable)) + '"',
-                    DateTime.class
-                  );
+                  DateTime dt = (DateTime) JSON.deserialize('"' + String.valueof(untypedMap.get(expiryVariable)) + '"', DateTime.class);
                   Datetime tokenExpiry = DateTime.newInstance(dt.getTime());
-                  system.debug(
-                    'Date: ' + String.valueof(untypedMap.get(expiryVariable))
-                  );
+                  system.debug('Date: ' + String.valueof(untypedMap.get(expiryVariable)));
 
                   //Updating Global Variables to update CMD later
                   isTokenChanged = true;
@@ -173,32 +141,21 @@ public with sharing class Communication_Handler implements Queueable {
                   return String.valueof(untypedMap.get(keyToVerify));
                 } else {
                   // Resposne doesn't contain the token
-                  outcomeMsg =
-                    'Error: Please verify your API Credentials from the <a target="_blank" href="/lightning/n/' +
-                    appNameSpace +
-                    'MortgageJunction_Setup">MortgageJunction Setup</a> screen.';
+                  outcomeMsg = 'Error: Please verify your API Credentials from the <a target="_blank" href="/lightning/n/' + appNameSpace + 'MortgageJunction_Setup">MortgageJunction Setup</a> screen.';
                 }
               } else {
                 // callout failed
-                outcomeMsg =
-                  'Error: Please verify your API Credentials from the <a target="_blank" href="/lightning/n/' +
-                  appNameSpace +
-                  'MortgageJunction_Setup">MortgageJunction Setup</a> screen.';
+                outcomeMsg = 'Error: Please verify your API Credentials from the <a target="_blank" href="/lightning/n/' + appNameSpace + 'MortgageJunction_Setup">MortgageJunction Setup</a> screen.';
               }
             } catch (exception e) {
               // Unexpected exceptions will be caught here, like a deserialization error.
-              outcomeMsg =
-                'Error: An exception has been encountered while processing your request:  ' +
-                e.getMessage();
+              outcomeMsg = 'Error: An exception has been encountered while processing your request:  ' + e.getMessage();
             }
           }
         }
       }
     } else {
-      outcomeMsg =
-        'Error: Please setup the app first from the <a target="_blank" href="/lightning/n/' +
-        appNameSpace +
-        'MortgageJunction_Setup">MortgageJunction Setup</a> screen.';
+      outcomeMsg = 'Error: Please setup the app first from the <a target="_blank" href="/lightning/n/' + appNameSpace + 'MortgageJunction_Setup">MortgageJunction Setup</a> screen.';
     }
     // Return the response
     return outcomeMsg;
@@ -210,9 +167,7 @@ public with sharing class Communication_Handler implements Queueable {
   public void execute(QueueableContext context) {
     // Update only when the token is not null
     if (accTokenExpiry != null && accToken != null) {
-      sObject cmd = Schema.getGlobalDescribe()
-        .get(appNameSpace + 'MJAuth__mdt')
-        .newSObject();
+      sObject cmd = Schema.getGlobalDescribe().get(appNameSpace + 'MJAuth__mdt').newSObject();
 
       cmd.put('label', 'MJ Auth');
       cmd.put('DeveloperName', 'MJ_Auth');
@@ -230,12 +185,7 @@ public with sharing class Communication_Handler implements Queueable {
   }
   // Get Filogix Application
   // Example: Communication_Handler.getFilogixApp(ResidentialLoanApplicationId);
-  public static String getFilogixApp(
-    string appId,
-    String filogixId,
-    String mode,
-    String userFilogixId
-  ) {
+  public static String getFilogixApp(string appId, String filogixId, String mode, String userFilogixId) {
     FilogixResponseParsingUtil.checkHeapSize('Callout Entered');
     String tokenResponse = getToken();
 
@@ -250,65 +200,53 @@ public with sharing class Communication_Handler implements Queueable {
                 //return 'Error';
             } else {*/
       //if (userFilogixId != null) { // We do not need it for GET
-        // Generating Filogix AuthConfig String with information provided by the customer.
-        String authconfig = authConfigGenerator(userFilogixId);
-        // Getting Subscriber's OrgId
-        String subscriberId = UserInfo.getOrganizationId();
-        string resBody = '';
+      // Generating Filogix AuthConfig String with information provided by the customer.
+      String authconfig = authConfigGenerator(userFilogixId);
+      // Getting Subscriber's OrgId
+      String subscriberId = UserInfo.getOrganizationId();
+      string resBody = '';
 
-        HttpRequest httpReq = new HttpRequest();
-        HttpResponse httpRes = new HttpResponse();
-        Http http = new Http();
-        httpReq.setMethod('GET');
+      HttpRequest httpReq = new HttpRequest();
+      HttpResponse httpRes = new HttpResponse();
+      Http http = new Http();
+      httpReq.setMethod('GET');
 
-        String data =
-          '?subscriberId=' +
-          subscriberId +
-          '&Live=' +
-          appConfig.Is_Live__c +
-          '&id=' +
-          filogixId +
-          '&authconfig=' +
-          authconfig;
-        system.debug('requestBody::' + data);
-        httpReq.setEndPoint(settingsRec.Endpoint__c + '/api/v1/get' + data);
-        httpReq.setHeader('Content-Type', 'application/json');
-        httpReq.setHeader('Accept', 'application/json');
-        // Access Token
-        httpReq.setHeader('Authorization', 'Bearer ' + accessToken);
-        //httpReq.setBody(requestBody);
-        httpReq.setTimeout(120000);
-        httpRes = http.send(httpReq);
-        FilogixResponseParsingUtil.checkHeapSize('Callout executed');
-        //system.debug(httpRes.getBody());
-        FilogixResponseParsingUtil.checkHeapSize('Callout debug');
+      String data = '?subscriberId=' + subscriberId + '&Live=' + appConfig.Is_Live__c + '&id=' + filogixId + '&authconfig=' + authconfig;
+      system.debug('requestBody::' + data);
+      httpReq.setEndPoint(settingsRec.Endpoint__c + '/api/v1/get' + data);
+      httpReq.setHeader('Content-Type', 'application/json');
+      httpReq.setHeader('Accept', 'application/json');
+      // Access Token
+      httpReq.setHeader('Authorization', 'Bearer ' + accessToken);
+      //httpReq.setBody(requestBody);
+      httpReq.setTimeout(120000);
+      httpRes = http.send(httpReq);
+      FilogixResponseParsingUtil.checkHeapSize('Callout executed');
+      //system.debug(httpRes.getBody());
+      FilogixResponseParsingUtil.checkHeapSize('Callout debug');
 
-        // Since we're doing a GET request, we don't need to handle for
-        // 201, other 'created' responses.
-        if (httpRes.getStatusCode() == 200) {
-          //system.debug('Response=' + httpRes.getBody());
-          FilogixResponseParsingUtil.checkHeapSize(
-            'Callout variable assignment'
-          );
-          resBody = httpRes.getBody();
-          /*map<string,object> qbRes = (map<string,object>)JSON.deserializeUntyped(httpRes.getBody());
-           String access_token = String.valueOf(qbRes.get('access_token'));*/
+      // Since we're doing a GET request, we don't need to handle for
+      // 201, other 'created' responses.
+      if (httpRes.getStatusCode() == 200) {
+        //system.debug('Response=' + httpRes.getBody());
+        FilogixResponseParsingUtil.checkHeapSize('Callout variable assignment');
+        resBody = httpRes.getBody();
+        /*map<string,object> qbRes = (map<string,object>)JSON.deserializeUntyped(httpRes.getBody());
+         String access_token = String.valueOf(qbRes.get('access_token'));*/
 
-          //Once data is received, use the JSON parser to parse the data and update application status.
-        }
-        //// We're now managing the billing through middleware
-        // Logging the Callout record.
-        //insertCalloutTransaction((ID)appId,mode,'GET');
+        //Once data is received, use the JSON parser to parse the data and update application status.
+      }
+      //// We're now managing the billing through middleware
+      // Logging the Callout record.
+      //insertCalloutTransaction((ID)appId,mode,'GET');
 
-        //Updating Token
-        if (isTokenChanged == true) {
-          //updateToken(accessToken, accessTokenExpiry);
-          ID jobID = System.enqueueJob(
-            new Communication_Handler(accessToken, accessTokenExpiry)
-          );
-        }
-        FilogixResponseParsingUtil.checkHeapSize('Before return');
-        return resBody;
+      //Updating Token
+      if (isTokenChanged == true) {
+        //updateToken(accessToken, accessTokenExpiry);
+        ID jobID = System.enqueueJob(new Communication_Handler(accessToken, accessTokenExpiry));
+      }
+      FilogixResponseParsingUtil.checkHeapSize('Before return');
+      return resBody;
       //} else {
       //  return '';
       //}
@@ -324,12 +262,7 @@ public with sharing class Communication_Handler implements Queueable {
 
   // POST Filogix Application
   // Example: Communication_Handler.insertFilogixApp(JSON generated by someother class);
-  public static String insertFilogixApp(
-    String json,
-    ID appId,
-    String mode,
-    String userFilogixId
-  ) {
+  public static String insertFilogixApp(String json, ID appId, String mode, String userFilogixId) {
     String tokenResponse = getToken();
 
     // Token Error Handling
@@ -358,16 +291,7 @@ public with sharing class Communication_Handler implements Queueable {
     HttpResponse httpRes = new HttpResponse();
     Http http = new Http();
     httpReq.setMethod('POST');
-    String requestBody =
-      '{ "subscriberId":"' +
-      subscriberId +
-      '", "payload":' +
-      json +
-      ',"authconfig":"' +
-      authconfig +
-      '","Live":"' +
-      appConfig.Is_Live__c +
-      '"}';
+    String requestBody = '{ "subscriberId":"' + subscriberId + '", "payload":' + json + ',"authconfig":"' + authconfig + '","Live":"' + appConfig.Is_Live__c + '"}';
     //system.debug('requestBody::' + requestBody);
     httpReq.setEndPoint(settingsRec.Endpoint__c + '/api/v1/post');
     httpReq.setHeader('Content-Type', 'application/json');
@@ -410,9 +334,7 @@ public with sharing class Communication_Handler implements Queueable {
     //Updating Token
     if (isTokenChanged == true) {
       //updateToken(accessToken, accessTokenExpiry);
-      ID jobID = System.enqueueJob(
-        new Communication_Handler(accessToken, accessTokenExpiry)
-      );
+      ID jobID = System.enqueueJob(new Communication_Handler(accessToken, accessTokenExpiry));
     }
 
     return resBody;

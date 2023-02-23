@@ -9,7 +9,7 @@ global with sharing class MJ_Helper {
     ex.setMessage(message);
     return ex;
   }
-    
+
   // Getting the Namespace of the current Package
   // Source: https://forcekingdom.wordpress.com/2013/07/08/handling-namespace-prefix-dynamically-in-apex/
   global static String getAppNameSpace() {
@@ -30,39 +30,38 @@ global with sharing class MJ_Helper {
 
     return namespace;
   }
-  
-    // Getting Current ORG's MJ Integration Info
-    global static MortgageJunction_Config__mdt getMJConfig(){
-        return MortgageJunction_Config__mdt.getInstance('Mortgage_Junction_Config');
+
+  // Getting Current ORG's MJ Integration Info
+  global static MortgageJunction_Config__mdt getMJConfig() {
+    return MortgageJunction_Config__mdt.getInstance('Mortgage_Junction_Config');
+  }
+
+  @AuraEnabled(cacheable=true)
+  public static List<sObject> getPersonAccountRecordTypes() {
+    try {
+      List<sObject> l_Types = new List<sObject>();
+
+      l_Types = [
+        SELECT Id, Name, DeveloperName, SobjectType, IsPersonType
+        FROM RecordType
+        WHERE IsPersonType = TRUE
+      ]; // Can include multiple fields,
+      // You can get values from custom setting also.
+      return l_Types;
+    } catch (Exception e) {
+      System.debug('Exception: ' + e.getMessage());
+      return null;
     }
-    
-    
-    @AuraEnabled(cacheable=true)
-    public static List<sObject> getPersonAccountRecordTypes(){
-        try {
-            List<sObject> l_Types = new List<sObject>();
-             
-            l_Types = [SELECT Id, Name, DeveloperName, SobjectType,IsPersonType FROM RecordType where IsPersonType=True]; // Can include multiple fields, 
-            // You can get values from custom setting also.
-            return l_Types;
-        } catch (Exception e) {
-            System.debug('Exception: '+e.getMessage());
-            return null;
-        }
-    } 
+  }
 
   global static void setEnvType(String type) {
     // Validating correct Param is passed
     if (type != 'FSC' && type != 'NON-FSC') {
-      throw createCustomException(
-        'Only pass the value "FSC" or "NON-FSC" to this method'
-      );
+      throw createCustomException('Only pass the value "FSC" or "NON-FSC" to this method');
     }
 
     // Get Custom MDT sObject for MJ Env Type
-    sObject envType = Schema.getGlobalDescribe()
-      .get(appNameSpace + 'MJ_Environment_Type__mdt')
-      .newSObject();
+    sObject envType = Schema.getGlobalDescribe().get(appNameSpace + 'MJ_Environment_Type__mdt').newSObject();
 
     // Set the Custom MDT Env Type value
     envType.put(appNameSpace + 'Type__c', type);
@@ -80,9 +79,7 @@ global with sharing class MJ_Helper {
   public static void isPersonAccountEnabled() {
     //return Schema.sObjectType.Account.fields.getMap().containsKey( 'isPersonAccount' );
     // Checking is Person Account is enabled in the org
-    if (
-      !Schema.sObjectType.Account.fields.getMap().containsKey('isPersonAccount')
-    ) {
+    if (!Schema.sObjectType.Account.fields.getMap().containsKey('isPersonAccount')) {
       String errorMsg = 'Please <a target="_blank" href="https://developer.salesforce.com/docs/atlas.en-us.financial_services_cloud_admin_guide.meta/financial_services_cloud_admin_guide/fsc_admin_enable_person_acct.htm">Enable the Person Account</a>.';
       throw createCustomException(errorMsg);
     }
@@ -100,12 +97,7 @@ global with sharing class MJ_Helper {
     //Map<String, MJ_Environment_Type__mdt> EnvTypeMap = MJ_Environment_Type__mdt.getAll();
 
     String metaDataName = 'Enviroment_Type';
-    String query =
-      'Select Id, ' +
-      appNameSpace +
-      'Type__c, Label,DeveloperName from ' +
-      appNameSpace +
-      'MJ_Environment_Type__mdt where DeveloperName=:metaDataName Limit 1';
+    String query = 'Select Id, ' + appNameSpace + 'Type__c, Label,DeveloperName from ' + appNameSpace + 'MJ_Environment_Type__mdt where DeveloperName=:metaDataName Limit 1';
     System.debug('Query::' + query);
     sObject config = database.query(String.escapeSingleQuotes(query));
 
@@ -122,28 +114,18 @@ global with sharing class MJ_Helper {
     return isNonFSC;
   }
 
-  public static String getFieldValueFromJson(
-    String jsonBody,
-    String fieldName
-  ) {
+  public static String getFieldValueFromJson(String jsonBody, String fieldName) {
     String returnValue = '';
     JSONParser parser2 = JSON.createParser(jsonBody);
 
     Integer textCount = 1;
     while (parser2.nextToken() != null) {
-      if (
-        (parser2.getCurrentToken() == JSONToken.FIELD_NAME) &&
-        (parser2.getText() == fieldName)
-      ) {
+      if ((parser2.getCurrentToken() == JSONToken.FIELD_NAME) && (parser2.getText() == fieldName)) {
         parser2.nextToken();
         String jsonValue = parser2.getText();
-        System.debug(
-          'fieldname = ' + fieldName + 'and jsonValue = ' + jsonValue
-        );
+        System.debug('fieldname = ' + fieldName + 'and jsonValue = ' + jsonValue);
         if (fieldname.equalsIgnoreCase('text')) {
-          System.debug(
-            'fieldname is text: ' + jsonValue + 'and textcount = ' + textCount
-          );
+          System.debug('fieldname is text: ' + jsonValue + 'and textcount = ' + textCount);
           if (textCount == 1) {
             System.debug('textcount = 2 : jsonValue = ' + jsonValue);
             returnValue = parser2.getText();
@@ -212,9 +194,7 @@ global with sharing class MJ_Helper {
         String relField2 = relField.substringAfter('.');
         System.debug('######## relField2: ' + relField2);
         if (fieldsSet.contains(lcfield))
-          returnValue = String.valueOf(
-            e.getSObject(relName).getSObject(relName2).get(relField2)
-          );
+          returnValue = String.valueOf(e.getSObject(relName).getSObject(relName2).get(relField2));
       } else {
         if (fieldsSet.contains(lcfield)) {
           System.debug('######## 1st level not null: ');
@@ -231,11 +211,7 @@ global with sharing class MJ_Helper {
 
   // CRUD and FLS Helper Methods
 
-  public static void AddFieldToObjectsMap(
-    String fieldName,
-    String initialObjectName,
-    Map<String, Set<String>> theMap
-  ) {
+  public static void AddFieldToObjectsMap(String fieldName, String initialObjectName, Map<String, Set<String>> theMap) {
     if (fieldName.contains('.')) {
       // than it is a parent-relationship field
       String relName1 = fieldName.substringBefore('.');
@@ -272,11 +248,7 @@ global with sharing class MJ_Helper {
       AddFieldToMap(fieldName, initialObjectName, theMap);
   }
 
-  private static void AddFieldToMap(
-    String fieldName,
-    String ObjectName,
-    Map<String, Set<String>> theMap
-  ) {
+  private static void AddFieldToMap(String fieldName, String ObjectName, Map<String, Set<String>> theMap) {
     // Check if object name is already on the map of objects and fields
     if (theMap.containsKey(ObjectName)) {
       // if it is, add the field to the set of field names for the object
@@ -290,39 +262,37 @@ global with sharing class MJ_Helper {
       theMap.put(ObjectName, newFieldSet);
     }
   }
-    
-  Public static datetime returnGMTformat (string utcTime){
-      if(!String.isBlank(utcTime) && utcTime !=null){
-          DateTime dt = DateTime.valueOf(utcTime.replace('T',' '));
-          
-          Integer addyears=0;
-          Integer MaxYearsfromToday = 3999; // Max year allowed by Salesforce is 4000 //System.Today().year() + 100;
-          //https://help.salesforce.com/s/articleView?id=000318735&type=1
-          
-          // Making sure to have year 1900 minimum & max year to be 100 years from today
-          Integer currentYear = dt.year();    
-          if(currentYear < 1900){
-              addyears = 1900 - currentYear;
-          } else if(currentYear > MaxYearsfromToday){
-              addyears = MaxYearsfromToday- currentYear;
-          }
-          
-          // Adjusting the date w.r.t the years logic above
-          if(addyears!=0){
-              dt = dt.addYears(addyears);
-          }
-          
-          system.debug('UTC Formatted Date => ' + utcTime);
-          system.debug('GMT Formatted Date => ' + dt);
-          
-          return dt;
+
+  public static datetime returnGMTformat(string utcTime) {
+    if (!String.isBlank(utcTime) && utcTime != null) {
+      DateTime dt = DateTime.valueOf(utcTime.replace('T', ' '));
+
+      Integer addyears = 0;
+      Integer MaxYearsfromToday = 3999; // Max year allowed by Salesforce is 4000 //System.Today().year() + 100;
+      //https://help.salesforce.com/s/articleView?id=000318735&type=1
+
+      // Making sure to have year 1900 minimum & max year to be 100 years from today
+      Integer currentYear = dt.year();
+      if (currentYear < 1900) {
+        addyears = 1900 - currentYear;
+      } else if (currentYear > MaxYearsfromToday) {
+        addyears = MaxYearsfromToday - currentYear;
       }
-      return null;
+
+      // Adjusting the date w.r.t the years logic above
+      if (addyears != 0) {
+        dt = dt.addYears(addyears);
+      }
+
+      system.debug('UTC Formatted Date => ' + utcTime);
+      system.debug('GMT Formatted Date => ' + dt);
+
+      return dt;
+    }
+    return null;
   }
 
-  public static boolean UserHasAccessToObjectsAndFields(
-    Map<String, Set<String>> theMap
-  ) {
+  public static boolean UserHasAccessToObjectsAndFields(Map<String, Set<String>> theMap) {
     Boolean hasAccess = true;
 
     if (theMap.size() > 0) {
@@ -330,18 +300,14 @@ global with sharing class MJ_Helper {
       for (String objectName : theMap.keySet()) {
         System.debug('######## objectName: ' + objectName);
         SObject sObj = Schema.getGlobalDescribe().get(objectName).newSObject();
-        Map<String, Schema.SObjectField> m = sObj.getSobjectType()
-          .getDescribe()
-          .fields.getMap();
+        Map<String, Schema.SObjectField> m = sObj.getSobjectType().getDescribe().fields.getMap();
         Set<String> objectFieldSet = theMap.get(objectName);
 
         for (String fieldToCheck : objectFieldSet) {
           System.debug('######## fieldToCheck: ' + fieldToCheck);
           // Check if the user has access to view field
           if (!m.get(fieldToCheck).getDescribe().isAccessible()) {
-            System.debug(
-              '######## User does not have access to field: ' + fieldToCheck
-            );
+            System.debug('######## User does not have access to field: ' + fieldToCheck);
             // Pass error to client
             hasAccess = false;
             throw new System.NoAccessException();

@@ -36,20 +36,12 @@ public class MJ_HelperTest {
 
   @isTest
   public static void AddFieldToObjectsMap_Test() {
-    MJ_Helper.AddFieldToObjectsMap(
-      'Account',
-      '',
-      new Map<String, Set<String>>()
-    );
+    MJ_Helper.AddFieldToObjectsMap('Account', '', new Map<String, Set<String>>());
   }
 
   @isTest
   public static void AddFieldToObjectsMap_Test2() {
-    MJ_Helper.AddFieldToObjectsMap(
-      'Account.Name',
-      'Contact',
-      new Map<String, Set<String>>()
-    );
+    MJ_Helper.AddFieldToObjectsMap('Account.Name', 'Contact', new Map<String, Set<String>>());
   }
 
   @isTest
@@ -71,11 +63,7 @@ public class MJ_HelperTest {
   @isTest
   public static void GetSobjectField_Test2() {
     Account acc = new Account(Name = 'Blog Acc 8', FilogixId__c = 'Blog Acc 8');
-    Contact cont = new Contact(
-      FirstName = 'Bob',
-      LastName = 'Buzzard',
-      Account = new Account(FilogixId__c = 'Blog Acc 8')
-    );
+    Contact cont = new Contact(FirstName = 'Bob', LastName = 'Buzzard', Account = new Account(FilogixId__c = 'Blog Acc 8'));
     List<sObject> records = new List<Sobject>{ acc, cont };
     insert records;
 

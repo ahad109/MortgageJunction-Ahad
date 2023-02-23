@@ -36,12 +36,7 @@ public class FilogixResponseParsingUtil_test {
     // Checking Permissions before Query
     FilogixWrapperBinding.permChecker('Profile', 'Id', 'read');
     // Checking Permissions before DML
-    FilogixWrapperBinding.permChecker(
-      'User',
-      appNameSpace +
-      'Filogix_Id__c,Alias,Email,EmailEncodingKey,LastName,LanguageLocaleKey,LocaleSidKey,ProfileId,TimeZoneSidKey,UserName',
-      'create'
-    );
+    FilogixWrapperBinding.permChecker('User', appNameSpace + 'Filogix_Id__c,Alias,Email,EmailEncodingKey,LastName,LanguageLocaleKey,LocaleSidKey,ProfileId,TimeZoneSidKey,UserName', 'create');
     // Creating a new user
     Profile p = [
       SELECT Id
@@ -49,18 +44,7 @@ public class FilogixResponseParsingUtil_test {
       WHERE Name = 'Standard User'
       WITH SECURITY_ENFORCED
     ];
-    User u = new User(
-      Alias = 'standt',
-      Email = 'standarduser@testorg.com',
-      EmailEncodingKey = 'UTF-8',
-      LastName = 'Testing',
-      LanguageLocaleKey = 'en_US',
-      LocaleSidKey = 'en_US',
-      ProfileId = p.Id,
-      Filogix_Id__c = 'Agent2',
-      TimeZoneSidKey = 'America/Los_Angeles',
-      UserName = 'standarduser233@testorg.com'
-    );
+    User u = new User(Alias = 'standt', Email = 'standarduser@testorg.com', EmailEncodingKey = 'UTF-8', LastName = 'Testing', LanguageLocaleKey = 'en_US', LocaleSidKey = 'en_US', ProfileId = p.Id, Filogix_Id__c = 'Agent2', TimeZoneSidKey = 'America/Los_Angeles', UserName = 'standarduser233@testorg.com');
     insert u;
 
     //Id personAccountRecordTypeId =  Schema.SObjectType.Account.getRecordTypeInfosByDeveloperName().get('PersonAccount').getRecordTypeId();
@@ -68,15 +52,9 @@ public class FilogixResponseParsingUtil_test {
     String PArecordTypeId;
     String sObjT = 'Account';
     // Checking Permissions before Query
-    FilogixWrapperBinding.permChecker(
-      'RecordType',
-      'Id, Name, SobjectType,IsPersonType',
-      'read'
-    );
+    FilogixWrapperBinding.permChecker('RecordType', 'Id, Name, SobjectType,IsPersonType', 'read');
     String personAccountQuery = 'SELECT Id, Name, SobjectType,IsPersonType FROM RecordType WHERE SobjectType=:sObjT AND IsPersonType=True limit 1';
-    sObject personAccountData = Database.query(
-      String.escapeSingleQuotes(personAccountQuery)
-    );
+    sObject personAccountData = Database.query(String.escapeSingleQuotes(personAccountQuery));
     if (personAccountData != null) {
       PArecordTypeId = String.valueof(personAccountData.Id);
     } else {
@@ -87,9 +65,7 @@ public class FilogixResponseParsingUtil_test {
     set<string> setOfOppIds = new Set<string>();
 
     String accountObjectApiName = 'Account';
-    sObject acc = Schema.getGlobalDescribe()
-      .get(accountObjectApiName)
-      .newSObject();
+    sObject acc = Schema.getGlobalDescribe().get(accountObjectApiName).newSObject();
     //Account acc = New Account();
     acc.put('FirstName', 'Test First Name');
     acc.put('LastName', 'Test Last Name');
@@ -113,19 +89,10 @@ public class FilogixResponseParsingUtil_test {
 
     System.assert(acc != null);
 
-    String SecResidentialLoanApplicationObjectApiName =
-      appNameSpace +
-      'ResidentialLoanApplication' +
-      objNameSuffix;
-    sObject rla = Schema.getGlobalDescribe()
-      .get(SecResidentialLoanApplicationObjectApiName)
-      .newSObject();
+    String SecResidentialLoanApplicationObjectApiName = appNameSpace + 'ResidentialLoanApplication' + objNameSuffix;
+    sObject rla = Schema.getGlobalDescribe().get(SecResidentialLoanApplicationObjectApiName).newSObject();
     // Checking Permissions before Query
-    FilogixWrapperBinding.permChecker(
-      SecResidentialLoanApplicationObjectApiName,
-      'FilogixId__c',
-      'update'
-    );
+    FilogixWrapperBinding.permChecker(SecResidentialLoanApplicationObjectApiName, 'FilogixId__c', 'update');
     rla.put('Name', 'Test RLA');
     rla.put('AccountId' + customFieldSuffix, String.valueof(acc.get('Id')));
     rla.put(appNameSpace + 'FilogixId__c', 'EXBA-35');
@@ -147,9 +114,7 @@ public class FilogixResponseParsingUtil_test {
     ];
     String json = srObject.body.toString();
 
-    MockHttpResponseForGetFilogix fakeRes = new MockHttpResponseForGetFilogix(
-      json
-    );
+    MockHttpResponseForGetFilogix fakeRes = new MockHttpResponseForGetFilogix(json);
     Test.setMock(HttpCalloutMock.class, fakeRes);
 
     FilogixGETJSONWrapper res = FilogixGETJSONWrapper.parse(json);
@@ -181,18 +146,7 @@ public class FilogixResponseParsingUtil_test {
       WHERE Name = 'Standard User'
       WITH SECURITY_ENFORCED
     ];
-    User u = new User(
-      Alias = 'standt',
-      Email = 'standarduser@testorg.com',
-      EmailEncodingKey = 'UTF-8',
-      LastName = 'Testing',
-      LanguageLocaleKey = 'en_US',
-      LocaleSidKey = 'en_US',
-      ProfileId = p.Id,
-      Filogix_Id__c = 'Agent2',
-      TimeZoneSidKey = 'America/Los_Angeles',
-      UserName = 'standarduser233@testorg.com'
-    );
+    User u = new User(Alias = 'standt', Email = 'standarduser@testorg.com', EmailEncodingKey = 'UTF-8', LastName = 'Testing', LanguageLocaleKey = 'en_US', LocaleSidKey = 'en_US', ProfileId = p.Id, Filogix_Id__c = 'Agent2', TimeZoneSidKey = 'America/Los_Angeles', UserName = 'standarduser233@testorg.com');
     insert u;
 
     //String PArecordTypeId = Schema.getGlobalDescribe().get('Account').getDescribe().getRecordTypeInfosByName().get('Person Account').getRecordTypeId();
@@ -200,15 +154,9 @@ public class FilogixResponseParsingUtil_test {
     String PArecordTypeId;
     String sObjT = 'Account';
     // Checking Read Permission for Account and their fields before Query
-    FilogixWrapperBinding.permChecker(
-      'RecordType',
-      'Id, SobjectType,Name, IsPersonType',
-      'read'
-    );
+    FilogixWrapperBinding.permChecker('RecordType', 'Id, SobjectType,Name, IsPersonType', 'read');
     String personAccountQuery = 'SELECT Id, Name, SobjectType,IsPersonType FROM RecordType WHERE SobjectType=:sObjT AND IsPersonType=True limit 1';
-    List<sObject> personAccountData = Database.query(
-      String.escapeSingleQuotes(personAccountQuery)
-    );
+    List<sObject> personAccountData = Database.query(String.escapeSingleQuotes(personAccountQuery));
     if (personAccountData != null) {
       PArecordTypeId = String.valueof(personAccountData[0].Id);
     }
@@ -216,9 +164,7 @@ public class FilogixResponseParsingUtil_test {
     set<string> setOfOppIds = new Set<string>();
 
     String accountObjectApiName = 'Account';
-    sObject acc = Schema.getGlobalDescribe()
-      .get(accountObjectApiName)
-      .newSObject();
+    sObject acc = Schema.getGlobalDescribe().get(accountObjectApiName).newSObject();
 
     //Account acc = New Account();
     acc.put('RecordtypeId', PArecordTypeId);
@@ -236,17 +182,7 @@ public class FilogixResponseParsingUtil_test {
 
     //System.assert(acc!= null);
     Account accTest = [
-      SELECT
-        PersonBirthDate,
-        PersonContactId,
-        RecordtypeId,
-        FirstName,
-        LastName,
-        PersonMailingCity,
-        PersonMailingState,
-        PersonMailingCountry,
-        PersonMailingPostalCode,
-        PersonEmail
+      SELECT PersonBirthDate, PersonContactId, RecordtypeId, FirstName, LastName, PersonMailingCity, PersonMailingState, PersonMailingCountry, PersonMailingPostalCode, PersonEmail
       FROM Account
       WHERE Id = :acc.Id
       LIMIT 1
@@ -269,15 +205,10 @@ public class FilogixResponseParsingUtil_test {
          insert opp;
          System.assert(opp!= null);*/
 
-    String SecResidentialLoanApplicationObjectApiName =
-      objNamePrefix +
-      'ResidentialLoanApplication' +
-      objNameSuffix;
+    String SecResidentialLoanApplicationObjectApiName = objNamePrefix + 'ResidentialLoanApplication' + objNameSuffix;
     system.debug('objNameSuffix:' + objNameSuffix);
 
-    sObject rla = Schema.getGlobalDescribe()
-      .get(SecResidentialLoanApplicationObjectApiName)
-      .newSObject();
+    sObject rla = Schema.getGlobalDescribe().get(SecResidentialLoanApplicationObjectApiName).newSObject();
 
     rla.put('Name', 'Test RLA');
     rla.put('AccountId' + customFieldSuffix, String.valueof(acc.get('Id')));
@@ -300,22 +231,11 @@ public class FilogixResponseParsingUtil_test {
     rla.put('OwnerId', u.Id);
     insert rla;
 
-    String lapplicantObjectApiname =
-      objNamePrefix +
-      'LoanApplicant' +
-      objNameSuffix;
-    sObject lapplicant = Schema.getGlobalDescribe()
-      .get(lapplicantObjectApiname)
-      .newSObject();
-    lapplicant.put(
-      'LoanApplicationId' + customFieldSuffix,
-      String.valueof(rla.get('Id'))
-    );
+    String lapplicantObjectApiname = objNamePrefix + 'LoanApplicant' + objNameSuffix;
+    sObject lapplicant = Schema.getGlobalDescribe().get(lapplicantObjectApiname).newSObject();
+    lapplicant.put('LoanApplicationId' + customFieldSuffix, String.valueof(rla.get('Id')));
     //	 lapplicant.put('LoanApplicationId', rla.Id);
-    lapplicant.put(
-      'ContactId' + customFieldSuffix,
-      String.valueof(accTest.PersonContactId)
-    );
+    lapplicant.put('ContactId' + customFieldSuffix, String.valueof(accTest.PersonContactId));
     system.debug('ContactId::' + String.valueof(accTest.PersonContactId));
     //lapplicant.put('ApplicantExtIdentifier'+customFieldSuffix , 'test-la-1');
     lapplicant.put('PreferredLanguage' + customFieldSuffix, 'English');
@@ -338,13 +258,8 @@ public class FilogixResponseParsingUtil_test {
     System.debug('TestApplicantId::' + lapplicant.id);
     System.assert(lapplicant != null);
 
-    String LoanApplicantAddressObjectApiname =
-      objNamePrefix +
-      'LoanApplicantAddress' +
-      objNameSuffix;
-    sObject lappAddress = Schema.getGlobalDescribe()
-      .get(LoanApplicantAddressObjectApiname)
-      .newSObject();
+    String LoanApplicantAddressObjectApiname = objNamePrefix + 'LoanApplicantAddress' + objNameSuffix;
+    sObject lappAddress = Schema.getGlobalDescribe().get(LoanApplicantAddressObjectApiname).newSObject();
     lappAddress.put('Name', 'Test Loan Applicant Address');
     lappAddress.put('LoanApplicationId' + customFieldSuffix, rla.id);
     lappAddress.put('LoanApplicantId' + customFieldSuffix, lapplicant.id);
@@ -374,25 +289,14 @@ public class FilogixResponseParsingUtil_test {
     System.debug('TestApplicantId::' + lapplicant.id);
     System.debug('TestlappAddress::' + lappAddress.id);
 
-    String LoanApplicationPropertyObjectApiname =
-      objNamePrefix +
-      'LoanApplicationProperty' +
-      objNameSuffix;
-    sObject lap = Schema.getGlobalDescribe()
-      .get(LoanApplicationPropertyObjectApiname)
-      .newSObject();
+    String LoanApplicationPropertyObjectApiname = objNamePrefix + 'LoanApplicationProperty' + objNameSuffix;
+    sObject lap = Schema.getGlobalDescribe().get(LoanApplicationPropertyObjectApiname).newSObject();
 
     {
       lap.put(appNameSpace + 'AppraisedValue__c', 50000);
-      lap.put(
-        'LoanApplicationId' + customFieldSuffix,
-        String.valueof(rla.get('id'))
-      );
+      lap.put('LoanApplicationId' + customFieldSuffix, String.valueof(rla.get('id')));
       lap.put(appNameSpace + 'Appraisal_Date__c', date.today().addMonths(4));
-      lap.put(
-        appNameSpace + 'Loan_Applicant__c',
-        String.valueof(lapplicant.get('Id'))
-      );
+      lap.put(appNameSpace + 'Loan_Applicant__c', String.valueof(lapplicant.get('Id')));
       //lap.put(appNameSpace+'Style__c', 'Storey and a Half');
       lap.put('PropertyValue' + customFieldSuffix, 75000);
       lap.put('ExpNetMonthlyRentalInc' + customFieldSuffix, 90000);
@@ -421,18 +325,12 @@ public class FilogixResponseParsingUtil_test {
       lap.put('Name', 'Test Loan Application Property');
       lap.put(appNameSpace + 'Construction_Type__c', 'New');
       lap.put(appNameSpace + 'numberOfUnits__c', 4);
-      lap.put(
-        'PropertyUseType' + customFieldSuffix,
-        'Owner Occupied and Rental'
-      );
+      lap.put('PropertyUseType' + customFieldSuffix, 'Owner Occupied and Rental');
       //    lap.put(appNameSpace+'PropertyAddress,
       lap.put(appNameSpace + 'Property_Type__c', 'FreeHold');
       lap.put(appNameSpace + 'purchasePrice__c', 96000);
       lap.put(appNameSpace + 'realtorInfo__c', 'Test Realtor Info');
-      lap.put(
-        appNameSpace + 'rentalOffsetOption__c',
-        'Add Percentage to Gross Income'
-      );
+      lap.put(appNameSpace + 'rentalOffsetOption__c', 'Add Percentage to Gross Income');
       lap.put(appNameSpace + 'Sewage_Type__c', 'Holding Tank');
       lap.put(appNameSpace + 'structureAge__c', 48);
       lap.put(appNameSpace + 'taxationYear__c', 2020);
@@ -446,10 +344,7 @@ public class FilogixResponseParsingUtil_test {
       lap.put(appNameSpace + 'Province__c', 'Ontario');
       lap.put(appNameSpace + 'Street_Type__c', 'Boulevard');
       lap.put(appNameSpace + 'Structure_Type__c', 'Modular Home Semi Detached');
-      lap.put(
-        appNameSpace + 'PropertyUnitNumber__c',
-        'Test Property Unit Number'
-      );
+      lap.put(appNameSpace + 'PropertyUnitNumber__c', 'Test Property Unit Number');
       lap.put(appNameSpace + 'Direction__c', 'NW');
       lap.put('ExpMonthlyRentalIncome' + customFieldSuffix, 33000);
       lap.put(appNameSpace + 'Rental_Income_Period__c', 'Semi Annual');
@@ -471,23 +366,15 @@ public class FilogixResponseParsingUtil_test {
 
     insert lap;
 
-    rla.put(
-      appNameSpace + 'Subject_Property__c',
-      String.valueof(lap.get('id'))
-    );
+    rla.put(appNameSpace + 'Subject_Property__c', String.valueof(lap.get('id')));
     update rla;
     System.assert(lap != null);
 
     String PropertyMortgageObjectApiname = appNameSpace + 'Mortgage__c';
-    sObject mort = Schema.getGlobalDescribe()
-      .get(PropertyMortgageObjectApiname)
-      .newSObject();
+    sObject mort = Schema.getGlobalDescribe().get(PropertyMortgageObjectApiname).newSObject();
     mort.put('Name', 'first');
     mort.put('Loan_Application__c', String.valueof(rla.get('id')));
-    mort.put(
-      appNameSpace + 'Loan_Application_Property__c',
-      String.valueof(lap.get('id'))
-    );
+    mort.put(appNameSpace + 'Loan_Application_Property__c', String.valueof(lap.get('id')));
     mort.put(appNameSpace + 'Existing_Mortgage__c', true);
     mort.put(appNameSpace + 'Interest_Rate__c', 0);
     mort.put(appNameSpace + 'Mortgage_Type__c', 'First');
@@ -505,15 +392,10 @@ public class FilogixResponseParsingUtil_test {
 
     insert mort;
 
-    sObject mort1 = Schema.getGlobalDescribe()
-      .get(PropertyMortgageObjectApiname)
-      .newSObject();
+    sObject mort1 = Schema.getGlobalDescribe().get(PropertyMortgageObjectApiname).newSObject();
     mort1.put('Name', 'second');
     mort1.put('Loan_Application__c', String.valueof(rla.get('id')));
-    mort1.put(
-      appNameSpace + 'Loan_Application_Property__c',
-      String.valueof(lap.get('id'))
-    );
+    mort1.put(appNameSpace + 'Loan_Application_Property__c', String.valueof(lap.get('id')));
     mort1.put(appNameSpace + 'Existing_Mortgage__c', false);
     mort1.put(appNameSpace + 'Interest_Rate__c', 0);
     mort1.put(appNameSpace + 'Mortgage_Type__c', 'Second');
@@ -524,23 +406,13 @@ public class FilogixResponseParsingUtil_test {
 
     insert mort1;
 
-    setOfOppIds.add(
-      String.valueOf(rla.get('OpportunityId' + customFieldSuffix))
-    );
+    setOfOppIds.add(String.valueOf(rla.get('OpportunityId' + customFieldSuffix)));
     System.assert(rla != null);
 
-    String LoanApplicationAssetObjectApiname =
-      objNamePrefix +
-      'LoanApplicationAsset' +
-      objNameSuffix;
-    sObject loanAppAsset = Schema.getGlobalDescribe()
-      .get(LoanApplicationAssetObjectApiname)
-      .newSObject();
+    String LoanApplicationAssetObjectApiname = objNamePrefix + 'LoanApplicationAsset' + objNameSuffix;
+    sObject loanAppAsset = Schema.getGlobalDescribe().get(LoanApplicationAssetObjectApiname).newSObject();
     loanAppAsset.put('Name', 'Test Loan Application Asset');
-    loanAppAsset.put(
-      'LoanApplicationId' + customFieldSuffix,
-      String.valueof(rla.get('Id'))
-    );
+    loanAppAsset.put('LoanApplicationId' + customFieldSuffix, String.valueof(rla.get('Id')));
     loanAppAsset.put('CashOrMarketValue' + customFieldSuffix, 99000);
     loanAppAsset.put('AssetType' + customFieldSuffix, 'Vehicle');
     loanAppAsset.put(appNameSpace + 'Down_Payment_Amount__c', 150000);
@@ -549,22 +421,11 @@ public class FilogixResponseParsingUtil_test {
     insert loanAppAsset;
     System.assert(loanAppAsset != null);
 
-    String LoanApplicantAssetObjectApiname =
-      objNamePrefix +
-      'LoanApplicantAsset' +
-      objNameSuffix;
-    sObject lapasset = Schema.getGlobalDescribe()
-      .get(LoanApplicantAssetObjectApiname)
-      .newSObject();
+    String LoanApplicantAssetObjectApiname = objNamePrefix + 'LoanApplicantAsset' + objNameSuffix;
+    sObject lapasset = Schema.getGlobalDescribe().get(LoanApplicantAssetObjectApiname).newSObject();
     //LoanApplicantAsset lapasset = New LoanApplicantAsset();
-    lapasset.put(
-      'LoanApplicantId' + customFieldSuffix,
-      String.valueof(lapplicant.get('Id'))
-    );
-    lapasset.put(
-      'LoanApplicationAssetId' + customFieldSuffix,
-      String.valueof(loanAppAsset.get('Id'))
-    );
+    lapasset.put('LoanApplicantId' + customFieldSuffix, String.valueof(lapplicant.get('Id')));
+    lapasset.put('LoanApplicationAssetId' + customFieldSuffix, String.valueof(loanAppAsset.get('Id')));
     //lapasset.put(appNameSpace+'Description__c' , 'Test Description of Loan Applicant asset');
     //lapasset.put(appNameSpace+'Type__c' , 'Autoroute');
     //lapasset.put(appNameSpace+'Value__c' , 99000);
@@ -573,13 +434,8 @@ public class FilogixResponseParsingUtil_test {
 
     System.assert(lapasset != null);
 
-    String LoanApplicantIncomeObjectApiname =
-      objNamePrefix +
-      'LoanApplicantIncome' +
-      objNameSuffix;
-    sObject lapIncome = Schema.getGlobalDescribe()
-      .get(LoanApplicantIncomeObjectApiname)
-      .newSObject();
+    String LoanApplicantIncomeObjectApiname = objNamePrefix + 'LoanApplicantIncome' + objNameSuffix;
+    sObject lapIncome = Schema.getGlobalDescribe().get(LoanApplicantIncomeObjectApiname).newSObject();
 
     {
       //LoanApplicantIncome lapIncome = New LoanApplicantIncome();
@@ -588,20 +444,11 @@ public class FilogixResponseParsingUtil_test {
       lapIncome.put('Description__c', 'Loan Applicant Income Description');
       lapIncome.put('Income_Amount__c', 25000);
 
-      lapIncome.put(
-        'IncomeSourceType' + customFieldSuffix,
-        'Mortgage Differential Payments'
-      );
+      lapIncome.put('IncomeSourceType' + customFieldSuffix, 'Mortgage Differential Payments');
       lapIncome.put('MonthlyIncomeAmount' + customFieldSuffix, 200000);
       lapIncome.put('Income_Period__c', 'Semi Annual');
-      lapIncome.put(
-        'LoanApplicationId' + customFieldSuffix,
-        String.valueof(rla.get('Id'))
-      );
-      lapIncome.put(
-        'LoanApplicantId' + customFieldSuffix,
-        String.valueof(lapplicant.get('Id'))
-      );
+      lapIncome.put('LoanApplicationId' + customFieldSuffix, String.valueof(rla.get('Id')));
+      lapIncome.put('LoanApplicantId' + customFieldSuffix, String.valueof(lapplicant.get('Id')));
       //lapIncome.put('IncomeExtIdentifier'+customFieldSuffix,'Income External Id');
     }
 
@@ -609,23 +456,12 @@ public class FilogixResponseParsingUtil_test {
     System.assert(lapIncome != null);
     system.assert(lapIncome.get('Name') == 'Test Loan Applicant Income');
 
-    String LoanApplicantEmploymentObjectApiname =
-      appNameSpace +
-      'LoanApplicantEmployment' +
-      objNameSuffix;
-    sObject lappEmp = Schema.getGlobalDescribe()
-      .get(LoanApplicantEmploymentObjectApiname)
-      .newSObject();
+    String LoanApplicantEmploymentObjectApiname = appNameSpace + 'LoanApplicantEmployment' + objNameSuffix;
+    sObject lappEmp = Schema.getGlobalDescribe().get(LoanApplicantEmploymentObjectApiname).newSObject();
 
     {
-      lappEmp.put(
-        'loanapplicantId' + customFieldSuffix,
-        String.valueof(lapplicant.get('id'))
-      );
-      lappEmp.put(
-        'LoanApplicationId' + customFieldSuffix,
-        String.valueof(rla.get('id'))
-      );
+      lappEmp.put('loanapplicantId' + customFieldSuffix, String.valueof(lapplicant.get('id')));
+      lappEmp.put('LoanApplicationId' + customFieldSuffix, String.valueof(rla.get('id')));
       lappEmp.put('JobTitle' + customFieldSuffix, 'CEO');
       lappEmp.put('EmployerName' + customFieldSuffix, 'Test Filogix');
       lappEmp.put('History_Status__c', 'Previous');
@@ -654,13 +490,8 @@ public class FilogixResponseParsingUtil_test {
     insert lappEmp;
     System.assert(lappEmp != null);
 
-    String LoanApplicationLiabilityObjectApiname =
-      objNamePrefix +
-      'LoanApplicationLiability' +
-      objNameSuffix;
-    sObject lappLiability = Schema.getGlobalDescribe()
-      .get(LoanApplicationLiabilityObjectApiname)
-      .newSObject();
+    String LoanApplicationLiabilityObjectApiname = objNamePrefix + 'LoanApplicationLiability' + objNameSuffix;
+    sObject lappLiability = Schema.getGlobalDescribe().get(LoanApplicationLiabilityObjectApiname).newSObject();
 
     // LoanApplicationLiability lappLiability = New LoanApplicationLiability();
 
@@ -674,32 +505,18 @@ public class FilogixResponseParsingUtil_test {
     lappLiability.put('Maturity_Date__c', date.today().addMonths(4));
     lappLiability.put('Monthly_Payment_Override__c', true);
     lappLiability.put('Liability_Amount__c', 35000);
-    lappLiability.put(
-      'LoanApplicationId' + customFieldSuffix,
-      String.valueof(rla.get('Id'))
-    );
+    lappLiability.put('LoanApplicationId' + customFieldSuffix, String.valueof(rla.get('Id')));
 
     insert lappLiability;
     System.assert(lappLiability != null);
 
-    String LoanApplicantLiabilityObjectApiname =
-      objNamePrefix +
-      'LoanApplicantLiability' +
-      objNameSuffix;
-    sObject loanapplicantLiability = Schema.getGlobalDescribe()
-      .get(LoanApplicantLiabilityObjectApiname)
-      .newSObject();
+    String LoanApplicantLiabilityObjectApiname = objNamePrefix + 'LoanApplicantLiability' + objNameSuffix;
+    sObject loanapplicantLiability = Schema.getGlobalDescribe().get(LoanApplicantLiabilityObjectApiname).newSObject();
 
     // LoanApplicantLiability loanapplicantLiability = New LoanApplicantLiability();
 
-    LoanApplicantLiability.put(
-      'LoanApplicantId' + customFieldSuffix,
-      String.valueof(lapplicant.get('Id'))
-    );
-    LoanApplicantLiability.put(
-      'LoanApplicationLiabilityId' + customFieldSuffix,
-      String.valueof(lappLiability.get('Id'))
-    );
+    LoanApplicantLiability.put('LoanApplicantId' + customFieldSuffix, String.valueof(lapplicant.get('Id')));
+    LoanApplicantLiability.put('LoanApplicationLiabilityId' + customFieldSuffix, String.valueof(lappLiability.get('Id')));
 
     // loanapplicantLiability.LoanApplicantId = lapplicant.id;
     // loanapplicantLiability.LoanApplicationLiabilityId = lappLiability.id;
@@ -707,75 +524,43 @@ public class FilogixResponseParsingUtil_test {
     insert loanapplicantLiability;
     System.assert(loanapplicantLiability != null);
 
-    String loanApplicationPropObjectApiname =
-      objNamePrefix +
-      'LoanApplicationProperty' +
-      objNameSuffix;
-    sObject loanApplicationProp = Schema.getGlobalDescribe()
-      .get(loanApplicationPropObjectApiname)
-      .newSObject();
+    String loanApplicationPropObjectApiname = objNamePrefix + 'LoanApplicationProperty' + objNameSuffix;
+    sObject loanApplicationProp = Schema.getGlobalDescribe().get(loanApplicationPropObjectApiname).newSObject();
 
     loanApplicationProp.put(appNameSpace + 'AppraisedValue__c', 200000);
-    loanApplicationProp.put(
-      'LoanApplicationId' + customFieldSuffix,
-      String.valueof(rla.get('Id'))
-    );
-    loanApplicationProp.put(
-      appNameSpace + 'Appraisal_Date__c',
-      date.today().addMonths(7)
-    );
+    loanApplicationProp.put('LoanApplicationId' + customFieldSuffix, String.valueof(rla.get('Id')));
+    loanApplicationProp.put(appNameSpace + 'Appraisal_Date__c', date.today().addMonths(7));
     loanApplicationProp.put(appNameSpace + 'Style__c', 'Storey and a Half');
     loanApplicationProp.put('PropertyValue' + customFieldSuffix, 180000);
     loanApplicationProp.put('ExpNetMonthlyRentalInc' + customFieldSuffix, 7000);
     loanApplicationProp.put(appNameSpace + 'feesIncludeHeat__c', true);
     loanApplicationProp.put(appNameSpace + 'Garage_Size__c', 'Double');
     loanApplicationProp.put(appNameSpace + 'Garage_Type__c', 'Attached');
-    loanApplicationProp.put(
-      appNameSpace + 'Heat__c',
-      'Forced Air Gas Oil Electric'
-    );
+    loanApplicationProp.put(appNameSpace + 'Heat__c', 'Forced Air Gas Oil Electric');
     loanApplicationProp.put(appNameSpace + 'includetds__c', true);
     loanApplicationProp.put(appNameSpace + 'insulatedWithUffi__c', true);
     loanApplicationProp.put(appNameSpace + 'lot__c', 'Test Legal Line 1');
     loanApplicationProp.put(appNameSpace + 'block__c', 'Test Legal Line 2');
-    loanApplicationProp.put(
-      appNameSpace + 'Conc_Township__c',
-      'Test Legal Line 3'
-    );
+    loanApplicationProp.put(appNameSpace + 'Conc_Township__c', 'Test Legal Line 3');
     loanApplicationProp.put(appNameSpace + 'livingSpace__c', 23);
-    loanApplicationProp.put(
-      appNameSpace + 'livingSpaceUnitOfMeasurDd__c',
-      'Sq Ft'
-    );
+    loanApplicationProp.put(appNameSpace + 'livingSpaceUnitOfMeasurDd__c', 'Sq Ft');
     loanApplicationProp.put('RequestedLoanAmount' + customFieldSuffix, 190000);
     //loanApplicationProp.put('PropertyExtIdentifier'+customFieldSuffix, 'Test External Id');
     //loanApplicationProp.put('LoanPurposeType' + customFieldSuffix, 'Purchase');
 
     loanApplicationProp.put(appNameSpace + 'lotSize__c', 2300);
-    loanApplicationProp.put(
-      appNameSpace + 'lotSizeUnitOfMeasure__c',
-      'Hectares'
-    );
+    loanApplicationProp.put(appNameSpace + 'lotSizeUnitOfMeasure__c', 'Hectares');
     // loanApplicationProp.put('IsManufacturedHome'+customFieldSuffix, True);
     //loanApplicationProp.put('IsMixedUseProperty'+customFieldSuffix, True);
     loanApplicationProp.put(appNameSpace + 'mlsListingFlag__c', true);
     loanApplicationProp.put('Name', 'Test Loan Application Property');
     loanApplicationProp.put(appNameSpace + 'Construction_Type__c', 'Existing');
     loanApplicationProp.put(appNameSpace + 'numberOfUnits__c', 24);
-    loanApplicationProp.put(
-      'PropertyUseType' + customFieldSuffix,
-      'Owner Occupied'
-    );
+    loanApplicationProp.put('PropertyUseType' + customFieldSuffix, 'Owner Occupied');
     loanApplicationProp.put(appNameSpace + 'Property_Type__c', 'condo');
     loanApplicationProp.put(appNameSpace + 'purchasePrice__c', 60000);
-    loanApplicationProp.put(
-      appNameSpace + 'realtorInfo__c',
-      'Test Realtor Info'
-    );
-    loanApplicationProp.put(
-      appNameSpace + 'rentalOffsetOption__c',
-      'Add Percentage to Gross Income'
-    );
+    loanApplicationProp.put(appNameSpace + 'realtorInfo__c', 'Test Realtor Info');
+    loanApplicationProp.put(appNameSpace + 'rentalOffsetOption__c', 'Add Percentage to Gross Income');
     loanApplicationProp.put(appNameSpace + 'Sewage_Type__c', 'Municipal');
     loanApplicationProp.put(appNameSpace + 'structureAge__c', 45);
     loanApplicationProp.put(appNameSpace + 'taxationYear__c', 2020);
@@ -789,10 +574,7 @@ public class FilogixResponseParsingUtil_test {
          loanApplicationProp.put('PropertyCountry', 'CA');
          loanApplicationProp.put('PropertyState', 'ON');*/
 
-    loanApplicationProp.put(
-      appNameSpace + 'Street_Name__c',
-      'Test Property Street'
-    );
+    loanApplicationProp.put(appNameSpace + 'Street_Name__c', 'Test Property Street');
     loanApplicationProp.put(appNameSpace + 'City__c', 'Toronto');
     loanApplicationProp.put(appNameSpace + 'Street_Number__c', '2');
     loanApplicationProp.put(appNameSpace + 'PostalCode__c', 'M2M2M2');
@@ -801,30 +583,15 @@ public class FilogixResponseParsingUtil_test {
 
     loanApplicationProp.put(appNameSpace + 'Direction__c', 'NW');
     loanApplicationProp.put('ExpMonthlyRentalIncome' + customFieldSuffix, 5000);
-    loanApplicationProp.put(
-      appNameSpace + 'Rental_Income_Period__c',
-      'Semi Annual'
-    );
-    loanApplicationProp.put(
-      appNameSpace + 'Rental_Income_Type__c',
-      'Other Employment Income'
-    );
+    loanApplicationProp.put(appNameSpace + 'Rental_Income_Period__c', 'Semi Annual');
+    loanApplicationProp.put(appNameSpace + 'Rental_Income_Type__c', 'Other Employment Income');
     loanApplicationProp.put(appNameSpace + 'Rental_IncPercentInTds__c', 25);
-    loanApplicationProp.put(
-      appNameSpace + 'Structure_Type__c',
-      'Modular Home Semi Detached'
-    );
+    loanApplicationProp.put(appNameSpace + 'Structure_Type__c', 'Modular Home Semi Detached');
     loanApplicationProp.put(appNameSpace + 'Street_Type__c', 'Boulevard');
     loanApplicationProp.put(appNameSpace + 'Original_Purchase_Price__c', 4000);
-    loanApplicationProp.put(
-      appNameSpace + 'Loan_Applicant__c',
-      String.valueof(lapplicant.get('Id'))
-    );
+    loanApplicationProp.put(appNameSpace + 'Loan_Applicant__c', String.valueof(lapplicant.get('Id')));
 
-    loanApplicationProp.put(
-      appNameSpace + 'Purchase_Date__c',
-      date.today().addmonths(6)
-    );
+    loanApplicationProp.put(appNameSpace + 'Purchase_Date__c', date.today().addmonths(6));
     //loanApplicationProp.put('PropertyState__c', 'Test Property State');
     //loanApplicationProp.put('Loan_Applic__c', 'Test Property Country');
 
@@ -844,26 +611,15 @@ public class FilogixResponseParsingUtil_test {
 
     //Test Property
 
-    String loanApplicationPropObjectApiname2 =
-      objNamePrefix +
-      'LoanApplicationProperty' +
-      objNameSuffix;
-    sObject loanApplicationProp2 = Schema.getGlobalDescribe()
-      .get(loanApplicationPropObjectApiname2)
-      .newSObject();
+    String loanApplicationPropObjectApiname2 = objNamePrefix + 'LoanApplicationProperty' + objNameSuffix;
+    sObject loanApplicationProp2 = Schema.getGlobalDescribe().get(loanApplicationPropObjectApiname2).newSObject();
 
     loanApplicationProp2.put('AppraisedValue__c', 200000);
-    loanApplicationProp2.put(
-      'LoanApplicationId' + customFieldSuffix,
-      String.valueof(rla.get('Id'))
-    );
+    loanApplicationProp2.put('LoanApplicationId' + customFieldSuffix, String.valueof(rla.get('Id')));
     loanApplicationProp2.put('Appraisal_Date__c', date.today().addMonths(7));
     loanApplicationProp2.put('Style__c', 'Storey and a Half');
     loanApplicationProp2.put('PropertyValue' + customFieldSuffix, 180000);
-    loanApplicationProp2.put(
-      'ExpNetMonthlyRentalInc' + customFieldSuffix,
-      7000
-    );
+    loanApplicationProp2.put('ExpNetMonthlyRentalInc' + customFieldSuffix, 7000);
     loanApplicationProp2.put('feesIncludeHeat__c', true);
     loanApplicationProp2.put('Garage_Size__c', 'Double');
     loanApplicationProp2.put('Garage_Type__c', 'Attached');
@@ -890,17 +646,11 @@ public class FilogixResponseParsingUtil_test {
     loanApplicationProp2.put(appNameSpace + 'PostalCode__c', 'M2M2M2');
     loanApplicationProp2.put('Construction_Type__c', 'Existing');
     loanApplicationProp2.put('numberOfUnits__c', 24);
-    loanApplicationProp2.put(
-      'PropertyUseType' + customFieldSuffix,
-      'Owner Occupied'
-    );
+    loanApplicationProp2.put('PropertyUseType' + customFieldSuffix, 'Owner Occupied');
     loanApplicationProp2.put('Property_Type__c', 'condo');
     loanApplicationProp2.put('purchasePrice__c', 60000);
     loanApplicationProp2.put('realtorInfo__c', 'Test Realtor Info');
-    loanApplicationProp2.put(
-      'rentalOffsetOption__c',
-      'Add Percentage to Gross Income'
-    );
+    loanApplicationProp2.put('rentalOffsetOption__c', 'Add Percentage to Gross Income');
     loanApplicationProp2.put('Sewage_Type__c', 'Municipal');
     loanApplicationProp2.put('structureAge__c', 45);
     loanApplicationProp2.put('taxationYear__c', 2020);
@@ -918,10 +668,7 @@ public class FilogixResponseParsingUtil_test {
     loanApplicationProp2.put(appNameSpace + 'Total_Condo_Fees__c', 321);
     loanApplicationProp2.put(appNameSpace + 'Interest_Expenses__c', 321);
 
-    loanApplicationProp2.put(
-      'Loan_Applicant__c',
-      String.valueof(lapplicant.get('Id'))
-    );
+    loanApplicationProp2.put('Loan_Applicant__c', String.valueof(lapplicant.get('Id')));
 
     loanApplicationProp2.put('Purchase_Date__c', date.today().addmonths(6));
 
@@ -929,9 +676,7 @@ public class FilogixResponseParsingUtil_test {
     System.assert(loanApplicationProp2 != null);
 
     String IdentificationObjApiName = appNameSpace + 'identification__c';
-    sObject appIdentity = Schema.getGlobalDescribe()
-      .get(IdentificationObjApiName)
-      .newSObject();
+    sObject appIdentity = Schema.getGlobalDescribe().get(IdentificationObjApiName).newSObject();
 
     appIdentity.put('IdentificationNumber__c', 'asc12');
     appIdentity.put('Country__c', 'Canada');
@@ -941,9 +686,7 @@ public class FilogixResponseParsingUtil_test {
     insert appIdentity;
 
     String downPaymentObjApiName = appNameSpace + 'Down_Payment_Source__c';
-    sObject downPay = Schema.getGlobalDescribe()
-      .get(downPaymentObjApiName)
-      .newSObject();
+    sObject downPay = Schema.getGlobalDescribe().get(downPaymentObjApiName).newSObject();
     downPay.put('Amount__c', 25000);
     downPay.put('Source_Type__c', 'Personal Cash	');
     downPay.put('Name', 'Monthly');
@@ -995,10 +738,7 @@ public class FilogixResponseParsingUtil_test {
       WHERE Name = 'GET_Sample_Response'
     ];
     String json = srObject.body.toString();
-    json = json.replaceAll(
-      '0cU4W000000bwJ5UAI',
-      String.valueof(lapplicant.get('id'))
-    );
+    json = json.replaceAll('0cU4W000000bwJ5UAI', String.valueof(lapplicant.get('id')));
     FilogixGETJSONWrapper res = FilogixGETJSONWrapper.parse(json);
 
     return rla;
@@ -1020,9 +760,7 @@ public class FilogixResponseParsingUtil_test {
       if (req.getEndpoint().endsWith('token')) {
         //for Token
         HTTPResponse res = new HTTPResponse();
-        res.setBody(
-          '{"accessToken": "450023da7754fee83af3f37090469b3e44fda9a9","accessTokenExpiresAt": "2023-04-25T08:47:37.137Z"}'
-        );
+        res.setBody('{"accessToken": "450023da7754fee83af3f37090469b3e44fda9a9","accessTokenExpiresAt": "2023-04-25T08:47:37.137Z"}');
         res.setStatusCode(200);
         return res;
       } else if (req.getEndpoint().endsWith('Agent2')) {
@@ -1051,10 +789,7 @@ public class FilogixResponseParsingUtil_test {
     sObject rla = testData();
     rla.put(appNameSpace + 'FilogixId__c', 'CLJT-111');
     map<string, sObject> mapOfFXIDandAppId = new Map<string, sObject>();
-    mapOfFXIDandAppId.put(
-      String.valueof(rla.get(appNameSpace + 'FilogixId__c')),
-      rla
-    );
+    mapOfFXIDandAppId.put(String.valueof(rla.get(appNameSpace + 'FilogixId__c')), rla);
     Test.startTest();
 
     //List<sObject> listofRLA = new List<sObject>();
@@ -1073,9 +808,7 @@ public class FilogixResponseParsingUtil_test {
 
     String parsedRlaId;
     Test.startTest();
-    parsedRlaId = FilogixResponseParsingUtil.parseResponsePOSTAppId(
-      '{"result": {"setMortgageAppDataResponse": {"mortgageApplicationId": "CLJT-92"}}}'
-    );
+    parsedRlaId = FilogixResponseParsingUtil.parseResponsePOSTAppId('{"result": {"setMortgageAppDataResponse": {"mortgageApplicationId": "CLJT-92"}}}');
 
     Test.stopTest();
 

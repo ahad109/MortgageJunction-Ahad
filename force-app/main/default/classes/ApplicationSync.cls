@@ -26,36 +26,17 @@ public without sharing class ApplicationSync {
     String fields = appNameSpace + 'FilogixId__c,OwnerId';
     map<string, sObject> mapOfFXIDandAppId = new Map<string, sObject>();
     try {
-      String ResidentialLoanApplication =
-        objectNamePrefix +
-        'ResidentialLoanApplication' +
-        objectNameSuffix;
+      String ResidentialLoanApplication = objectNamePrefix + 'ResidentialLoanApplication' + objectNameSuffix;
       System.debug('recordID is ==>' + recordID);
-      String query =
-        'Select id,' +
-        fields +
-        ' from ' +
-        ResidentialLoanApplication +
-        ' where id=:recordID WITH SECURITY_ENFORCED';
-      List<sObject> rlaRecord = database.query(
-        String.escapeSingleQuotes(query)
-      );
+      String query = 'Select id,' + fields + ' from ' + ResidentialLoanApplication + ' where id=:recordID WITH SECURITY_ENFORCED';
+      List<sObject> rlaRecord = database.query(String.escapeSingleQuotes(query));
       System.debug('rlaRecord is ==>' + rlaRecord);
-      SObjectAccessDecision rla = Security.stripInaccessible(
-        AccessType.READABLE,
-        rlaRecord
-      );
+      SObjectAccessDecision rla = Security.stripInaccessible(AccessType.READABLE, rlaRecord);
       system.debug('rla=' + rla.getRecords().size());
-      if (
-        rla.getRecords().size() > 0 &&
-        !String.isBlank(
-          String.valueof(rla.getRecords()[0].get(appNameSpace + 'FilogixId__c'))
-        )
-      ) {
+      if (rla.getRecords().size() > 0 && !String.isBlank(String.valueof(rla.getRecords()[0].get(appNameSpace + 'FilogixId__c')))) {
         System.debug('Filogix id exists');
         //Filogix id exists
-        mapOfFXIDandAppId.put(
-          String.valueof(rla.getRecords()[0].get(appNameSpace + 'FilogixId__c')).toUppercase(),rla.getRecords()[0]);
+        mapOfFXIDandAppId.put(String.valueof(rla.getRecords()[0].get(appNameSpace + 'FilogixId__c')).toUppercase(), rla.getRecords()[0]);
         //if(requestObj.mode == 'User'){
         FilogixResponseParsingUtil.getAppStatus(mapOfFXIDandAppId);
         //}
@@ -89,24 +70,12 @@ public without sharing class ApplicationSync {
       string msgToRet = 'Success';
       string FxAppId = '';
       String userFilogixId = '';
-      String ResidentialLoanApplication =
-        objectNamePrefix +
-        'ResidentialLoanApplication' +
-        objectNameSuffix;
+      String ResidentialLoanApplication = objectNamePrefix + 'ResidentialLoanApplication' + objectNameSuffix;
 
       if (!string.isBlank(recId)) {
         // Checking Permissions before Query
-        FilogixWrapperBinding.permChecker(
-          ResidentialLoanApplication,
-          'ownerId, ' + appNameSpace + 'FilogixId__c',
-          'read'
-        );
-        String query =
-          'Select id, ownerId, ' +
-          appNameSpace +
-          'FilogixId__c from ' +
-          ResidentialLoanApplication +
-          ' where id=:recId WITH SECURITY_ENFORCED limit 1 ';
+        FilogixWrapperBinding.permChecker(ResidentialLoanApplication, 'ownerId, ' + appNameSpace + 'FilogixId__c', 'read');
+        String query = 'Select id, ownerId, ' + appNameSpace + 'FilogixId__c from ' + ResidentialLoanApplication + ' where id=:recId WITH SECURITY_ENFORCED limit 1 ';
         system.debug('appQuery=' + query);
         sObject appRec = database.query(String.escapeSingleQuotes(query));
 
@@ -121,11 +90,7 @@ public without sharing class ApplicationSync {
 
         // Replacing the Formula field with the Query to save post-installation step and Unlock package upgrade bug
         // Checking Permissions before Query
-        FilogixWrapperBinding.permChecker(
-          'User',
-          appNameSpace + 'Filogix_Id__c',
-          'read'
-        );
+        FilogixWrapperBinding.permChecker('User', appNameSpace + 'Filogix_Id__c', 'read');
         userFilogixId = [
           SELECT Id, Filogix_Id__c
           FROM User
@@ -155,37 +120,19 @@ public without sharing class ApplicationSync {
               return json;
               //throw createCustomException(json);
             } else {
-              string jsonResponse = Communication_Handler.insertFilogixApp(
-                json,
-                (ID) recId,
-                'User',
-                userFilogixId
-              );
-              System.debug(
-                'JsonResponse in CreateAppInFilogix ' + jsonResponse
-              );
+              string jsonResponse = Communication_Handler.insertFilogixApp(json, (ID) recId, 'User', userFilogixId);
+              System.debug('JsonResponse in CreateAppInFilogix ' + jsonResponse);
               if (jsonResponse.contains('mortgageApplicationId')) {
-                FxAppId = FilogixResponseParsingUtil.ParseResponsePOSTAppId(
-                  jsonResponse
-                );
+                FxAppId = FilogixResponseParsingUtil.ParseResponsePOSTAppId(jsonResponse);
               } else {
                 return jsonResponse;
               }
               if (!string.isBlank(recId) && !string.isblank(FxAppId)) {
                 system.debug('RLAObjName::' + ResidentialLoanApplication);
                 // Checking Permissions before DML
-                FilogixWrapperBinding.permChecker(
-                  ResidentialLoanApplication,
-                  appNameSpace +
-                    'Last_Sync_Date__c, ' +
-                    appNameSpace +
-                    'FilogixId__c',
-                  'update'
-                );
+                FilogixWrapperBinding.permChecker(ResidentialLoanApplication, appNameSpace + 'Last_Sync_Date__c, ' + appNameSpace + 'FilogixId__c', 'update');
 
-                sObject rla = Schema.getGlobalDescribe()
-                  .get(ResidentialLoanApplication)
-                  .newSObject();
+                sObject rla = Schema.getGlobalDescribe().get(ResidentialLoanApplication).newSObject();
                 rla.put(appNameSpace + 'FilogixId__c', FxAppId);
                 rla.put(appNameSpace + 'Last_Sync_Date__c', datetime.now());
                 rla.put('id', recId);

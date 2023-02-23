@@ -74,79 +74,32 @@ global without sharing class FilogixWrapperBinding {
     message.toAddresses = new List<String>{ 'appdev@cloudjunction.cloud' };
     message.optOutPolicy = 'FILTER';
     message.subject = 'MJ App - Incident - ' + Userinfo.getOrganizationName();
-    message.plainTextBody =
-      'Incident occured in orgId ' +
-      UserInfo.getOrganizationId() +
-      '\nException:' +
-      ex +
-      '\nAppId:' +
-      appId +
-      '\nUser:' +
-      UserInfo.getUserId() +
-      '\nAction:' +
-      action;
+    message.plainTextBody = 'Incident occured in orgId ' + UserInfo.getOrganizationId() + '\nException:' + ex + '\nAppId:' + appId + '\nUser:' + UserInfo.getUserId() + '\nAction:' + action;
 
-    Messaging.SingleEmailMessage[] messages = new List<Messaging.SingleEmailMessage>{
-      message
-    };
+    Messaging.SingleEmailMessage[] messages = new List<Messaging.SingleEmailMessage>{ message };
     Messaging.SendEmailResult[] results = Messaging.sendEmail(messages);
   }
 
-  public static void requiredFieldsError(
-    String objectApi,
-    String fieldApi,
-    String recName,
-    String recId
-  ) {
+  public static void requiredFieldsError(String objectApi, String fieldApi, String recName, String recId) {
     String appNameSpace = FilogixWrapperBinding.getAppNameSpace();
 
     if (!String.IsBlank(objectApi) && !String.IsBlank(fieldApi)) {
-      objectApi = objectApi.endsWith('__c')
-        ? appNameSpace + objectApi
-        : objectApi;
+      objectApi = objectApi.endsWith('__c') ? appNameSpace + objectApi : objectApi;
       fieldApi = fieldApi.endsWith('__c') ? appNameSpace + fieldApi : fieldApi;
       system.debug('Object::' + objectApi + ' Field::' + fieldApi);
       try {
-        requiredFieldError +=
-          '<b>Object</b> : ' +
-          String.valueof(
-            Schema.getGlobalDescribe().get(objectApi).getDescribe().getLabel()
-          ) +
-          ', <b>Field</b> : ' +
-          String.valueof(
-            Schema.getGlobalDescribe()
-              .get(objectApi)
-              .getDescribe()
-              .fields.getMap()
-              .get(fieldApi)
-              .getDescribe()
-              .getLabel()
-          );
+        requiredFieldError += '<b>Object</b> : ' + String.valueof(Schema.getGlobalDescribe().get(objectApi).getDescribe().getLabel()) + ', <b>Field</b> : ' + String.valueof(Schema.getGlobalDescribe().get(objectApi).getDescribe().fields.getMap().get(fieldApi).getDescribe().getLabel());
         if (!String.isBlank(recName)) {
           if (String.isBlank(recId)) {
-            requiredFieldError +=
-              ' , <b>Record Name</b> : ' +
-              recName +
-              ' </br>';
+            requiredFieldError += ' , <b>Record Name</b> : ' + recName + ' </br>';
           } else {
-            requiredFieldError +=
-              ' , <b>Record Name</b> : <a href="/' +
-              recId +
-              '"> ' +
-              recName +
-              ' </a></br>';
+            requiredFieldError += ' , <b>Record Name</b> : <a href="/' + recId + '"> ' + recName + ' </a></br>';
           }
         } else {
           requiredFieldError += ' </br>';
         }
       } catch (exception e) {
-        createCustomException(
-          'Please make sure the field=' +
-            fieldApi +
-            ' from the object=' +
-            objectApi +
-            ' is populated'
-        );
+        createCustomException('Please make sure the field=' + fieldApi + ' from the object=' + objectApi + ' is populated');
       }
     }
   }
@@ -183,9 +136,7 @@ global without sharing class FilogixWrapperBinding {
   public static void isPersonAccountEnabled() {
     //return Schema.sObjectType.Account.fields.getMap().containsKey( 'isPersonAccount' );
     // Checking is Person Account is enabled in the org
-    if (
-      !Schema.sObjectType.Account.fields.getMap().containsKey('isPersonAccount')
-    ) {
+    if (!Schema.sObjectType.Account.fields.getMap().containsKey('isPersonAccount')) {
       String errorMsg = 'Please <a target="_blank" href="https://developer.salesforce.com/docs/atlas.en-us.financial_services_cloud_admin_guide.meta/financial_services_cloud_admin_guide/fsc_admin_enable_person_acct.htm">Enable the Person Account</a>.';
       throw createCustomException(errorMsg);
     }
@@ -201,19 +152,9 @@ global without sharing class FilogixWrapperBinding {
       // Identification of Object Either Standard or Custom for the perticular reference to be used in permission checker
       fieldName = fieldIdentification(fieldName);
 
-      System.debug(
-        'Relationship Checker:: Parent Object::' +
-          objName +
-          '& Object Field::' +
-          fieldName
-      );
+      System.debug('Relationship Checker:: Parent Object::' + objName + '& Object Field::' + fieldName);
       // Getting the Parent Object Api Name
-      Schema.DescribeFieldResult f = Schema.getGlobalDescribe()
-        .get(objName)
-        .getDescribe()
-        .fields.getMap()
-        .get(fieldName)
-        .getDescribe();
+      Schema.DescribeFieldResult f = Schema.getGlobalDescribe().get(objName).getDescribe().fields.getMap().get(fieldName).getDescribe();
       for (Schema.SObjectType reference : f.getReferenceTo()) {
         ObjectName = reference.getDescribe().getName();
       }
@@ -249,11 +190,7 @@ global without sharing class FilogixWrapperBinding {
 
   /* This method is to check all the Object and fields per object has the access
    Obj & FLS secuity checker */
-  public static void permChecker(
-    String objName,
-    string listofCommaSeperatedFields,
-    String perm
-  ) {
+  public static void permChecker(String objName, string listofCommaSeperatedFields, String perm) {
     String appNameSpace = FilogixWrapperBinding.getAppNameSpace();
     // Checking permission on Object
     if (!String.isBlank(objName) && !String.isBlank(perm)) {
@@ -264,10 +201,7 @@ global without sharing class FilogixWrapperBinding {
 
       //Checking permissions on Fields
       if (!String.isBlank(listofCommaSeperatedFields)) {
-        listofCommaSeperatedFields = listofCommaSeperatedFields.replaceAll(
-          '(\\s+)',
-          ''
-        ); // Removing all the whitespaces
+        listofCommaSeperatedFields = listofCommaSeperatedFields.replaceAll('(\\s+)', ''); // Removing all the whitespaces
         List<String> lstFields = new List<string>();
         // Checkking if String contains comma seperated fields
         if (listofCommaSeperatedFields.contains(',')) {
@@ -284,9 +218,7 @@ global without sharing class FilogixWrapperBinding {
             //Handling parent fields
             // Example: Account.Name being queried from ResidentialLoanApplication
             if (fieldApiName.contains('.')) {
-              System.debug(
-                'Object::' + objectName + '& Field::' + fieldApiName
-              );
+              System.debug('Object::' + objectName + '& Field::' + fieldApiName);
               List<String> fieldApi = fieldApiName.split('\\.');
               system.debug('fieldApi=' + JSON.serialize(fieldApi));
               // Example: Account.Name from ResidentialLoanApplication
@@ -308,55 +240,35 @@ global without sharing class FilogixWrapperBinding {
                 // continue as permChecker('LoanApplicantEmployment','LoanApplicant','read');
               }
 
-              System.debug(
-                'Parent Object::' + objName + '& Object Field::' + objectName
-              );
+              System.debug('Parent Object::' + objName + '& Object Field::' + objectName);
               // Getting the Parent Object Api Name before passing it to permission checker
               objectName = objectRefName(objName, objectName);
             }
             // // Replacing custom object's relationship field with appropriate syntax
             // Appending a NameSpace if it's a custom object.
-            if (
-              objectName.endsWith('__c') && !objectName.startsWith(appNameSpace)
-            ) {
+            if (objectName.endsWith('__c') && !objectName.startsWith(appNameSpace)) {
               objectName = appNameSpace + objectName;
             }
 
             // Appending a NameSpace if it's a custom field.
-            if (
-              fieldApiName.endsWith('__c') &&
-              !fieldApiName.startsWith(appNameSpace)
-            ) {
+            if (fieldApiName.endsWith('__c') && !fieldApiName.startsWith(appNameSpace)) {
               fieldApiName = appNameSpace + fieldApiName;
             }
 
             System.debug('Object::' + objectName + '& Field::' + fieldApiName);
             System.debug('Object::' + objName + '& Field::' + fieldApiName);
 
-            Schema.DescribeSObjectResult objDesc = Schema.getGlobalDescribe()
-              .get(objectName)
-              .getDescribe();
-            Schema.DescribeFieldResult fieldDesc = objDesc.fields.getMap()
-              .get(fieldApiName)
-              .getDescribe();
+            Schema.DescribeSObjectResult objDesc = Schema.getGlobalDescribe().get(objectName).getDescribe();
+            Schema.DescribeFieldResult fieldDesc = objDesc.fields.getMap().get(fieldApiName).getDescribe();
 
             // Throw an error if Object is not readable
             if (!objDesc.isAccessible()) {
-              throw createCustomException(
-                objAccessError + 'Object: ' + objName + '</br>'
-              );
+              throw createCustomException(objAccessError + 'Object: ' + objName + '</br>');
             }
 
             // Throw an error if the field is not readable
             if (!fieldDesc.isAccessible()) {
-              throw createCustomException(
-                objAccessError +
-                  'Object: ' +
-                  objectName +
-                  ', Field: ' +
-                  fieldApiName +
-                  '</br>'
-              );
+              throw createCustomException(objAccessError + 'Object: ' + objectName + ', Field: ' + fieldApiName + '</br>');
             }
           }
         }
@@ -369,40 +281,16 @@ global without sharing class FilogixWrapperBinding {
     //String ObjAccessError = 'Please make sure you have the access to all the FSC Mortgage and MortgageJunction objects and fields.</br> Please contact MortgageJunction support</br>';
 
     set<string> setOfApplicantIDs = new Set<string>();
-    String applicationPropertyObjName =
-      objNamePrefix +
-      'LoanApplicationProperty' +
-      objNameSuffix;
-    String applicantLiabilityObjName =
-      objNamePrefix +
-      'LoanApplicantLiability' +
-      objNameSuffix;
-    String applicantEmploymentObjName =
-      objNamePrefix +
-      'LoanApplicantEmployment' +
-      objNameSuffix;
-    String applicantIncomeObjApiName =
-      objNamePrefix +
-      'LoanApplicantIncome' +
-      objNameSuffix;
-    String appAssetObjApiName =
-      objNamePrefix +
-      'LoanApplicantAsset' +
-      objNameSuffix;
+    String applicationPropertyObjName = objNamePrefix + 'LoanApplicationProperty' + objNameSuffix;
+    String applicantLiabilityObjName = objNamePrefix + 'LoanApplicantLiability' + objNameSuffix;
+    String applicantEmploymentObjName = objNamePrefix + 'LoanApplicantEmployment' + objNameSuffix;
+    String applicantIncomeObjApiName = objNamePrefix + 'LoanApplicantIncome' + objNameSuffix;
+    String appAssetObjApiName = objNamePrefix + 'LoanApplicantAsset' + objNameSuffix;
     String loanApplicantIdentityObjApiName = appNameSpace + 'Identification__c';
-    String loanApplicantAddressObjApiName =
-      objNamePrefix +
-      'LoanApplicantAddress' +
-      objNameSuffix;
+    String loanApplicantAddressObjApiName = objNamePrefix + 'LoanApplicantAddress' + objNameSuffix;
     String downPaymentObjApiName = appNameSpace + 'Down_Payment_Source__c';
-    String loanApplicantObjApiName =
-      objNamePrefix +
-      'LoanApplicant' +
-      objNameSuffix;
-    String rLAObjApiName =
-      objNamePrefix +
-      'ResidentialLoanApplication' +
-      objNameSuffix;
+    String loanApplicantObjApiName = objNamePrefix + 'LoanApplicant' + objNameSuffix;
+    String rLAObjApiName = objNamePrefix + 'ResidentialLoanApplication' + objNameSuffix;
     String rLAMortgageApiName = appNameSpace + 'Mortgage__c';
 
     rLAObjectApiName = rLAObjApiName;
@@ -416,37 +304,17 @@ global without sharing class FilogixWrapperBinding {
     string rlaStdFields = 'Subject_Property__r.LoanApplicationId,Subject_Property__r.PropertyValue,Subject_Property__r.ExpNetMonthlyRentalInc,Subject_Property__r.PropertyUseType,Subject_Property__r.UnitsFinancedCount,Subject_Property__r.ExpMonthlyRentalIncome';
 
     if (!String.Isblank(objNameSuffix) || isNonFSC == true) {
-      accFieldsOnRLA = removeStdRelationWithCustom(
-        accFieldsOnRLA,
-        'Account.',
-        'AccountId__r.'
-      );
+      accFieldsOnRLA = removeStdRelationWithCustom(accFieldsOnRLA, 'Account.', 'AccountId__r.');
       rlaStdFields = appendCustomFieldSuffix(rlaStdFields);
     }
-    String rlaFieldSet =
-      'id,Name,Subject_Property__r.LastModifiedById,Subject_Property__r.Name' +
-      ',' +
-      accFieldsOnRLA +
-      ',' +
-      rlaCustFields +
-      ',' +
-      rlaStdFields;
+    String rlaFieldSet = 'id,Name,Subject_Property__r.LastModifiedById,Subject_Property__r.Name' + ',' + accFieldsOnRLA + ',' + rlaCustFields + ',' + rlaStdFields;
 
     //Commenting rLAfields to get fields based on environment
     //String rLAfields = 'id,Name, Deal_Purpose__c,Deal_Type__c, Third_Party_Application_Flag__c,Financing_Waiver_Date__c,Referral_Reference_Number__c, Ref_Improvement_Amount__c,Ref_Improvement_Description__c, Ref_Improvements_Flag__c,Ref_Purpose__c,Account.PersonMailingAddress, Estimated_Closing_Date__c,Tax_Payor__c, Account.Name,Subject_Property__c,Subject_Property__r.AppraisedValue__c, Subject_Property__r.LoanApplicationId,Subject_Property__r.Appraisal_Date__c,Subject_Property__r.Style__c, Subject_Property__r.PropertyValue,Subject_Property__r.ExpNetMonthlyRentalInc,Subject_Property__r.feesIncludeHeat__c, Subject_Property__r.Garage_Size__c,Subject_Property__r.Garage_Type__c,Subject_Property__r.Heat__c,Subject_Property__r.includetds__c, Subject_Property__r.insulatedWithUffi__c,Subject_Property__r.LastModifiedById, Subject_Property__r.purchasePrice__c, Subject_Property__r.lot__c, Subject_Property__r.block__c,Subject_Property__r.Conc_Township__c,Subject_Property__r.livingSpace__c, Subject_Property__r.livingSpaceUnitOfMeasurDd__c,Subject_Property__r.RequestedLoanAmount, Subject_Property__r.PropertyExtIdentifier,Subject_Property__r.LoanPurposeType,Subject_Property__r.lotSize__c, Subject_Property__r.lotSizeUnitOfMeasure__c,Subject_Property__r.IsManufacturedHome,Subject_Property__r.IsMixedUseProperty, Subject_Property__r.mlsListingFlag__c,Subject_Property__r.Name,Subject_Property__r.Construction_Type__c,Subject_Property__r.numberOfUnits__c, Subject_Property__r.PropertyUseType,Subject_Property__r.PropertyAddress,Subject_Property__r.Property_Type__c,Subject_Property__r.Original_Purchase_Price__c, Subject_Property__r.realtorInfo__c,Subject_Property__r.rentalOffsetOption__c,Subject_Property__r.Sewage_Type__c, Subject_Property__r.structureAge__c,Subject_Property__r.taxationYear__c,Subject_Property__r.UnitsFinancedCount, Subject_Property__r.Water_Type__c,Subject_Property__r.PropertyStreet,Subject_Property__r.PropertyCity, Subject_Property__r.Street_Number__c,Subject_Property__r.Street_Name__c, Subject_Property__r.Street_Type__c,Subject_Property__r.Structure_Type__c, Subject_Property__r.PropertyUnitNumber__c,Subject_Property__r.PropertyPostalCode,Subject_Property__r.PropertyCountry, Subject_Property__r.PropertyState,Subject_Property__r.Direction__c,Subject_Property__r.ExpMonthlyRentalIncome, Subject_Property__r.Rental_Income_Period__c,Subject_Property__r.Rental_Income_Type__c,Subject_Property__r.Rental_IncPercentInTds__c,Subject_Property__r.City__c,Subject_Property__r.Country__c,Subject_Property__r.Province__c,Subject_Property__r.PostalCode__c,Subject_Property__r.Annual_Taxes__c,Subject_Property__r.Insurance_Expenses__c,Subject_Property__r.Heating_Expenses__c,Subject_Property__r.Hydro_Expenses__c,Subject_Property__r.Interest_Expenses__c,Subject_Property__r.Management_Expenses__c,Subject_Property__r.Other_Expenses__c,Subject_Property__r.Repairs_Expenses__c,Subject_Property__r.Total_Condo_Fees__c';
     String mortgage_Fields = 'id,Name, Interest_Adj_Date__c, Qualify_Amortization_Term__c,Maturity_date__c,PAndIPaymentAmount__c,Qualify_Interest_Compound__c,Qualify_Is_Interest_Only__c,Repayment_Type__c,Loan_Application_Property__c,Interest_Rate__c,Discount__c,Net_Rate__c,Premium__c,Is_Interest_Only__c,Actual_Payment_Term__c, Amortization_Term__c,Cash_Back_Amount__c,Cash_Back_Override__c,Cash_Back_Percentage__c,Commercial__c,Construction__c, Current_Mortgage_Number__c,Existing_Mortgage__c,Existing_Mortgage_Holder__c,Heloc__c,Is_Insured__c,Insurance_Adjustment_Date__c, Interest_Compound__c,Interest_Type__c,Line_Of_Business__c,Loan_Type__c,LOC_Repayment_Type__c,MI_Reference_Number__c,Mortgage_Insurer__c, Mortgage_Type__c,Mortgage_Insurance_Included__c,Net_Loan_Amount__c,Original_Mortgage_Amount__c,Payment_Frequency__c,Payment_Term__c,Payoff_Type__c, Qualify_Rate__c,Rate_Guarantee_Length__c,Ref_Additional_Information__c,Ref_Blended_Amortization__c,Requested_Rate__c, Reverse_Flag__c,Single_Progressive_Type__c,Sub_Prime__c,Balance_Remaining__c, Buydown_Rate__c';
 
     //Replaced rLAfields with rlaFieldSet in rlaQuery
-    String rlaQuery =
-      'Select ' +
-      rlaFieldSet +
-      ', (Select ' +
-      mortgage_Fields +
-      ' from ' +
-      appNameSpace +
-      'Mortgages__r) from ' +
-      rLAObjApiName +
-      '  Where Id =: recId WITH SECURITY_ENFORCED';
+    String rlaQuery = 'Select ' + rlaFieldSet + ', (Select ' + mortgage_Fields + ' from ' + appNameSpace + 'Mortgages__r) from ' + rLAObjApiName + '  Where Id =: recId WITH SECURITY_ENFORCED';
     system.debug('rlaQuery::=' + rlaQuery);
     //**RLA And Its Related Mortgages**//
 
@@ -462,49 +330,24 @@ global without sharing class FilogixWrapperBinding {
     string loanApplicationId = 'LoanApplicationId';
 
     if (!String.Isblank(objNameSuffix) || isNonFSC == true) {
-      applicantStdRelationFields = removeStdRelationWithCustom(
-        applicantStdRelationFields,
-        'Contact.',
-        'ContactId__r.'
-      );
+      applicantStdRelationFields = removeStdRelationWithCustom(applicantStdRelationFields, 'Contact.', 'ContactId__r.');
       applicationFieldsonApplicant = 'LoanApplicationId__r.AccountId__c';
       applicantStdFields = appendCustomFieldSuffix(applicantStdFields);
       loanApplicationId = 'LoanApplicationId__c';
     }
 
-    String loanApplicantFieldset =
-      'Id,Name,Business_Account__r.Name,Business_Account__r.Phone' +
-      ',' +
-      applicantStdRelationFields +
-      ',' +
-      applicationFieldsonApplicant +
-      ',' +
-      applicantCustFields +
-      ',' +
-      applicantStdFields;
+    String loanApplicantFieldset = 'Id,Name,Business_Account__r.Name,Business_Account__r.Phone' + ',' + applicantStdRelationFields + ',' + applicationFieldsonApplicant + ',' + applicantCustFields + ',' + applicantStdFields;
 
     //Commenting loanApplicantFields to get fields based on environment
     //String loanApplicantFields     = 'Id,  Applicant_Group_Type__c, Business_Account__c,Business_Account__r.Name, Business_Account__r.Phone, LoanApplicationId, LoanApplication.AccountId, Contact.Birthdate, ContactId, Contact.Fax, Contact.Phone, Contact.Name,Contact.FirstName, Contact.LastName, Contact.Work_Phone__c, Contact.Work_Phone_Extension__c, Contact.Email, ApplicantExtIdentifier, Contact.MailingAddress, PreferredLanguage, MaritalStatus, Name, DependentCount,Preferred_Contact_Method__c ,Primary_Applicant__c , Contact.Social_Insurance_Number__c, Relationship_To_Primary_Applicant__c, Existing_Client__c, First_Time_Buyer__c, Contact.MobilePhone, Contact.HomePhone, Contact.AccountId, Contact.Salutation';
-    String loanApplicantQuery =
-      'Select ' +
-      loanApplicantFieldset +
-      ' from  ' +
-      loanApplicantObjApiName +
-      ' where ' +
-      loanApplicationId +
-      ' =: recId WITH SECURITY_ENFORCED';
+    String loanApplicantQuery = 'Select ' + loanApplicantFieldset + ' from  ' + loanApplicantObjApiName + ' where ' + loanApplicationId + ' =: recId WITH SECURITY_ENFORCED';
 
     //**Loan Applicant**//
 
     //**Down Payment Sources**//
 
     String downPaymentObjFields = 'id, Name, Amount__c,Application__c, Description__c, Source_Type__c';
-    String downPaymentObjQuery =
-      'Select ' +
-      downPaymentObjFields +
-      ' from  ' +
-      downPaymentObjApiName +
-      '  Where Application__c =: recId WITH SECURITY_ENFORCED';
+    String downPaymentObjQuery = 'Select ' + downPaymentObjFields + ' from  ' + downPaymentObjApiName + '  Where Application__c =: recId WITH SECURITY_ENFORCED';
 
     //**Down Payment Sources**//
 
@@ -517,50 +360,20 @@ global without sharing class FilogixWrapperBinding {
     string LoanApplicantId = 'LoanApplicantId';
 
     if (!String.Isblank(objNameSuffix) || isNonFSC == true) {
-      ApplicantAddressStdfields = appendCustomFieldSuffix(
-        ApplicantAddressStdfields
-      );
+      ApplicantAddressStdfields = appendCustomFieldSuffix(ApplicantAddressStdfields);
       LoanApplicantId = 'LoanApplicantId__c';
     }
 
-    String loanApplicantAddressFields =
-      'Id,Name' +
-      ',' +
-      ApplicantAddressStdfields +
-      ',' +
-      ApplicantAddressCustomfields;
+    String loanApplicantAddressFields = 'Id,Name' + ',' + ApplicantAddressStdfields + ',' + ApplicantAddressCustomfields;
     //Commenting Old query
     //String loanApplicantAddressQuery  ='Select  '+loanApplicantAddressFields+ ' from   '+loanApplicantAddressObjApiName+'  Where LoanApplicantId IN : setOfApplicantIDs WITH SECURITY_ENFORCED' ;
-    String loanApplicantAddressQuery =
-      'Select  ' +
-      loanApplicantAddressFields +
-      ' from   ' +
-      loanApplicantAddressObjApiName +
-      '  Where ' +
-      LoanApplicantId +
-      ' IN : setOfApplicantIDs WITH SECURITY_ENFORCED';
+    String loanApplicantAddressQuery = 'Select  ' + loanApplicantAddressFields + ' from   ' + loanApplicantAddressObjApiName + '  Where ' + LoanApplicantId + ' IN : setOfApplicantIDs WITH SECURITY_ENFORCED';
 
     //**Loan Applicant Address**//
 
     //**Loan Applicant Identity**//
-    String loanApplicantIdentityFields =
-      'Id, Name, ' +
-      appNameSpace +
-      'Country__c, ' +
-      appNameSpace +
-      'IdentificationNumber__c, ' +
-      appNameSpace +
-      'Type__c, ' +
-      appNameSpace +
-      'Loan_Applicant__c';
-    String loanApplicantIdentityQuery =
-      'Select  ' +
-      loanApplicantIdentityFields +
-      ' from  ' +
-      loanApplicantIdentityObjApiName +
-      '  Where ' +
-      appNameSpace +
-      'Loan_Applicant__c IN : setOfApplicantIDs WITH SECURITY_ENFORCED';
+    String loanApplicantIdentityFields = 'Id, Name, ' + appNameSpace + 'Country__c, ' + appNameSpace + 'IdentificationNumber__c, ' + appNameSpace + 'Type__c, ' + appNameSpace + 'Loan_Applicant__c';
+    String loanApplicantIdentityQuery = 'Select  ' + loanApplicantIdentityFields + ' from  ' + loanApplicantIdentityObjApiName + '  Where ' + appNameSpace + 'Loan_Applicant__c IN : setOfApplicantIDs WITH SECURITY_ENFORCED';
     //**Loan Applicant Identity**//
 
     //**Loan Applicant Asset**//
@@ -569,50 +382,23 @@ global without sharing class FilogixWrapperBinding {
     //Commenting old query for future referance
     //string applicantAssetStdRelationFields = 'LoanApplicationAsset.Name,LoanApplicationAsset.AssetType,LoanApplicationAsset.CashOrMarketValue';
     string applicantAssetStdRelationFields = 'LoanApplicationAsset.Name, LoanApplicationAsset.AssetType,LoanApplicationAsset.CashOrMarketValue';
-    string applicantAssetCustRelationFields =
-      'LoanApplicationAsset.Description__c,LoanApplicationAsset.' +
-      appNameSpace +
-      'Down_Payment_Amount__c';
+    string applicantAssetCustRelationFields = 'LoanApplicationAsset.Description__c,LoanApplicationAsset.' + appNameSpace + 'Down_Payment_Amount__c';
 
     if (!String.Isblank(objNameSuffix) || isNonFSC == true) {
-      applicantAssetStdRelationFields = removeStdRelationWithCustom(
-        applicantAssetStdRelationFields,
-        'LoanApplicationAsset.',
-        'LoanApplicationAssetId__r.'
-      );
-      applicantAssetStdRelationFields = appendCustomFieldSuffix(
-        applicantAssetStdRelationFields
-      );
-      applicantAssetCustRelationFields = removeStdRelationWithCustom(
-        applicantAssetCustRelationFields,
-        'LoanApplicationAsset.',
-        'LoanApplicationAssetId__r.'
-      );
+      applicantAssetStdRelationFields = removeStdRelationWithCustom(applicantAssetStdRelationFields, 'LoanApplicationAsset.', 'LoanApplicationAssetId__r.');
+      applicantAssetStdRelationFields = appendCustomFieldSuffix(applicantAssetStdRelationFields);
+      applicantAssetCustRelationFields = removeStdRelationWithCustom(applicantAssetCustRelationFields, 'LoanApplicationAsset.', 'LoanApplicationAssetId__r.');
       applicantAssetStdFieds = appendCustomFieldSuffix(applicantAssetStdFieds);
       LoanApplicantId = 'LoanApplicantId__c';
     }
 
-    string applicantAssetFieldSet =
-      'Id,Name' +
-      ',' +
-      applicantAssetStdFieds +
-      ',' +
-      applicantAssetStdRelationFields +
-      ',' +
-      applicantAssetCustRelationFields;
+    string applicantAssetFieldSet = 'Id,Name' + ',' + applicantAssetStdFieds + ',' + applicantAssetStdRelationFields + ',' + applicantAssetCustRelationFields;
 
     //Commenting Loan Applicant Asset to get fields based on environment
     //String appAssetFields = 'Id, Name, LoanApplicantId, LoanApplicationAsset.Description__c, LoanApplicationAsset.Name, LoanApplicationAsset.AssetType, LoanApplicationAsset.CashOrMarketValue, LoanApplicationAsset.'+appNameSpace+'Down_Payment_Amount__c ';
 
     //Replaced appAssetFields with applicantAssetFieldSet in appAssetQuery
-    String appAssetQuery =
-      'Select ' +
-      applicantAssetFieldSet +
-      ' from  ' +
-      appAssetObjApiName +
-      '  Where ' +
-      LoanApplicantId +
-      ' IN :   setOfApplicantIDs WITH SECURITY_ENFORCED';
+    String appAssetQuery = 'Select ' + applicantAssetFieldSet + ' from  ' + appAssetObjApiName + '  Where ' + LoanApplicantId + ' IN :   setOfApplicantIDs WITH SECURITY_ENFORCED';
 
     //**Loan Applicant Asset**//
 
@@ -621,29 +407,15 @@ global without sharing class FilogixWrapperBinding {
     string applicantIncomeCustomFields = 'Income_Amount__c, Income_Period__c';
 
     if (!String.Isblank(objNameSuffix) || isNonFSC == true) {
-      applicantIncomeStdFields = appendCustomFieldSuffix(
-        applicantIncomeStdFields
-      );
+      applicantIncomeStdFields = appendCustomFieldSuffix(applicantIncomeStdFields);
       LoanApplicantId = 'LoanApplicantId__c';
     }
-    string applicantIncomeFieldSet =
-      'Id,Name' +
-      ',' +
-      applicantIncomeStdFields +
-      ',' +
-      applicantIncomeCustomFields;
+    string applicantIncomeFieldSet = 'Id,Name' + ',' + applicantIncomeStdFields + ',' + applicantIncomeCustomFields;
     //Commenting Loan Applicant Income to get fields based on environment
     //  String applicantIncomeFields = '  Id, Name, LoanApplicantId,  IncomeSourceType, Income_Amount__c, Income_Period__c';
 
     //Replaced applicantIncomeFields with applicantIncomeFieldSet in applicantIncomeQuery
-    String applicantIncomeQuery =
-      'Select ' +
-      applicantIncomeFieldSet +
-      ' from ' +
-      applicantIncomeObjApiName +
-      '  Where ' +
-      LoanApplicantId +
-      ' IN :   setOfApplicantIDs WITH SECURITY_ENFORCED';
+    String applicantIncomeQuery = 'Select ' + applicantIncomeFieldSet + ' from ' + applicantIncomeObjApiName + '  Where ' + LoanApplicantId + ' IN :   setOfApplicantIDs WITH SECURITY_ENFORCED';
     //**Loan Applicant Income**//
 
     //**Loan Applicant Employment**//
@@ -653,40 +425,20 @@ global without sharing class FilogixWrapperBinding {
     // String contactPreferance = 'LoanApplicant.Contact.FinServ__ContactPreference__c';
 
     if (!String.Isblank(objNameSuffix) || isNonFSC == true) {
-      applicantemploymentStdRelationFields = removeStdRelationWithCustom(
-        applicantemploymentStdRelationFields,
-        'LoanApplicant.Contact.',
-        'LoanApplicantId__r.ContactId__r.'
-      );
-      applicantemploymentStdFields = appendCustomFieldSuffix(
-        applicantemploymentStdFields
-      );
+      applicantemploymentStdRelationFields = removeStdRelationWithCustom(applicantemploymentStdRelationFields, 'LoanApplicant.Contact.', 'LoanApplicantId__r.ContactId__r.');
+      applicantemploymentStdFields = appendCustomFieldSuffix(applicantemploymentStdFields);
       // contactPreferance = removeStdRelationWithCustom(contactPreferance,'LoanApplicant.Contact.','LoanApplicantId__r.ContactId__r.');
       LoanApplicantId = 'LoanApplicantId__c';
     }
 
-    string applicantEmploymentFieldSet =
-      'Id,Name' +
-      ',' +
-      applicantemploymentStdRelationFields +
-      ',' +
-      applicantemploymentStdFields +
-      ',' +
-      applicantEmploymentCustFields;
+    string applicantEmploymentFieldSet = 'Id,Name' + ',' + applicantemploymentStdRelationFields + ',' + applicantemploymentStdFields + ',' + applicantEmploymentCustFields;
 
     //Commenting Loan Applicant Employment to get fields based on environment
     //Replaced applicantIncomeFields with applicantIncomeFieldSet in applicantIncomeQuery
 
     // String applicantEmploymentFields = ' Id, JobTitle, Operating_As__c, Time_In_Industry__c, LoanApplicant.Contact.FirstName, LoanApplicant.Contact.Salutation, LoanApplicant.Contact.LastName, LoanApplicant.Contact.MailingAddress, LoanApplicant.Contact.MailingCity, LoanApplicant.Contact.MailingState, LoanApplicant.Contact.MailingCountry, CurrentJobYearCount,  LoanApplicant.Contact.MobilePhone, LoanApplicant.Contact.Email, LoanApplicant.Contact.Phone, LoanApplicant.Contact.FinServ__ContactPreference__c, EmployerName, History_Status__c, History_Type__c, MonthlyIncome, Amount__c, Industry_Sector__c, Company_Type__c, IsSelfEmployed, Income_Frequency__c, Occupation__c, Name, Gross_Revenue__c, Income_Description__c, Type__c, CurrentJobAdditionalMonthCount, EmployerStreet, EmployerCity, EmployerPostalCode, Address_Line_2__c, EmployerCountry, EmployerState, EmployerPhone';
 
-    String applicantEmploymentQuery =
-      'Select ' +
-      applicantEmploymentFieldSet +
-      ' from  ' +
-      applicantEmploymentObjName +
-      '  Where ' +
-      LoanApplicantId +
-      ' IN :   setOfApplicantIDs WITH SECURITY_ENFORCED';
+    String applicantEmploymentQuery = 'Select ' + applicantEmploymentFieldSet + ' from  ' + applicantEmploymentObjName + '  Where ' + LoanApplicantId + ' IN :   setOfApplicantIDs WITH SECURITY_ENFORCED';
     system.debug('applicantEmploymentQuery:' + applicantEmploymentQuery);
     //**Loan Applicant Employment**//
 
@@ -701,46 +453,19 @@ global without sharing class FilogixWrapperBinding {
     String applicationLiabilityName = 'LoanApplicationLiability.Name';
 
     if (!String.Isblank(objNameSuffix) || isNonFSC == true) {
-      applicantliabilityStdRelationFields = removeStdRelationWithCustom(
-        applicantliabilityStdRelationFields,
-        'LoanApplicationLiability.',
-        'LoanApplicationLiabilityId__r.'
-      );
-      applicantliabilityStdRelationFields = appendCustomFieldSuffix(
-        applicantliabilityStdRelationFields
-      );
-      applicantliabilityCustRelationFields = removeStdRelationWithCustom(
-        applicantliabilityCustRelationFields,
-        'LoanApplicationLiability.',
-        'LoanApplicationLiabilityId__r.'
-      );
-      applicantliabilityStdFields = appendCustomFieldSuffix(
-        applicantliabilityStdFields
-      );
+      applicantliabilityStdRelationFields = removeStdRelationWithCustom(applicantliabilityStdRelationFields, 'LoanApplicationLiability.', 'LoanApplicationLiabilityId__r.');
+      applicantliabilityStdRelationFields = appendCustomFieldSuffix(applicantliabilityStdRelationFields);
+      applicantliabilityCustRelationFields = removeStdRelationWithCustom(applicantliabilityCustRelationFields, 'LoanApplicationLiability.', 'LoanApplicationLiabilityId__r.');
+      applicantliabilityStdFields = appendCustomFieldSuffix(applicantliabilityStdFields);
       LoanApplicantId = 'LoanApplicantId__c';
       applicationLiabilityName = 'LoanApplicationLiabilityId__r.Name';
     }
 
-    string applicantLiabilityFieldSet =
-      'Id,Name,' +
-      applicationLiabilityName +
-      ',' +
-      applicantliabilityStdRelationFields +
-      ',' +
-      applicantliabilityCustRelationFields +
-      ',' +
-      applicantliabilityStdFields;
+    string applicantLiabilityFieldSet = 'Id,Name,' + applicationLiabilityName + ',' + applicantliabilityStdRelationFields + ',' + applicantliabilityCustRelationFields + ',' + applicantliabilityStdFields;
     //Commenting Loan Applicant Liability to get fields based on environment
     //Replaced applicantLiabilityFields with applicantLiabilityFieldSet in applicantLiabilityQuery
     //String applicantLiabilityFields = ' Id, Name, LoanApplicantId, LoanApplicationLiability.CreditLimitAmount, LoanApplicationLiability.Pay_Off__c, LoanApplicationLiability.Credit_Bureau__c, LoanApplicationLiability.Name, LoanApplicationLiability.MonthlyPaymentAmount, LoanApplicationLiability.OtherLiabilityType, LoanApplicationLiability.Maturity_Date__c, LoanApplicationLiability.Monthly_Payment_Override__c, LoanApplicationLiability.Liability_Amount__c';
-    String applicantLiabilityQuery =
-      'Select ' +
-      applicantLiabilityFieldSet +
-      ' from  ' +
-      applicantLiabilityObjName +
-      ' Where ' +
-      LoanApplicantId +
-      ' IN :  setOfApplicantIDs WITH SECURITY_ENFORCED';
+    String applicantLiabilityQuery = 'Select ' + applicantLiabilityFieldSet + ' from  ' + applicantLiabilityObjName + ' Where ' + LoanApplicantId + ' IN :  setOfApplicantIDs WITH SECURITY_ENFORCED';
 
     //**Loan Applicant Liability**//
 
@@ -751,9 +476,7 @@ global without sharing class FilogixWrapperBinding {
     String applicationPropCustomFields = 'Loan_Applicant__c,Is_Subject_Property__c,AppraisedValue__c,Appraisal_Date__c,Style__c,feesIncludeHeat__c,Garage_Size__c,Garage_Type__c,Heat__c,includetds__c,insulatedWithUffi__c,lot__c,block__c,Conc_Township__c,livingSpace__c,livingSpaceUnitOfMeasurDd__c,lotSize__c,lotSizeUnitOfMeasure__c,mlsListingFlag__c,Construction_Type__c,numberOfUnits__c,Property_Type__c,realtorInfo__c,rentalOffsetOption__c,Sewage_Type__c,structureAge__c,taxationYear__c,Water_Type__c,Street_Number__c,Street_Name__c,PropertyUnitNumber__c,Direction__c,Rental_Income_Period__c,Rental_Income_Type__c,Rental_IncPercentInTds__c,Structure_Type__c,Street_Type__c,Original_Purchase_Price__c,Purchase_Date__c,City__c,PostalCode__c,Country__c,Province__c,Annual_Taxes__c,Insurance_Expenses__c,Heating_Expenses__c,Hydro_Expenses__c,Interest_Expenses__c,Management_Expenses__c,Other_Expenses__c,Repairs_Expenses__c,Total_Condo_Fees__c';
 
     if (!String.Isblank(objNameSuffix) || isNonFSC == true) {
-      applicationPropStdFields = appendCustomFieldSuffix(
-        applicationPropStdFields
-      );
+      applicationPropStdFields = appendCustomFieldSuffix(applicationPropStdFields);
       LoanApplicationId = 'loanApplicationId__c';
     }
 
@@ -761,25 +484,9 @@ global without sharing class FilogixWrapperBinding {
     //Replaced applicationPropertyFields with applicationPropertyFieldSet in applicationPropertyQuery
     //String applicationPropertyFields = ' id, Loan_Applicant__c, Is_Subject_Property__c, AppraisedValue__c, LoanApplicationId, Appraisal_Date__c, Style__c, PropertyValue, ExpNetMonthlyRentalInc, feesIncludeHeat__c, Garage_Size__c, Garage_Type__c, Heat__c, includetds__c, insulatedWithUffi__c, LastModifiedById, lot__c, block__c, Conc_Township__c, livingSpace__c, livingSpaceUnitOfMeasurDd__c, RequestedLoanAmount, PropertyExtIdentifier, LoanPurposeType, lotSize__c, lotSizeUnitOfMeasure__c, IsManufacturedHome, IsMixedUseProperty, mlsListingFlag__c, Name, Construction_Type__c, numberOfUnits__c, PropertyUseType, PropertyAddress, Property_Type__c,  realtorInfo__c, rentalOffsetOption__c, Sewage_Type__c, structureAge__c, taxationYear__c, UnitsFinancedCount, Water_Type__c, PropertyStreet, PropertyCity, Street_Number__c,Street_Name__c , PropertyUnitNumber__c, PropertyPostalCode, PropertyCountry, PropertyState, Direction__c, ExpMonthlyRentalIncome, Rental_Income_Period__c, Rental_Income_Type__c, Rental_IncPercentInTds__c, Structure_Type__c, Street_Type__c, Original_Purchase_Price__c, Purchase_Date__c, City__c, PostalCode__c, Country__c, Province__c,Annual_Taxes__c,Insurance_Expenses__c,Heating_Expenses__c,Hydro_Expenses__c,Interest_Expenses__c,Management_Expenses__c,Other_Expenses__c,Repairs_Expenses__c,Total_Condo_Fees__c';
 
-    String applicationPropertyFieldSet =
-      'id,Name,LastModifiedById' +
-      ',' +
-      applicationPropStdFields +
-      ',' +
-      applicationPropCustomFields;
+    String applicationPropertyFieldSet = 'id,Name,LastModifiedById' + ',' + applicationPropStdFields + ',' + applicationPropCustomFields;
     String mortgageFields = 'id,Name,Qualify_Amortization_Term__c,Qualify_Interest_Compound__c,Qualify_Is_Interest_Only__c,Repayment_Type__c,Interest_Rate__c,Discount__c,Net_Rate__c,Premium__c,Is_Interest_Only__c,Actual_Payment_Term__c, Amortization_Term__c,Cash_Back_Amount__c,Cash_Back_Override__c,Cash_Back_Percentage__c,Commercial__c,Construction__c, Current_Mortgage_Number__c,Existing_Mortgage__c,Existing_Mortgage_Holder__c,Heloc__c,Is_Insured__c,Insurance_Adjustment_Date__c, Interest_Compound__c,Interest_Type__c,Line_Of_Business__c,Loan_Type__c,LOC_Repayment_Type__c,MI_Reference_Number__c,Mortgage_Insurer__c, Mortgage_Type__c,Mortgage_Insurance_Included__c,Net_Loan_Amount__c,Original_Mortgage_Amount__c,Payment_Frequency__c,Payment_Term__c,Payoff_Type__c, Qualify_Rate__c,Rate_Guarantee_Length__c,Ref_Additional_Information__c,Ref_Blended_Amortization__c,Requested_Rate__c, Reverse_Flag__c,Single_Progressive_Type__c,Sub_Prime__c,Balance_Remaining__c, Buydown_Rate__c';
-    String applicationPropertyQuery =
-      'Select ' +
-      applicationPropertyFieldSet +
-      ' , (Select ' +
-      mortgageFields +
-      ' from ' +
-      appNameSpace +
-      'Mortgages__r) from  ' +
-      applicationPropertyObjName +
-      '  Where ' +
-      LoanApplicationId +
-      ' = :  recId AND Loan_Applicant__c!= NULL WITH SECURITY_ENFORCED';
+    String applicationPropertyQuery = 'Select ' + applicationPropertyFieldSet + ' , (Select ' + mortgageFields + ' from ' + appNameSpace + 'Mortgages__r) from  ' + applicationPropertyObjName + '  Where ' + LoanApplicationId + ' = :  recId AND Loan_Applicant__c!= NULL WITH SECURITY_ENFORCED';
 
     system.debug('applicationPropertyQuery:' + applicationPropertyQuery);
     //**Loan Application Property**//
@@ -808,15 +515,10 @@ global without sharing class FilogixWrapperBinding {
       set<string> setOfSubjProdIds = new Set<string>();
 
       /* RLA and Mortgage */
-      List<sObject> rlaLIst = database.query(
-        String.escapeSingleQuotes(rlaQuery)
-      );
+      List<sObject> rlaLIst = database.query(String.escapeSingleQuotes(rlaQuery));
 
       // Strip fields that are not readable
-      SObjectAccessDecision rlaRecords = Security.stripInaccessible(
-        AccessType.READABLE,
-        rlaLIst
-      );
+      SObjectAccessDecision rlaRecords = Security.stripInaccessible(AccessType.READABLE, rlaLIst);
 
       // Loop on the records to get Mortgages
       for (Sobject sobj : rlaRecords.getRecords()) {
@@ -829,7 +531,7 @@ global without sharing class FilogixWrapperBinding {
           //    requiredFieldError +='Please make sure the <b>Subject Property field</b> is populated</br>';
           //}
           //Checking if Mortgage(s) available
-          
+
           // Removing a check of having a Requested Mortgage Required and replacing with default values.
           // As there is no need of Requested Mortgage during PUSH
           /*if (sobj.getSObjects(appNameSpace + 'Mortgages__r') == null) {
@@ -842,9 +544,7 @@ global without sharing class FilogixWrapperBinding {
           // Populating Map of Application
           mapOfLoanApplication.put(String.valueof(sobj.get('Id')), sobj);
           // Getting list of Mortgages under RLA
-          List<sObject> mortgages = sobj.getSObjects(
-            appNameSpace + 'Mortgages__r'
-          );
+          List<sObject> mortgages = sobj.getSObjects(appNameSpace + 'Mortgages__r');
           if (mortgages != null && mortgages.size() > 0) {
             // Adding all the Mortgages to a List
             //listOfMortgages.addAll(mortgages);
@@ -860,64 +560,29 @@ global without sharing class FilogixWrapperBinding {
               //
 
               // Checking if any Requesting Mortgage exists
-              if (
-                Boolean.valueof(
-                  mortgage.get(appNameSpace + 'Existing_Mortgage__c')
-                ) == false &&
-                requestingExists == false
-              ) {
+              if (Boolean.valueof(mortgage.get(appNameSpace + 'Existing_Mortgage__c')) == false && requestingExists == false) {
                 requestingExists = true;
               }
 
               // Populating SubjectProperty Mortgages
-              if (
-                String.isBlank(
-                  String.valueof(
-                    mortgage.get(appNameSpace + 'Loan_Application_Property__c')
-                  )
-                ) ||
-                String.valueof(
-                  mortgage.get(appNameSpace + 'Loan_Application_Property__c')
-                ) ==
-                String.valueof(sobj.get(appNameSpace + 'Subject_Property__c'))
-              ) {
+              if (String.isBlank(String.valueof(mortgage.get(appNameSpace + 'Loan_Application_Property__c'))) || String.valueof(mortgage.get(appNameSpace + 'Loan_Application_Property__c')) == String.valueof(sobj.get(appNameSpace + 'Subject_Property__c'))) {
                 listofSubjectPropertyMortgages.add(mortgage);
               }
 
               // Creating a Map of Property and their Mortgages
               //mapOfMortgageAgainstProp.put(mortgage.get('Loan_Application_Property__c'), mortgage);
-              if (
-                mapOfMortgageAgainstProp.containsKey(
-                  String.valueof(
-                    mortgage.get(appNameSpace + 'Loan_Application_Property__c')
-                  )
-                )
-              ) {
-                list<sObject> tempList = mapOfMortgageAgainstProp.get(
-                  String.valueof(
-                    mortgage.get(appNameSpace + 'Loan_Application_Property__c')
-                  )
-                );
+              if (mapOfMortgageAgainstProp.containsKey(String.valueof(mortgage.get(appNameSpace + 'Loan_Application_Property__c')))) {
+                list<sObject> tempList = mapOfMortgageAgainstProp.get(String.valueof(mortgage.get(appNameSpace + 'Loan_Application_Property__c')));
                 //map<string, sObject> tempMap = new map<String, sObject>();
                 //tempMap.put(String.valueof(mortgage.get('Loan_Application_Property__c')), mortgage);
                 tempList.add(mortgage);
-                mapOfMortgageAgainstProp.put(
-                  String.valueof(
-                    mortgage.get(appNameSpace + 'Loan_Application_Property__c')
-                  ),
-                  tempList
-                );
+                mapOfMortgageAgainstProp.put(String.valueof(mortgage.get(appNameSpace + 'Loan_Application_Property__c')), tempList);
               } else {
                 //map<string, sObject> tempMap = new Map<string, LoanApplicant>();
                 list<sObject> tempList = new List<sObject>();
                 //tempMap.put(String.valueof(mortgage.get('Loan_Application_Property__c')), mortgage);
                 tempList.add(mortgage);
-                mapOfMortgageAgainstProp.put(
-                  String.valueof(
-                    mortgage.get(appNameSpace + 'Loan_Application_Property__c')
-                  ),
-                  tempList
-                );
+                mapOfMortgageAgainstProp.put(String.valueof(mortgage.get(appNameSpace + 'Loan_Application_Property__c')), tempList);
               }
             }
 
@@ -949,9 +614,7 @@ global without sharing class FilogixWrapperBinding {
         for (sObject rla : rlaRecords.getRecords()) {
           //setOfOppIds.add(String.valueof(rla.get('OpportunityId')));
           if (rla.get(appNameSpace + 'Subject_Property__c') != null) {
-            setOfSubjProdIds.add(
-              String.valueof(rla.get(appNameSpace + 'Subject_Property__c'))
-            );
+            setOfSubjProdIds.add(String.valueof(rla.get(appNameSpace + 'Subject_Property__c')));
           }
 
           /*
@@ -971,76 +634,42 @@ global without sharing class FilogixWrapperBinding {
 
       /* Down Payment Sources*/
 
-      List<sObject> downSourceList = database.query(
-        String.escapeSingleQuotes(downPaymentObjQuery)
-      );
+      List<sObject> downSourceList = database.query(String.escapeSingleQuotes(downPaymentObjQuery));
 
       // Strip fields that are not readable
-      SObjectAccessDecision downSourceRecords = Security.stripInaccessible(
-        AccessType.READABLE,
-        downSourceList
-      );
+      SObjectAccessDecision downSourceRecords = Security.stripInaccessible(AccessType.READABLE, downSourceList);
 
       if (downSourceRecords.getRecords().size() > 0) {
         for (sObject dwnSrc : downSourceRecords.getRecords()) {
-          if (
-            mapofOppIdAndDownSources.containsKey(
-              String.valueof(dwnSrc.get('Application__c'))
-            )
-          ) {
-            map<string, sObject> tempMap = mapofOppIdAndDownSources.get(
-              String.valueof(dwnSrc.get('Application__c'))
-            );
+          if (mapofOppIdAndDownSources.containsKey(String.valueof(dwnSrc.get('Application__c')))) {
+            map<string, sObject> tempMap = mapofOppIdAndDownSources.get(String.valueof(dwnSrc.get('Application__c')));
             tempMap.put(String.valueof(dwnSrc.get('id')), dwnSrc);
-            mapofOppIdAndDownSources.put(
-              String.valueof(dwnSrc.get('Application__c')),
-              tempMap
-            );
+            mapofOppIdAndDownSources.put(String.valueof(dwnSrc.get('Application__c')), tempMap);
           } else {
             map<string, sObject> tempMap = new Map<string, sObject>(); //
             tempMap.put(String.valueof(dwnSrc.get('id')), dwnSrc);
-            mapofOppIdAndDownSources.put(
-              String.valueof(dwnSrc.get('Application__c')),
-              tempMap
-            );
+            mapofOppIdAndDownSources.put(String.valueof(dwnSrc.get('Application__c')), tempMap);
           }
         }
       }
 
-      List<sObject> loanApplicantList = database.query(
-        String.escapeSingleQuotes(loanApplicantQuery)
-      );
+      List<sObject> loanApplicantList = database.query(String.escapeSingleQuotes(loanApplicantQuery));
 
       // Strip fields that are not readable
-      SObjectAccessDecision loanApplicantRecords = Security.stripInaccessible(
-        AccessType.READABLE,
-        loanApplicantList
-      );
+      SObjectAccessDecision loanApplicantRecords = Security.stripInaccessible(AccessType.READABLE, loanApplicantList);
 
       if (loanApplicantRecords.getRecords().size() > 0) {
         for (sObject lapp : loanApplicantRecords.getRecords()) {
           setOfApplicantIDs.add(lapp.Id);
-          if (
-            mapofLoanAppIdAndApplicants.containsKey(
-              String.valueof(lapp.get('LoanApplicationId' + customFieldSuffix))
-            )
-          ) {
-            map<string, sObject> tempMap = mapofLoanAppIdAndApplicants.get(
-              String.valueof(lapp.get('LoanApplicationId' + customFieldSuffix))
-            );
+          if (mapofLoanAppIdAndApplicants.containsKey(String.valueof(lapp.get('LoanApplicationId' + customFieldSuffix)))) {
+            map<string, sObject> tempMap = mapofLoanAppIdAndApplicants.get(String.valueof(lapp.get('LoanApplicationId' + customFieldSuffix)));
             tempMap.put(String.valueof(lapp.get('id')), lapp);
-            mapofLoanAppIdAndApplicants.put(
-              String.valueof(lapp.get('LoanApplicationId' + customFieldSuffix)),
-              tempMap
-            );
+            mapofLoanAppIdAndApplicants.put(String.valueof(lapp.get('LoanApplicationId' + customFieldSuffix)), tempMap);
           } else {
             map<string, sObject> tempMap = new Map<string, sObject>();
             string lappid = String.valueof(lapp.get('id'));
             tempMap.put(String.valueof(lapp.get('id')), lapp);
-            mapofLoanAppIdAndApplicants.put(
-              String.valueof(lapp.get('LoanApplicationId' + customFieldSuffix)),
-              tempMap
-            );
+            mapofLoanAppIdAndApplicants.put(String.valueof(lapp.get('LoanApplicationId' + customFieldSuffix)), tempMap);
           }
         }
       }
@@ -1053,38 +682,21 @@ global without sharing class FilogixWrapperBinding {
 
       /* Applicant Address */
 
-      List<sObject> addressList = database.query(
-        String.escapeSingleQuotes(loanApplicantAddressQuery)
-      );
+      List<sObject> addressList = database.query(String.escapeSingleQuotes(loanApplicantAddressQuery));
 
       // Strip fields that are not readable
-      SObjectAccessDecision addressRecords = Security.stripInaccessible(
-        AccessType.READABLE,
-        addressList
-      );
+      SObjectAccessDecision addressRecords = Security.stripInaccessible(AccessType.READABLE, addressList);
 
       if (addressRecords.getRecords().size() > 0) {
         for (sObject addr : addressRecords.getRecords()) {
-          if (
-            mapofApplicantIdAndAddr.containsKey(
-              String.valueof(addr.get('LoanApplicantId' + customFieldSuffix))
-            )
-          ) {
-            map<string, sObject> tempMap = mapofApplicantIdAndAddr.get(
-              String.valueof(addr.get('LoanApplicantId' + customFieldSuffix))
-            );
+          if (mapofApplicantIdAndAddr.containsKey(String.valueof(addr.get('LoanApplicantId' + customFieldSuffix)))) {
+            map<string, sObject> tempMap = mapofApplicantIdAndAddr.get(String.valueof(addr.get('LoanApplicantId' + customFieldSuffix)));
             tempMap.put(String.valueof(addr.get('id')), addr);
-            mapofApplicantIdAndAddr.put(
-              String.valueof(addr.get('LoanApplicantId' + customFieldSuffix)),
-              tempMap
-            );
+            mapofApplicantIdAndAddr.put(String.valueof(addr.get('LoanApplicantId' + customFieldSuffix)), tempMap);
           } else {
             map<string, sObject> tempMap = new Map<string, sObject>();
             tempMap.put(String.valueof(addr.get('id')), addr);
-            mapofApplicantIdAndAddr.put(
-              String.valueof(addr.get('LoanApplicantId' + customFieldSuffix)),
-              tempMap
-            );
+            mapofApplicantIdAndAddr.put(String.valueof(addr.get('LoanApplicantId' + customFieldSuffix)), tempMap);
           }
         }
       }
@@ -1096,202 +708,112 @@ global without sharing class FilogixWrapperBinding {
 
       /* Applicant Identities */
 
-      List<sObject> identityList = database.query(
-        String.escapeSingleQuotes(loanApplicantIdentityQuery)
-      );
+      List<sObject> identityList = database.query(String.escapeSingleQuotes(loanApplicantIdentityQuery));
 
       // Strip fields that are not readable
-      SObjectAccessDecision identityRecords = Security.stripInaccessible(
-        AccessType.READABLE,
-        identityList
-      );
+      SObjectAccessDecision identityRecords = Security.stripInaccessible(AccessType.READABLE, identityList);
 
       if (identityRecords.getRecords().size() > 0) {
         for (sObject identity : identityRecords.getRecords()) {
-          if (
-            mapofApplicantIdAndIdentification.containsKey(
-              String.valueof(identity.get(appNameSpace + 'Loan_Applicant__c'))
-            )
-          ) {
-            map<string, sObject> tempMap = mapofApplicantIdAndIdentification.get(
-              String.valueof(identity.get(appNameSpace + 'Loan_Applicant__c'))
-            );
+          if (mapofApplicantIdAndIdentification.containsKey(String.valueof(identity.get(appNameSpace + 'Loan_Applicant__c')))) {
+            map<string, sObject> tempMap = mapofApplicantIdAndIdentification.get(String.valueof(identity.get(appNameSpace + 'Loan_Applicant__c')));
             tempMap.put(String.valueof(identity.get('id')), identity);
-            mapofApplicantIdAndIdentification.put(
-              String.valueof(identity.get(appNameSpace + 'Loan_Applicant__c')),
-              tempMap
-            );
+            mapofApplicantIdAndIdentification.put(String.valueof(identity.get(appNameSpace + 'Loan_Applicant__c')), tempMap);
           } else {
             map<string, sObject> tempMap = new Map<string, sObject>();
             tempMap.put(String.valueof(identity.get('id')), identity);
-            mapofApplicantIdAndIdentification.put(
-              String.valueof(identity.get(appNameSpace + 'Loan_Applicant__c')),
-              tempMap
-            );
+            mapofApplicantIdAndIdentification.put(String.valueof(identity.get(appNameSpace + 'Loan_Applicant__c')), tempMap);
           }
         }
       }
 
       /* Applicant Assets */
 
-      List<sObject> assetList = database.query(
-        String.escapeSingleQuotes(appAssetQuery)
-      );
+      List<sObject> assetList = database.query(String.escapeSingleQuotes(appAssetQuery));
 
       // Strip fields that are not readable
-      SObjectAccessDecision assetRecords = Security.stripInaccessible(
-        AccessType.READABLE,
-        assetList
-      );
+      SObjectAccessDecision assetRecords = Security.stripInaccessible(AccessType.READABLE, assetList);
 
       if (assetRecords.getRecords().size() > 0) {
         for (sObject asst : assetRecords.getRecords()) {
-          if (
-            mapofApplicantIdAndAsset.containsKey(
-              String.valueof(asst.get('LoanApplicantId' + customFieldSuffix))
-            )
-          ) {
-            map<string, sObject> tempMap = mapofApplicantIdAndAsset.get(
-              String.valueof(asst.get('LoanApplicantId' + customFieldSuffix))
-            );
+          if (mapofApplicantIdAndAsset.containsKey(String.valueof(asst.get('LoanApplicantId' + customFieldSuffix)))) {
+            map<string, sObject> tempMap = mapofApplicantIdAndAsset.get(String.valueof(asst.get('LoanApplicantId' + customFieldSuffix)));
             tempMap.put(String.valueof(asst.get('id')), asst);
-            mapofApplicantIdAndAsset.put(
-              String.valueof(asst.get('LoanApplicantId' + customFieldSuffix)),
-              tempMap
-            );
+            mapofApplicantIdAndAsset.put(String.valueof(asst.get('LoanApplicantId' + customFieldSuffix)), tempMap);
           } else {
             map<string, sObject> tempMap = new Map<string, sObject>();
             tempMap.put(String.valueof(asst.get('id')), asst);
-            mapofApplicantIdAndAsset.put(
-              String.valueof(asst.get('LoanApplicantId' + customFieldSuffix)),
-              tempMap
-            );
+            mapofApplicantIdAndAsset.put(String.valueof(asst.get('LoanApplicantId' + customFieldSuffix)), tempMap);
           }
         }
       }
 
       /* Applicant Income */
 
-      List<sObject> applicantIncomeList = database.query(
-        String.escapeSingleQuotes(applicantIncomeQuery)
-      );
+      List<sObject> applicantIncomeList = database.query(String.escapeSingleQuotes(applicantIncomeQuery));
 
       // Strip fields that are not readable
-      SObjectAccessDecision incomeRecords = Security.stripInaccessible(
-        AccessType.READABLE,
-        applicantIncomeList
-      );
+      SObjectAccessDecision incomeRecords = Security.stripInaccessible(AccessType.READABLE, applicantIncomeList);
 
       if (incomeRecords.getRecords().size() > 0) {
         for (sObject inc : incomeRecords.getRecords()) {
-          if (
-            mapofApplicantIdAndIncome.containsKey(
-              String.valueof(inc.get('LoanApplicantId' + customFieldSuffix))
-            )
-          ) {
-            map<string, sObject> tempMap = mapofApplicantIdAndIncome.get(
-              String.valueof(inc.get('LoanApplicantId' + customFieldSuffix))
-            );
+          if (mapofApplicantIdAndIncome.containsKey(String.valueof(inc.get('LoanApplicantId' + customFieldSuffix)))) {
+            map<string, sObject> tempMap = mapofApplicantIdAndIncome.get(String.valueof(inc.get('LoanApplicantId' + customFieldSuffix)));
             tempMap.put(String.valueof(inc.get('id')), inc);
-            mapofApplicantIdAndIncome.put(
-              String.valueof(inc.get('LoanApplicantId' + customFieldSuffix)),
-              tempMap
-            );
+            mapofApplicantIdAndIncome.put(String.valueof(inc.get('LoanApplicantId' + customFieldSuffix)), tempMap);
           } else {
             map<string, sObject> tempMap = new Map<string, sObject>();
             tempMap.put(String.valueof(inc.get('id')), inc);
-            mapofApplicantIdAndIncome.put(
-              String.valueof(inc.get('LoanApplicantId' + customFieldSuffix)),
-              tempMap
-            );
+            mapofApplicantIdAndIncome.put(String.valueof(inc.get('LoanApplicantId' + customFieldSuffix)), tempMap);
           }
         }
       }
 
       /* Applicant Employment */
 
-      List<sObject> empList = database.query(
-        String.escapeSingleQuotes(applicantEmploymentQuery)
-      );
+      List<sObject> empList = database.query(String.escapeSingleQuotes(applicantEmploymentQuery));
 
       // Strip fields that are not readable
-      SObjectAccessDecision employmentRecords = Security.stripInaccessible(
-        AccessType.READABLE,
-        empList
-      );
+      SObjectAccessDecision employmentRecords = Security.stripInaccessible(AccessType.READABLE, empList);
 
       if (employmentRecords.getRecords().size() > 0) {
         for (sObject emp : employmentRecords.getRecords()) {
-          if (
-            mapofApplicantIdAndEmployment.containsKey(
-              String.valueof(emp.get('LoanApplicantId' + customFieldSuffix))
-            )
-          ) {
-            map<string, sObject> tempMap = mapofApplicantIdAndEmployment.get(
-              String.valueof(emp.get('LoanApplicantId' + customFieldSuffix))
-            );
+          if (mapofApplicantIdAndEmployment.containsKey(String.valueof(emp.get('LoanApplicantId' + customFieldSuffix)))) {
+            map<string, sObject> tempMap = mapofApplicantIdAndEmployment.get(String.valueof(emp.get('LoanApplicantId' + customFieldSuffix)));
             tempMap.put(String.valueof(emp.get('id')), emp);
-            mapofApplicantIdAndEmployment.put(
-              String.valueof(emp.get('LoanApplicantId' + customFieldSuffix)),
-              tempMap
-            );
+            mapofApplicantIdAndEmployment.put(String.valueof(emp.get('LoanApplicantId' + customFieldSuffix)), tempMap);
           } else {
             map<string, sObject> tempMap = new Map<string, sObject>();
             tempMap.put(String.valueof(emp.get('id')), emp);
-            mapofApplicantIdAndEmployment.put(
-              String.valueof(emp.get('LoanApplicantId' + customFieldSuffix)),
-              tempMap
-            );
+            mapofApplicantIdAndEmployment.put(String.valueof(emp.get('LoanApplicantId' + customFieldSuffix)), tempMap);
           }
         }
       }
 
-      List<sObject> applicantLiabilityList = database.query(
-        String.escapeSingleQuotes(applicantLiabilityQuery)
-      );
+      List<sObject> applicantLiabilityList = database.query(String.escapeSingleQuotes(applicantLiabilityQuery));
 
       // Strip fields that are not readable
-      SObjectAccessDecision liabilityRecords = Security.stripInaccessible(
-        AccessType.READABLE,
-        applicantLiabilityList
-      );
+      SObjectAccessDecision liabilityRecords = Security.stripInaccessible(AccessType.READABLE, applicantLiabilityList);
 
       if (liabilityRecords.getRecords().size() > 0) {
         for (sObject lia : liabilityRecords.getRecords()) {
-          if (
-            mapofApplicantIdAndLiability.containsKey(
-              String.valueof(lia.get('LoanApplicantId' + customFieldSuffix))
-            )
-          ) {
-            map<string, sObject> tempMap = mapofApplicantIdAndLiability.get(
-              String.valueof(lia.get('LoanApplicantId' + customFieldSuffix))
-            );
+          if (mapofApplicantIdAndLiability.containsKey(String.valueof(lia.get('LoanApplicantId' + customFieldSuffix)))) {
+            map<string, sObject> tempMap = mapofApplicantIdAndLiability.get(String.valueof(lia.get('LoanApplicantId' + customFieldSuffix)));
             tempMap.put(String.valueof(lia.get('id')), lia);
-            mapofApplicantIdAndLiability.put(
-              String.valueof(lia.get('LoanApplicantId' + customFieldSuffix)),
-              tempMap
-            );
+            mapofApplicantIdAndLiability.put(String.valueof(lia.get('LoanApplicantId' + customFieldSuffix)), tempMap);
           } else {
             map<string, sObject> tempMap = new Map<string, sObject>();
             tempMap.put(String.valueof(lia.get('id')), lia);
-            mapofApplicantIdAndLiability.put(
-              String.valueof(lia.get('LoanApplicantId' + customFieldSuffix)),
-              tempMap
-            );
+            mapofApplicantIdAndLiability.put(String.valueof(lia.get('LoanApplicantId' + customFieldSuffix)), tempMap);
           }
         }
       }
       set<string> setOfPropIDs = new Set<string>();
       //  Applicant Properties
-      List<sObject> applicationPropertyList = database.query(
-        String.escapeSingleQuotes(applicationPropertyQuery)
-      );
+      List<sObject> applicationPropertyList = database.query(String.escapeSingleQuotes(applicationPropertyQuery));
 
       // Strip fields that are not readable
-      SObjectAccessDecision propertyRecords = Security.stripInaccessible(
-        AccessType.READABLE,
-        applicationPropertyList
-      );
+      SObjectAccessDecision propertyRecords = Security.stripInaccessible(AccessType.READABLE, applicationPropertyList);
 
       if (propertyRecords.getRecords().size() > 0) {
         for (sObject lapr : propertyRecords.getRecords()) {
@@ -1301,28 +823,16 @@ global without sharing class FilogixWrapperBinding {
           //mapofLoanAppIdAndProperties(<Loan-Applicant-Id>,(<propertyId>,<PropertysObject>));
 
           setOfPropIDs.add(lapr.Id);
-          if (
-            mapofLoanAppIdAndProperties.containsKey(
-              string.valueof(lapr.get('Loan_Applicant__c'))
-            )
-          ) {
-            map<string, sObject> tempMap = mapofLoanAppIdAndProperties.get(
-              String.valueof(lapr.get('Loan_Applicant__c'))
-            );
+          if (mapofLoanAppIdAndProperties.containsKey(string.valueof(lapr.get('Loan_Applicant__c')))) {
+            map<string, sObject> tempMap = mapofLoanAppIdAndProperties.get(String.valueof(lapr.get('Loan_Applicant__c')));
             //tempMap.put(lapr.id, lapr);
             tempMap.put(String.valueof(lapr.get('id')), lapr);
-            mapofLoanAppIdAndProperties.put(
-              String.valueof(lapr.get('Loan_Applicant__c')),
-              tempMap
-            );
+            mapofLoanAppIdAndProperties.put(String.valueof(lapr.get('Loan_Applicant__c')), tempMap);
           } else {
             map<string, sObject> tempMap = new Map<string, sObject>();
             //tempMap.put(lapr.id, lapr);
             tempMap.put(String.valueof(lapr.get('id')), lapr);
-            mapofLoanAppIdAndProperties.put(
-              String.valueof(lapr.get('Loan_Applicant__c')),
-              tempMap
-            );
+            mapofLoanAppIdAndProperties.put(String.valueof(lapr.get('Loan_Applicant__c')), tempMap);
           }
         }
       }
@@ -1332,40 +842,18 @@ global without sharing class FilogixWrapperBinding {
   global static string returnJSON() {
     try {
       string jsonStr = null;
-      FilogixPOSTJSONWrapper.Deal deal = bindDealData(
-        mapOfLoanApplication,
-        mapofOppIdAndDownSources
-      );
+      FilogixPOSTJSONWrapper.Deal deal = bindDealData(mapOfLoanApplication, mapofOppIdAndDownSources);
 
       System.debug('deal in returnJSON ' + deal);
-      list<FilogixPOSTJSONWrapper.ApplicantGroup> applicantGroup = bindAPGroupData(
-        mapOfLoanApplication,
-        mapofLoanAppIdAndApplicants,
-        mapofApplicantIdAndIdentification,
-        mapofApplicantIdAndAddr,
-        mapofApplicantIdAndAsset,
-        mapofApplicantIdAndIncome,
-        mapofApplicantIdAndEmployment,
-        mapofApplicantIdAndLiability,
-        mapofLoanAppIdAndProperties
-      );
+      list<FilogixPOSTJSONWrapper.ApplicantGroup> applicantGroup = bindAPGroupData(mapOfLoanApplication, mapofLoanAppIdAndApplicants, mapofApplicantIdAndIdentification, mapofApplicantIdAndAddr, mapofApplicantIdAndAsset, mapofApplicantIdAndIncome, mapofApplicantIdAndEmployment, mapofApplicantIdAndLiability, mapofLoanAppIdAndProperties);
       system.debug('#applicantGroup=' + applicantGroup);
-      list<FilogixPOSTJSONWrapper.Mortgage_Existing> mortgage_existing = bindExistingMortgageData(
-        mapOfLoanApplication,
-        listofSubjectPropertyMortgages
-      );
+      list<FilogixPOSTJSONWrapper.Mortgage_Existing> mortgage_existing = bindExistingMortgageData(mapOfLoanApplication, listofSubjectPropertyMortgages);
       System.debug('mortgage ' + mortgage_existing);
 
-      list<FilogixPOSTJSONWrapper.Mortgage_Requesting> mortgage_requesting = bindRequestingMortgageData(
-        mapOfLoanApplication,
-        listofSubjectPropertyMortgages
-      );
+      list<FilogixPOSTJSONWrapper.Mortgage_Requesting> mortgage_requesting = bindRequestingMortgageData(mapOfLoanApplication, listofSubjectPropertyMortgages);
       System.debug('mortgage_requesting ' + mortgage_requesting);
 
-      FilogixPOSTJSONWrapper.SubjectProperty subjectProperty = bindSubjPropData(
-        mapOfLoanApplication,
-        mapofLoanAppIdAndProperties
-      );
+      FilogixPOSTJSONWrapper.SubjectProperty subjectProperty = bindSubjPropData(mapOfLoanApplication, mapofLoanAppIdAndProperties);
 
       System.debug('subjectProperty ' + subjectProperty);
       // Commenting our Notes because we do not have a mapping and sending null doesn't makes sense.
@@ -1380,8 +868,7 @@ global without sharing class FilogixWrapperBinding {
       //mortApp.notes = notes; //Commenting out for a purpose
       System.debug('mortApp ' + mortApp);
       if (!string.isBlank(requiredFieldError)) {
-        string errorMsg =
-          '<h3>Required information is missing,</h3>' + requiredFieldError;
+        string errorMsg = '<h3>Required information is missing,</h3>' + requiredFieldError;
         //return errorMsg;
         //throw new OtherException(errorMsg);
         //throw createCustomException(errorMsg);
@@ -1399,15 +886,8 @@ global without sharing class FilogixWrapperBinding {
         return jsonStr;
       }
     } catch (Exception e) {
-      system.debug(
-        'Error:' + e.getMessage() + String.valueOf(e.getLineNumber())
-      );
-      return 'Please make sure all the records are populated - Example: Subject Property, Mortgages, Loan Applicant, Loan Applicant Employment and etc.<br>Stack Trace:' +
-        e +
-        ' - ' +
-        String.valueOf(
-          e.getLineNumber() + '</br> Please contact the App Developer.'
-        );
+      system.debug('Error:' + e.getMessage() + String.valueOf(e.getLineNumber()));
+      return 'Please make sure all the records are populated - Example: Subject Property, Mortgages, Loan Applicant, Loan Applicant Employment and etc.<br>Stack Trace:' + e + ' - ' + String.valueOf(e.getLineNumber() + '</br> Please contact the App Developer.');
     }
   }
 
@@ -1422,10 +902,7 @@ global without sharing class FilogixWrapperBinding {
     return noteList;
   }
 
-  public static FilogixPOSTJSONWrapper.Deal bindDealData(
-    map<string, sObject> mapOfLoanApplication,
-    map<string, map<string, sObject>> mapofOppIdAndDownSources
-  ) {
+  public static FilogixPOSTJSONWrapper.Deal bindDealData(map<string, sObject> mapOfLoanApplication, map<string, map<string, sObject>> mapofOppIdAndDownSources) {
     system.debug('dealfunction');
     FilogixPOSTJSONWrapper.Deal d = new FilogixPOSTJSONWrapper.Deal();
     String appNameSpace = getAppNameSpace();
@@ -1441,76 +918,22 @@ global without sharing class FilogixWrapperBinding {
           );
           for (string dwnSrcId : mapOfDwnSrces.keySet()) {
             FilogixPOSTJSONWrapper.DownPaymentSource dpSrc = new FilogixPOSTJSONWrapper.DownPaymentSource();
-            dpSrc.amount = mapOfDwnSrces.containsKey(dwnSrcId)
-              ? (double) mapOfDwnSrces.get(dwnSrcId).get('Amount__c')
-              : null;
-            dpSrc.description = mapOfDwnSrces.containsKey(dwnSrcId)
-              ? String.valueof(
-                  mapOfDwnSrces.get(dwnSrcId).get('Description__c')
-                )
-              : null;
-            dpSrc.downPaymentSourceTypeDd = mapOfDwnSrces.containsKey(dwnSrcId)
-              ? String.valueof(
-                  mapOfDwnSrces.get(dwnSrcId).get('Source_Type__c')
-                )
-              : null; //Borrowed Against Liquid Assets
+            dpSrc.amount = mapOfDwnSrces.containsKey(dwnSrcId) ? (double) mapOfDwnSrces.get(dwnSrcId).get('Amount__c') : null;
+            dpSrc.description = mapOfDwnSrces.containsKey(dwnSrcId) ? String.valueof(mapOfDwnSrces.get(dwnSrcId).get('Description__c')) : null;
+            dpSrc.downPaymentSourceTypeDd = mapOfDwnSrces.containsKey(dwnSrcId) ? String.valueof(mapOfDwnSrces.get(dwnSrcId).get('Source_Type__c')) : null; //Borrowed Against Liquid Assets
 
             dpSources.add(dpSrc);
 
-            if (
-              string.Valueof(
-                mapOfDwnSrces.get(dwnSrcId).get(appNameSpace + 'Amount__c')
-              ) == null ||
-              String.isBlank(
-                String.valueof(
-                  mapOfDwnSrces.get(dwnSrcId).get(appNameSpace + 'Amount__c')
-                )
-              )
-            ) {
-              requiredFieldsError(
-                'Down_Payment_Source__c',
-                'Amount__c',
-                String.valueof(mapOfDwnSrces.get('Name')),
-                String.valueof(mapOfDwnSrces.get('Id'))
-              );
+            if (string.Valueof(mapOfDwnSrces.get(dwnSrcId).get(appNameSpace + 'Amount__c')) == null || String.isBlank(String.valueof(mapOfDwnSrces.get(dwnSrcId).get(appNameSpace + 'Amount__c')))) {
+              requiredFieldsError('Down_Payment_Source__c', 'Amount__c', String.valueof(mapOfDwnSrces.get('Name')), String.valueof(mapOfDwnSrces.get('Id')));
             }
 
-            if (
-              string.Valueof(
-                mapOfDwnSrces.get(dwnSrcId).get(appNameSpace + 'Description__c')
-              ) == null ||
-              String.isBlank(
-                String.valueof(
-                  mapOfDwnSrces.get(dwnSrcId)
-                    .get(appNameSpace + 'Description__c')
-                )
-              )
-            ) {
-              requiredFieldsError(
-                'Down_Payment_Source__c',
-                'Description__c',
-                String.valueof(mapOfDwnSrces.get('Name')),
-                String.valueof(mapOfDwnSrces.get('Id'))
-              );
+            if (string.Valueof(mapOfDwnSrces.get(dwnSrcId).get(appNameSpace + 'Description__c')) == null || String.isBlank(String.valueof(mapOfDwnSrces.get(dwnSrcId).get(appNameSpace + 'Description__c')))) {
+              requiredFieldsError('Down_Payment_Source__c', 'Description__c', String.valueof(mapOfDwnSrces.get('Name')), String.valueof(mapOfDwnSrces.get('Id')));
             }
 
-            if (
-              string.Valueof(
-                mapOfDwnSrces.get(dwnSrcId).get(appNameSpace + 'Source_Type__c')
-              ) == null ||
-              String.isBlank(
-                String.valueof(
-                  mapOfDwnSrces.get(dwnSrcId)
-                    .get(appNameSpace + 'Source_Type__c')
-                )
-              )
-            ) {
-              requiredFieldsError(
-                'Down_Payment_Source__c',
-                'Source_Type__c',
-                String.valueof(mapOfDwnSrces.get('Name')),
-                String.valueof(mapOfDwnSrces.get('Id'))
-              );
+            if (string.Valueof(mapOfDwnSrces.get(dwnSrcId).get(appNameSpace + 'Source_Type__c')) == null || String.isBlank(String.valueof(mapOfDwnSrces.get(dwnSrcId).get(appNameSpace + 'Source_Type__c')))) {
+              requiredFieldsError('Down_Payment_Source__c', 'Source_Type__c', String.valueof(mapOfDwnSrces.get('Name')), String.valueof(mapOfDwnSrces.get('Id')));
             }
           }
         }
@@ -1518,7 +941,7 @@ global without sharing class FilogixWrapperBinding {
         // Validating if Opportunity Id is present in the record
         //if(rlaRecord.getSObject('Opportunity') !=null){
         // Required fields check
-        
+
         /* Filogix v.1.6.1 */
         /*if (
           mapOfLoanApplication.containsKey(rlaId) &&
@@ -1532,17 +955,8 @@ global without sharing class FilogixWrapperBinding {
           );
         }*/
 
-        if (
-          mapOfLoanApplication.containsKey(rlaId) &&
-          rlaRecord.get('Deal_Type__c') == null ||
-          string.isBlank(String.valueof(rlaRecord.get('Deal_Type__c')))
-        ) {
-          requiredFieldsError(
-            rLAObjectApiName,
-            'Deal_Type__c',
-            String.valueof(rlaRecord.get('Name')),
-            String.valueof(rlaRecord.get('Id'))
-          );
+        if (mapOfLoanApplication.containsKey(rlaId) && rlaRecord.get('Deal_Type__c') == null || string.isBlank(String.valueof(rlaRecord.get('Deal_Type__c')))) {
+          requiredFieldsError(rLAObjectApiName, 'Deal_Type__c', String.valueof(rlaRecord.get('Name')), String.valueof(rlaRecord.get('Id')));
         }
 
         /* Filogix v.1.6.1 */
@@ -1562,56 +976,19 @@ global without sharing class FilogixWrapperBinding {
         //     requiredFieldsError('ResidentialLoanApplication','Ref_Purpose__c',String.valueof(rlaRecord.get('Name')),String.valueof(rlaRecord.get('Id')));
         // }
 
-        d.dealPurposeDd = mapOfLoanApplication.containsKey(rlaId)
-          ? String.valueof(rlaRecord.get('Deal_Purpose__c'))
-          : null;
-        d.dealTypeDd = mapOfLoanApplication.containsKey(rlaId)
-          ? String.valueof(rlaRecord.get('Deal_Type__c'))
-          : null;
+        d.dealPurposeDd = mapOfLoanApplication.containsKey(rlaId) ? String.valueof(rlaRecord.get('Deal_Purpose__c')) : null;
+        d.dealTypeDd = mapOfLoanApplication.containsKey(rlaId) ? String.valueof(rlaRecord.get('Deal_Type__c')) : null;
         d.downPaymentSource = dpSources;
-        d.refiImprovementAmount = mapOfLoanApplication.containsKey(rlaId) &&
-          Double.valueof(rlaRecord.get('Ref_Improvement_Amount__c')) != null
-          ? Double.valueof(rlaRecord.get('Ref_Improvement_Amount__c'))
-          : null;
-        d.refiImprovementsDesc = mapOfLoanApplication.containsKey(rlaId) &&
-          String.valueof(rlaRecord.get('Ref_Improvement_Description__c')) !=
-          null
-          ? string.valueOf(rlaRecord.get('Ref_Improvement_Description__c'))
-          : null;
-        d.thirdPartyApplicationFlag = BooleanToString(
-          String.valueof(rlaRecord.get('Third_Party_Application_Flag__c'))
-        );
-        d.estimatedClosingDate = formatDateTime(
-          mapOfLoanApplication.containsKey(rlaId) &&
-            (Datetime) rlaRecord.get('Estimated_Closing_Date__c') != null
-            ? (datetime) rlaRecord.get('Estimated_Closing_Date__c')
-            : null
-        );
-        d.financingWaiverDate = formatDateTime(
-          mapOfLoanApplication.containsKey(rlaId) &&
-            (Datetime) rlaRecord.get('Financing_Waiver_Date__c') != null
-            ? (datetime) rlaRecord.get('Financing_Waiver_Date__c')
-            : null
-        );
-        d.referralReferenceNo = mapOfLoanApplication.containsKey(rlaId) &&
-          String.valueof(rlaRecord.get('Referral_Reference_Number__c')) != null
-          ? string.valueOf(rlaRecord.get('Referral_Reference_Number__c'))
-          : null;
-        d.refiImprovementsFlag = mapOfLoanApplication.containsKey(rlaId)
-          ? BooleanToString(
-              string.valueOf(rlaRecord.get('Ref_Improvements_Flag__c'))
-            )
-          : 'N';
-        d.refiPurpose = mapOfLoanApplication.containsKey(rlaId)
-          ? String.valueof(rlaRecord.get('Ref_Purpose__c'))
-          : null;
-        d.sourceApplicationId = mapOfLoanApplication.containsKey(rlaId)
-          ? String.valueof(rlaRecord.get('Id'))
-          : null;
-        d.taxPayorDd = mapOfLoanApplication.containsKey(rlaId) &&
-          String.valueof(rlaRecord.get('Tax_Payor__c')) != ''
-          ? String.valueof(rlaRecord.get('Tax_Payor__c'))
-          : null;
+        d.refiImprovementAmount = mapOfLoanApplication.containsKey(rlaId) && Double.valueof(rlaRecord.get('Ref_Improvement_Amount__c')) != null ? Double.valueof(rlaRecord.get('Ref_Improvement_Amount__c')) : null;
+        d.refiImprovementsDesc = mapOfLoanApplication.containsKey(rlaId) && String.valueof(rlaRecord.get('Ref_Improvement_Description__c')) != null ? string.valueOf(rlaRecord.get('Ref_Improvement_Description__c')) : null;
+        d.thirdPartyApplicationFlag = BooleanToString(String.valueof(rlaRecord.get('Third_Party_Application_Flag__c')));
+        d.estimatedClosingDate = formatDateTime(mapOfLoanApplication.containsKey(rlaId) && (Datetime) rlaRecord.get('Estimated_Closing_Date__c') != null ? (datetime) rlaRecord.get('Estimated_Closing_Date__c') : null);
+        d.financingWaiverDate = formatDateTime(mapOfLoanApplication.containsKey(rlaId) && (Datetime) rlaRecord.get('Financing_Waiver_Date__c') != null ? (datetime) rlaRecord.get('Financing_Waiver_Date__c') : null);
+        d.referralReferenceNo = mapOfLoanApplication.containsKey(rlaId) && String.valueof(rlaRecord.get('Referral_Reference_Number__c')) != null ? string.valueOf(rlaRecord.get('Referral_Reference_Number__c')) : null;
+        d.refiImprovementsFlag = mapOfLoanApplication.containsKey(rlaId) ? BooleanToString(string.valueOf(rlaRecord.get('Ref_Improvements_Flag__c'))) : 'N';
+        d.refiPurpose = mapOfLoanApplication.containsKey(rlaId) ? String.valueof(rlaRecord.get('Ref_Purpose__c')) : null;
+        d.sourceApplicationId = mapOfLoanApplication.containsKey(rlaId) ? String.valueof(rlaRecord.get('Id')) : null;
+        d.taxPayorDd = mapOfLoanApplication.containsKey(rlaId) && String.valueof(rlaRecord.get('Tax_Payor__c')) != '' ? String.valueof(rlaRecord.get('Tax_Payor__c')) : null;
         // } else {
         //     requiredFieldError +='Please make sure the Opportunity record is associated with this Residential Loan Application record';
         // }
@@ -1621,10 +998,7 @@ global without sharing class FilogixWrapperBinding {
     return d;
   }
 
-  public static List<FilogixPOSTJSONWrapper.Mortgage_Existing> bindExistingMortgageData(
-    map<string, sObject> mapOfLoanApplication,
-    List<sObject> listofMortgages
-  ) {
+  public static List<FilogixPOSTJSONWrapper.Mortgage_Existing> bindExistingMortgageData(map<string, sObject> mapOfLoanApplication, List<sObject> listofMortgages) {
     List<FilogixPOSTJSONWrapper.Mortgage_Existing> listMortgages = new List<FilogixPOSTJSONWrapper.Mortgage_Existing>();
 
     if (!listofMortgages.isEmpty()) {
@@ -1639,183 +1013,77 @@ global without sharing class FilogixWrapperBinding {
         // brIDs.add(brId);
 
         // Making sure to create Mortgage only if it's Existing
-        if (
-          Boolean.valueof(mortgageRecord.get('Existing_Mortgage__c')) == true
-        ) {
+        if (Boolean.valueof(mortgageRecord.get('Existing_Mortgage__c')) == true) {
           FilogixPOSTJSONWrapper.Rate_Z rt = new FilogixPOSTJSONWrapper.Rate_Z();
-          rt.interestRate = mortgageRecord.get('Interest_Rate__c') != null
-            ? Double.valueof(mortgageRecord.get('Interest_Rate__c'))
-            : null;
+          rt.interestRate = mortgageRecord.get('Interest_Rate__c') != null ? Double.valueof(mortgageRecord.get('Interest_Rate__c')) : null;
           // Initializing Mortgages
           FilogixPOSTJSONWrapper.Mortgage_Existing mortgage = new FilogixPOSTJSONWrapper.Mortgage_Existing();
 
-          mortgage.balanceRemaining = mortgageRecord.get(
-              'Balance_Remaining__c'
-            ) != null
-            ? Double.valueof(mortgageRecord.get('Balance_Remaining__c'))
-            : null;
-          mortgage.currentMortgageNumber = String.valueof(
-            mortgageRecord.get('Current_Mortgage_Number__c')
-          );
-          mortgage.existingMortgageFlag = BooleanToString(
-            String.valueof(mortgageRecord.get('Existing_Mortgage__c'))
-          );
-          mortgage.existingMortgageHolder = String.valueof(
-            mortgageRecord.get('Existing_Mortgage_Holder__c')
-          );
-          mortgage.insuredFlag = BooleanToString(
-            String.valueof(mortgageRecord.get('Is_Insured__c'))
-          );
-          mortgage.interestTypeDd = String.valueof(
-            mortgageRecord.get('Interest_Type__c')
-          );
-          mortgage.loanTypeDd = String.valueof(
-            mortgageRecord.get('Loan_Type__c')
-          );
-          mortgage.maturityDate = formatDateTime(
-            (DateTime) mortgageRecord.get('Maturity_Date__c')
-          );
-          mortgage.miReferenceNumber = String.valueOf(
-            mortgageRecord.get('MI_Reference_Number__c')
-          );
-          mortgage.mortgageInsurerId = String.valueOf(
-            mortgageRecord.get('Mortgage_Insurer__c')
-          );
-          mortgage.mortgageTypeDd = String.valueof(
-            mortgageRecord.get('Mortgage_Type__c')
-          ); //mapOfLoanApplication.get(rlaId).Mortgage_Type__c;
-          mortgage.originalMortgageAmount = mortgageRecord.get(
-              'Original_Mortgage_Amount__c'
-            ) != null
-            ? Double.valueOf(mortgageRecord.get('Original_Mortgage_Amount__c'))
-            : null;
-          mortgage.PAndIPaymentAmount = mortgageRecord.get(
-              'PAndIPaymentAmount__c'
-            ) != null
-            ? Double.valueOf(mortgageRecord.get('PAndIPaymentAmount__c'))
-            : null;
-          mortgage.paymentFrequencyDd = string.valueof(
-            mortgageRecord.get('Payment_Frequency__c')
-          );
-          mortgage.paymentTermDd = string.valueof(
-            mortgageRecord.get('Payment_Term__c')
-          );
-          mortgage.payoffTypeDd = String.valueof(
-            mortgageRecord.get('Payoff_Type__c')
-          );
-          mortgage.refiAdditionalInformation = String.valueof(
-            mortgageRecord.get('Ref_Additional_Information__c')
-          );
-          mortgage.refiBlendedAmortization = BooleanToString(
-            string.valueof(mortgageRecord.get('Ref_Blended_Amortization__c'))
-          );
+          mortgage.balanceRemaining = mortgageRecord.get('Balance_Remaining__c') != null ? Double.valueof(mortgageRecord.get('Balance_Remaining__c')) : null;
+          mortgage.currentMortgageNumber = String.valueof(mortgageRecord.get('Current_Mortgage_Number__c'));
+          mortgage.existingMortgageFlag = BooleanToString(String.valueof(mortgageRecord.get('Existing_Mortgage__c')));
+          mortgage.existingMortgageHolder = String.valueof(mortgageRecord.get('Existing_Mortgage_Holder__c'));
+          mortgage.insuredFlag = BooleanToString(String.valueof(mortgageRecord.get('Is_Insured__c')));
+          mortgage.interestTypeDd = String.valueof(mortgageRecord.get('Interest_Type__c'));
+          mortgage.loanTypeDd = String.valueof(mortgageRecord.get('Loan_Type__c'));
+          mortgage.maturityDate = formatDateTime((DateTime) mortgageRecord.get('Maturity_Date__c'));
+          mortgage.miReferenceNumber = String.valueOf(mortgageRecord.get('MI_Reference_Number__c'));
+          mortgage.mortgageInsurerId = String.valueOf(mortgageRecord.get('Mortgage_Insurer__c'));
+          mortgage.mortgageTypeDd = String.valueof(mortgageRecord.get('Mortgage_Type__c')); //mapOfLoanApplication.get(rlaId).Mortgage_Type__c;
+          mortgage.originalMortgageAmount = mortgageRecord.get('Original_Mortgage_Amount__c') != null ? Double.valueOf(mortgageRecord.get('Original_Mortgage_Amount__c')) : null;
+          mortgage.PAndIPaymentAmount = mortgageRecord.get('PAndIPaymentAmount__c') != null ? Double.valueOf(mortgageRecord.get('PAndIPaymentAmount__c')) : null;
+          mortgage.paymentFrequencyDd = string.valueof(mortgageRecord.get('Payment_Frequency__c'));
+          mortgage.paymentTermDd = string.valueof(mortgageRecord.get('Payment_Term__c'));
+          mortgage.payoffTypeDd = String.valueof(mortgageRecord.get('Payoff_Type__c'));
+          mortgage.refiAdditionalInformation = String.valueof(mortgageRecord.get('Ref_Additional_Information__c'));
+          mortgage.refiBlendedAmortization = BooleanToString(string.valueof(mortgageRecord.get('Ref_Blended_Amortization__c')));
 
           listMortgages.add(mortgage);
 
           if (mortgageRecord.get('Balance_Remaining__c') == null) {
-            requiredFieldsError(
-              'Mortgage__c',
-              'Balance_Remaining__c',
-              String.valueof(mortgageRecord.get('Name')),
-              String.valueof(mortgageRecord.get('Id'))
-            );
+            requiredFieldsError('Mortgage__c', 'Balance_Remaining__c', String.valueof(mortgageRecord.get('Name')), String.valueof(mortgageRecord.get('Id')));
           }
           if (mortgageRecord.get('Current_Mortgage_Number__c') == null) {
-            requiredFieldsError(
-              'Mortgage__c',
-              'Current_Mortgage_Number__c',
-              String.valueof(mortgageRecord.get('Name')),
-              String.valueof(mortgageRecord.get('Id'))
-            );
+            requiredFieldsError('Mortgage__c', 'Current_Mortgage_Number__c', String.valueof(mortgageRecord.get('Name')), String.valueof(mortgageRecord.get('Id')));
           }
 
           if (mortgageRecord.get('Existing_Mortgage__c') == null) {
-            requiredFieldsError(
-              'Mortgage__c',
-              'Existing_Mortgage__c',
-              String.valueof(mortgageRecord.get('Name')),
-              String.valueof(mortgageRecord.get('Id'))
-            );
+            requiredFieldsError('Mortgage__c', 'Existing_Mortgage__c', String.valueof(mortgageRecord.get('Name')), String.valueof(mortgageRecord.get('Id')));
           }
           if (mortgageRecord.get('Existing_Mortgage_Holder__c') == null) {
-            requiredFieldsError(
-              'Mortgage__c',
-              'Existing_Mortgage_Holder__c',
-              String.valueof(mortgageRecord.get('Name')),
-              String.valueof(mortgageRecord.get('Id'))
-            );
+            requiredFieldsError('Mortgage__c', 'Existing_Mortgage_Holder__c', String.valueof(mortgageRecord.get('Name')), String.valueof(mortgageRecord.get('Id')));
           }
 
           if (mortgageRecord.get('Interest_Type__c') == null) {
-            requiredFieldsError(
-              'Mortgage__c',
-              'Interest_Type__c',
-              String.valueof(mortgageRecord.get('Name')),
-              String.valueof(mortgageRecord.get('Id'))
-            );
+            requiredFieldsError('Mortgage__c', 'Interest_Type__c', String.valueof(mortgageRecord.get('Name')), String.valueof(mortgageRecord.get('Id')));
           }
 
           if (mortgageRecord.get('Loan_Type__c') == null) {
-            requiredFieldsError(
-              'Mortgage__c',
-              'Loan_Type__c',
-              String.valueof(mortgageRecord.get('Name')),
-              String.valueof(mortgageRecord.get('Id'))
-            );
+            requiredFieldsError('Mortgage__c', 'Loan_Type__c', String.valueof(mortgageRecord.get('Name')), String.valueof(mortgageRecord.get('Id')));
           }
 
           if (mortgageRecord.get('Maturity_Date__c') == null) {
-            requiredFieldsError(
-              'Mortgage__c',
-              'Maturity_Date__c',
-              String.valueof(mortgageRecord.get('Name')),
-              String.valueof(mortgageRecord.get('Id'))
-            );
+            requiredFieldsError('Mortgage__c', 'Maturity_Date__c', String.valueof(mortgageRecord.get('Name')), String.valueof(mortgageRecord.get('Id')));
           }
 
           if (mortgageRecord.get('Mortgage_Type__c') == null) {
-            requiredFieldsError(
-              'Mortgage__c',
-              'Mortgage_Type__c',
-              String.valueof(mortgageRecord.get('Name')),
-              String.valueof(mortgageRecord.get('Id'))
-            );
+            requiredFieldsError('Mortgage__c', 'Mortgage_Type__c', String.valueof(mortgageRecord.get('Name')), String.valueof(mortgageRecord.get('Id')));
           }
 
           if (mortgageRecord.get('Original_Mortgage_Amount__c') == null) {
-            requiredFieldsError(
-              'Mortgage__c',
-              'Original_Mortgage_Amount__c',
-              String.valueof(mortgageRecord.get('Name')),
-              String.valueof(mortgageRecord.get('Id'))
-            );
+            requiredFieldsError('Mortgage__c', 'Original_Mortgage_Amount__c', String.valueof(mortgageRecord.get('Name')), String.valueof(mortgageRecord.get('Id')));
           }
 
           if (mortgageRecord.get('PAndIPaymentAmount__c') == null) {
-            requiredFieldsError(
-              'Mortgage__c',
-              'PAndIPaymentAmount__c',
-              String.valueof(mortgageRecord.get('Name')),
-              String.valueof(mortgageRecord.get('Id'))
-            );
+            requiredFieldsError('Mortgage__c', 'PAndIPaymentAmount__c', String.valueof(mortgageRecord.get('Name')), String.valueof(mortgageRecord.get('Id')));
           }
 
           if (mortgageRecord.get('Payment_Frequency__c') == null) {
-            requiredFieldsError(
-              'Mortgage__c',
-              'Payment_Frequency__c',
-              String.valueof(mortgageRecord.get('Name')),
-              String.valueof(mortgageRecord.get('Id'))
-            );
+            requiredFieldsError('Mortgage__c', 'Payment_Frequency__c', String.valueof(mortgageRecord.get('Name')), String.valueof(mortgageRecord.get('Id')));
           }
 
           if (mortgageRecord.get('Payment_Term__c') == null) {
-            requiredFieldsError(
-              'Mortgage__c',
-              'Payment_Term__c',
-              String.valueof(mortgageRecord.get('Name')),
-              String.valueof(mortgageRecord.get('Id'))
-            );
+            requiredFieldsError('Mortgage__c', 'Payment_Term__c', String.valueof(mortgageRecord.get('Name')), String.valueof(mortgageRecord.get('Id')));
           }
 
           /*if (mortgageRecord.get('Interest_Rate__c') == null) {
@@ -1827,147 +1095,61 @@ global without sharing class FilogixWrapperBinding {
     return listMortgages;
   }
 
-  public static List<FilogixPOSTJSONWrapper.Mortgage_Requesting> bindRequestingMortgageData(
-    map<string, sObject> mapOfLoanApplication,
-    List<sObject> listofMortgages
-  ) {
+  public static List<FilogixPOSTJSONWrapper.Mortgage_Requesting> bindRequestingMortgageData(map<string, sObject> mapOfLoanApplication, List<sObject> listofMortgages) {
     List<FilogixPOSTJSONWrapper.Mortgage_Requesting> listMortgages = new List<FilogixPOSTJSONWrapper.Mortgage_Requesting>();
 
     if (!listofMortgages.isEmpty()) {
       for (sObject mortgageRecord : listofMortgages) {
         // Making sure to create Mortgage only if it's Requesting Mortgage
-        if (
-          Boolean.valueof(mortgageRecord.get('Existing_Mortgage__c')) == false
-        ) {
+        if (Boolean.valueof(mortgageRecord.get('Existing_Mortgage__c')) == false) {
           // Initializing Mortgages
           FilogixPOSTJSONWrapper.Mortgage_Requesting mortgage = new FilogixPOSTJSONWrapper.Mortgage_Requesting();
           //mortgage.borrowerIds = brIDs;
 
-          mortgage.actualPaymentTerm = mortgageRecord.get(
-              'Actual_Payment_Term__c'
-            ) != null
-            ? Double.valueof(mortgageRecord.get('Actual_Payment_Term__c'))
-            : null;
-          mortgage.amortizationTerm = mortgageRecord.get(
-              'Amortization_Term__c'
-            ) != null
-            ? Double.valueof(mortgageRecord.get('Amortization_Term__c'))
-            : null;
-          mortgage.cashBackAmt = mortgageRecord.get('Cash_Back_Amount__c') !=
-            null
-            ? Double.valueof(mortgageRecord.get('Cash_Back_Amount__c'))
-            : null;
-          mortgage.cashBackOverride = BooleanToString(
-            String.valueof(mortgageRecord.get('Cash_Back_Override__c'))
-          );
-          mortgage.cashBackPercentage = mortgageRecord.get(
-              'Cash_Back_Percentage__c'
-            ) != null
-            ? Double.valueof(mortgageRecord.get('Cash_Back_Percentage__c'))
-            : null;
-          mortgage.commercialFlag = BooleanToString(
-            String.valueof(mortgageRecord.get('Commercial__c'))
-          );
-          mortgage.constructionFlag = BooleanToString(
-            String.valueof(mortgageRecord.get('Construction__c'))
-          );
-          mortgage.existingMortgageFlag = BooleanToString(
-            String.valueof(mortgageRecord.get('Existing_Mortgage__c'))
-          );
-          mortgage.helocFlag = BooleanToString(
-            String.valueof(mortgageRecord.get('Heloc__c'))
-          );
-          mortgage.insuredFlag = BooleanToString(
-            String.valueof(mortgageRecord.get('Is_Insured__c'))
-          );
-          mortgage.interestAdjustmentDate = formatDateTime(
-            (DateTime) mortgageRecord.get('Interest_Adj_Date__c')
-          );
-          mortgage.interestCompoundDd = String.valueof(
-            mortgageRecord.get('Interest_Compound__c')
-          );
-          mortgage.interestOnlyFlag = BooleanToString(
-            String.valueof(mortgageRecord.get('Is_Interest_Only__c'))
-          );
-          mortgage.interestTypeDd = String.valueof(
-            mortgageRecord.get('Interest_Type__c')
-          );
-          mortgage.lineOfBusinessDd = String.valueof(
-            mortgageRecord.get('Line_Of_Business__c')
-          );
-          mortgage.loanTypeDd = String.valueof(
-            mortgageRecord.get('Loan_Type__c')
-          );
-          mortgage.locRepaymentTypeDd = String.valueof(
-            mortgageRecord.get('LOC_Repayment_Type__c')
-          );
-          mortgage.mortgageTypeDd = String.valueof(
-            mortgageRecord.get('Mortgage_Type__c')
-          ); //mapOfLoanApplication.get(rlaId).Mortgage_Type__c;
-          mortgage.mtgInsIncludeFlag = BooleanToString(
-            String.valueof(mortgageRecord.get('Mortgage_Insurance_Included__c'))
-          );
-          mortgage.netLoanAmount = mortgageRecord.get('Net_Loan_Amount__c') !=
-            null
-            ? Double.valueOf(mortgageRecord.get('Net_Loan_Amount__c'))
-            : null;
-          mortgage.paymentFrequencyDd = string.valueof(
-            mortgageRecord.get('Payment_Frequency__c')
-          );
-          mortgage.paymentTermDd = string.valueof(
-            mortgageRecord.get('Payment_Term__c')
-          );
+          mortgage.actualPaymentTerm = mortgageRecord.get('Actual_Payment_Term__c') != null ? Double.valueof(mortgageRecord.get('Actual_Payment_Term__c')) : null;
+          mortgage.amortizationTerm = mortgageRecord.get('Amortization_Term__c') != null ? Double.valueof(mortgageRecord.get('Amortization_Term__c')) : null;
+          mortgage.cashBackAmt = mortgageRecord.get('Cash_Back_Amount__c') != null ? Double.valueof(mortgageRecord.get('Cash_Back_Amount__c')) : null;
+          mortgage.cashBackOverride = BooleanToString(String.valueof(mortgageRecord.get('Cash_Back_Override__c')));
+          mortgage.cashBackPercentage = mortgageRecord.get('Cash_Back_Percentage__c') != null ? Double.valueof(mortgageRecord.get('Cash_Back_Percentage__c')) : null;
+          mortgage.commercialFlag = BooleanToString(String.valueof(mortgageRecord.get('Commercial__c')));
+          mortgage.constructionFlag = BooleanToString(String.valueof(mortgageRecord.get('Construction__c')));
+          mortgage.existingMortgageFlag = BooleanToString(String.valueof(mortgageRecord.get('Existing_Mortgage__c')));
+          mortgage.helocFlag = BooleanToString(String.valueof(mortgageRecord.get('Heloc__c')));
+          mortgage.insuredFlag = BooleanToString(String.valueof(mortgageRecord.get('Is_Insured__c')));
+          mortgage.interestAdjustmentDate = formatDateTime((DateTime) mortgageRecord.get('Interest_Adj_Date__c'));
+          mortgage.interestCompoundDd = String.valueof(mortgageRecord.get('Interest_Compound__c'));
+          mortgage.interestOnlyFlag = BooleanToString(String.valueof(mortgageRecord.get('Is_Interest_Only__c')));
+          mortgage.interestTypeDd = String.valueof(mortgageRecord.get('Interest_Type__c'));
+          mortgage.lineOfBusinessDd = String.valueof(mortgageRecord.get('Line_Of_Business__c'));
+          mortgage.loanTypeDd = String.valueof(mortgageRecord.get('Loan_Type__c'));
+          mortgage.locRepaymentTypeDd = String.valueof(mortgageRecord.get('LOC_Repayment_Type__c'));
+          mortgage.mortgageTypeDd = String.valueof(mortgageRecord.get('Mortgage_Type__c')); //mapOfLoanApplication.get(rlaId).Mortgage_Type__c;
+          mortgage.mtgInsIncludeFlag = BooleanToString(String.valueof(mortgageRecord.get('Mortgage_Insurance_Included__c')));
+          mortgage.netLoanAmount = mortgageRecord.get('Net_Loan_Amount__c') != null ? Double.valueOf(mortgageRecord.get('Net_Loan_Amount__c')) : null;
+          mortgage.paymentFrequencyDd = string.valueof(mortgageRecord.get('Payment_Frequency__c'));
+          mortgage.paymentTermDd = string.valueof(mortgageRecord.get('Payment_Term__c'));
 
           // POPULATING QUALIFYDETAILS
           FilogixPOSTJSONWrapper.QualifyDetail_Z quaDet = new FilogixPOSTJSONWrapper.QualifyDetail_Z();
-          quaDet.amortizationTerm = mortgageRecord.get(
-              'Qualify_Amortization_Term__c'
-            ) != null
-            ? Double.valueof(mortgageRecord.get('Qualify_Amortization_Term__c'))
-            : null;
-          quaDet.interestCompoundDd = string.valueOf(
-            mortgageRecord.get('Qualify_Interest_Compound__c')
-          );
-          quaDet.interestOnlyFlag = BooleanToString(
-            string.valueOf(mortgageRecord.get('Qualify_Is_Interest_Only__c'))
-          );
+          quaDet.amortizationTerm = mortgageRecord.get('Qualify_Amortization_Term__c') != null ? Double.valueof(mortgageRecord.get('Qualify_Amortization_Term__c')) : null;
+          quaDet.interestCompoundDd = string.valueOf(mortgageRecord.get('Qualify_Interest_Compound__c'));
+          quaDet.interestOnlyFlag = BooleanToString(string.valueOf(mortgageRecord.get('Qualify_Is_Interest_Only__c')));
 
-          mortgage.qualifyRate = mortgageRecord.get('Qualify_Rate__c') != null
-            ? Double.valueOf(mortgageRecord.get('Qualify_Rate__c'))
-            : null;
+          mortgage.qualifyRate = mortgageRecord.get('Qualify_Rate__c') != null ? Double.valueOf(mortgageRecord.get('Qualify_Rate__c')) : null;
 
           FilogixPOSTJSONWrapper.Rate_Z rt = new FilogixPOSTJSONWrapper.Rate_Z();
-          rt.discount = mortgageRecord.get('Discount__c') != null
-            ? Double.valueof(mortgageRecord.get('Discount__c'))
-            : null;
-          rt.premium = mortgageRecord.get('Premium__c') != null
-            ? Double.valueof(mortgageRecord.get('Premium__c'))
-            : null;
-          rt.buyDownRate = mortgageRecord.get('Buydown_Rate__c') != null
-            ? Double.valueof(mortgageRecord.get('Buydown_Rate__c'))
-            : null;
+          rt.discount = mortgageRecord.get('Discount__c') != null ? Double.valueof(mortgageRecord.get('Discount__c')) : null;
+          rt.premium = mortgageRecord.get('Premium__c') != null ? Double.valueof(mortgageRecord.get('Premium__c')) : null;
+          rt.buyDownRate = mortgageRecord.get('Buydown_Rate__c') != null ? Double.valueof(mortgageRecord.get('Buydown_Rate__c')) : null;
 
           mortgage.rate = rt;
 
-          mortgage.refiBlendedAmortization = BooleanToString(
-            string.valueof(mortgageRecord.get('Ref_Blended_Amortization__c'))
-          );
-          mortgage.repaymentTypeDd = String.valueof(
-            mortgageRecord.get('Repayment_Type__c')
-          );
-          mortgage.requestedRate = mortgageRecord.get('Interest_Rate__c') !=
-            null
-            ? Double.valueOf(mortgageRecord.get('Interest_Rate__c'))
-            : null;
-          mortgage.reverseFlag = BooleanToString(
-            string.valueof(mortgageRecord.get('Reverse_Flag__c'))
-          );
-          mortgage.singleProgressiveTypeDd = string.valueof(
-            mortgageRecord.get('Single_Progressive_Type__c')
-          );
-          mortgage.subprimeFlag = BooleanToString(
-            String.valueof(mortgageRecord.get('Sub_Prime__c'))
-          );
+          mortgage.refiBlendedAmortization = BooleanToString(string.valueof(mortgageRecord.get('Ref_Blended_Amortization__c')));
+          mortgage.repaymentTypeDd = String.valueof(mortgageRecord.get('Repayment_Type__c'));
+          mortgage.requestedRate = mortgageRecord.get('Interest_Rate__c') != null ? Double.valueOf(mortgageRecord.get('Interest_Rate__c')) : null;
+          mortgage.reverseFlag = BooleanToString(string.valueof(mortgageRecord.get('Reverse_Flag__c')));
+          mortgage.singleProgressiveTypeDd = string.valueof(mortgageRecord.get('Single_Progressive_Type__c'));
+          mortgage.subprimeFlag = BooleanToString(String.valueof(mortgageRecord.get('Sub_Prime__c')));
 
           listMortgages.add(mortgage);
           /*
@@ -2046,10 +1228,7 @@ global without sharing class FilogixWrapperBinding {
     return listMortgages;
   }
 
-  public static FilogixPOSTJSONWrapper.SubjectProperty bindSubjPropData(
-    map<string, sObject> mapOfLoanApplication,
-    map<string, map<string, sObject>> mapOfProp
-  ) {
+  public static FilogixPOSTJSONWrapper.SubjectProperty bindSubjPropData(map<string, sObject> mapOfLoanApplication, map<string, map<string, sObject>> mapOfProp) {
     String appNameSpace = getAppNameSpace();
     FilogixPOSTJSONWrapper.SubjectProperty subPrp = new FilogixPOSTJSONWrapper.SubjectProperty();
 
@@ -2057,9 +1236,7 @@ global without sharing class FilogixWrapperBinding {
       sObject rlaRecord = mapOfLoanApplication.get(rlaId);
       system.debug('rlaRecord=' + rlaRecord);
       list<FilogixPOSTJSONWrapper.PropertyExpense> ListExpenses = new List<FilogixPOSTJSONWrapper.PropertyExpense>();
-      string SubPrpId = rlaRecord.get('Subject_Property__c') != null
-        ? string.Valueof(rlaRecord.get('Subject_Property__c'))
-        : null;
+      string SubPrpId = rlaRecord.get('Subject_Property__c') != null ? string.Valueof(rlaRecord.get('Subject_Property__c')) : null;
 
       System.debug('SubPrpId::' + SubPrpId);
       // Precautionary check
@@ -2070,68 +1247,15 @@ global without sharing class FilogixWrapperBinding {
 
       if (!string.isEmpty(SubPrpId)) {
         // Property Expenses
-        Double Municipal = rlaRecord.getSObject('Subject_Property__r')
-            .get('Annual_Taxes__c') != null
-          ? Double.valueOf(
-              rlaRecord.getSObject('Subject_Property__r').get('Annual_Taxes__c')
-            )
-          : 0;
-        Double Insurance = rlaRecord.getSObject('Subject_Property__r')
-            .get('Insurance_Expenses__c') != null
-          ? Double.valueOf(
-              rlaRecord.getSObject('Subject_Property__r')
-                .get('Insurance_Expenses__c')
-            )
-          : 0;
-        Double Heat = rlaRecord.getSObject('Subject_Property__r')
-            .get('Heating_Expenses__c') != null
-          ? Double.valueOf(
-              rlaRecord.getSObject('Subject_Property__r')
-                .get('Heating_Expenses__c')
-            )
-          : 0;
-        Double Hydro = rlaRecord.getSObject('Subject_Property__r')
-            .get('Hydro_Expenses__c') != null
-          ? Double.valueOf(
-              rlaRecord.getSObject('Subject_Property__r')
-                .get('Hydro_Expenses__c')
-            )
-          : 0;
-        Double Interest = rlaRecord.getSObject('Subject_Property__r')
-            .get('Interest_Expenses__c') != null
-          ? Double.valueOf(
-              rlaRecord.getSObject('Subject_Property__r')
-                .get('Interest_Expenses__c')
-            )
-          : 0;
-        Double General = rlaRecord.getSObject('Subject_Property__r')
-            .get('Management_Expenses__c') != null
-          ? Double.valueOf(
-              rlaRecord.getSObject('Subject_Property__r')
-                .get('Management_Expenses__c')
-            )
-          : 0;
-        Double Other = rlaRecord.getSObject('Subject_Property__r')
-            .get('Other_Expenses__c') != null
-          ? Double.valueOf(
-              rlaRecord.getSObject('Subject_Property__r')
-                .get('Other_Expenses__c')
-            )
-          : 0;
-        Double Repair = rlaRecord.getSObject('Subject_Property__r')
-            .get('Repairs_Expenses__c') != null
-          ? Double.valueOf(
-              rlaRecord.getSObject('Subject_Property__r')
-                .get('Repairs_Expenses__c')
-            )
-          : 0;
-        Double Condo = rlaRecord.getSObject('Subject_Property__r')
-            .get('Total_Condo_Fees__c') != null
-          ? Double.valueOf(
-              rlaRecord.getSObject('Subject_Property__r')
-                .get('Total_Condo_Fees__c')
-            )
-          : 0;
+        Double Municipal = rlaRecord.getSObject('Subject_Property__r').get('Annual_Taxes__c') != null ? Double.valueOf(rlaRecord.getSObject('Subject_Property__r').get('Annual_Taxes__c')) : 0;
+        Double Insurance = rlaRecord.getSObject('Subject_Property__r').get('Insurance_Expenses__c') != null ? Double.valueOf(rlaRecord.getSObject('Subject_Property__r').get('Insurance_Expenses__c')) : 0;
+        Double Heat = rlaRecord.getSObject('Subject_Property__r').get('Heating_Expenses__c') != null ? Double.valueOf(rlaRecord.getSObject('Subject_Property__r').get('Heating_Expenses__c')) : 0;
+        Double Hydro = rlaRecord.getSObject('Subject_Property__r').get('Hydro_Expenses__c') != null ? Double.valueOf(rlaRecord.getSObject('Subject_Property__r').get('Hydro_Expenses__c')) : 0;
+        Double Interest = rlaRecord.getSObject('Subject_Property__r').get('Interest_Expenses__c') != null ? Double.valueOf(rlaRecord.getSObject('Subject_Property__r').get('Interest_Expenses__c')) : 0;
+        Double General = rlaRecord.getSObject('Subject_Property__r').get('Management_Expenses__c') != null ? Double.valueOf(rlaRecord.getSObject('Subject_Property__r').get('Management_Expenses__c')) : 0;
+        Double Other = rlaRecord.getSObject('Subject_Property__r').get('Other_Expenses__c') != null ? Double.valueOf(rlaRecord.getSObject('Subject_Property__r').get('Other_Expenses__c')) : 0;
+        Double Repair = rlaRecord.getSObject('Subject_Property__r').get('Repairs_Expenses__c') != null ? Double.valueOf(rlaRecord.getSObject('Subject_Property__r').get('Repairs_Expenses__c')) : 0;
+        Double Condo = rlaRecord.getSObject('Subject_Property__r').get('Total_Condo_Fees__c') != null ? Double.valueOf(rlaRecord.getSObject('Subject_Property__r').get('Total_Condo_Fees__c')) : 0;
 
         if (Municipal != 0) {
           FilogixPOSTJSONWrapper.PropertyExpense MunicipalExpense = new FilogixPOSTJSONWrapper.PropertyExpense();
@@ -2202,97 +1326,33 @@ global without sharing class FilogixWrapperBinding {
 
         //if (!string.isblank(SubPrpId)){
         FilogixPOSTJSONWrapper.Address addr = new FilogixPOSTJSONWrapper.Address();
-        addr.unitNumber = string.valueof(
-          rlaRecord.getSObject('Subject_Property__r')
-            .get('PropertyUnitNumber__c')
-        );
-        addr.streetNumber = string.valueof(
-          rlaRecord.getSObject('Subject_Property__r').get('Street_Number__c')
-        ); //!string.isEmpty(string.valueof(rlaRecord.getSObject('Subject_Property__r').get('Street_Number__c')))?string.valueof(rlaRecord.getSObject('Subject_Property__r').get('PropertyStreet')).SubStringBefore(' '):'';//
-        addr.streetName = !String.isEmpty(
-            String.valueof(
-              rlaRecord.getSObject('Subject_Property__r').get('Street_Name__c')
-            )
-          )
-          ? String.valueof(
-              rlaRecord.getSObject('Subject_Property__r').get('Street_Name__c')
-            )
-          : ''; ///string.valueof(rlaRecord.getSObject('Subject_Property__r').get('PropertyStreet')).SubStringAfter(' ');
-        addr.streetTypeDd = string.valueof(
-          rlaRecord.getSObject('Subject_Property__r').get('Street_Type__c')
-        );
-        addr.streetDirectionDd = string.valueof(
-          rlaRecord.getSObject('Subject_Property__r').get('Direction__c')
-        );
+        addr.unitNumber = string.valueof(rlaRecord.getSObject('Subject_Property__r').get('PropertyUnitNumber__c'));
+        addr.streetNumber = string.valueof(rlaRecord.getSObject('Subject_Property__r').get('Street_Number__c')); //!string.isEmpty(string.valueof(rlaRecord.getSObject('Subject_Property__r').get('Street_Number__c')))?string.valueof(rlaRecord.getSObject('Subject_Property__r').get('PropertyStreet')).SubStringBefore(' '):'';//
+        addr.streetName = !String.isEmpty(String.valueof(rlaRecord.getSObject('Subject_Property__r').get('Street_Name__c'))) ? String.valueof(rlaRecord.getSObject('Subject_Property__r').get('Street_Name__c')) : ''; ///string.valueof(rlaRecord.getSObject('Subject_Property__r').get('PropertyStreet')).SubStringAfter(' ');
+        addr.streetTypeDd = string.valueof(rlaRecord.getSObject('Subject_Property__r').get('Street_Type__c'));
+        addr.streetDirectionDd = string.valueof(rlaRecord.getSObject('Subject_Property__r').get('Direction__c'));
         // Filogix supports upto 20 characters for City
-        addr.city = cityNamegen(
-          string.valueof(
-            rlaRecord.getSObject('Subject_Property__r').get('City__c')
-          )
-        );
+        addr.city = cityNamegen(string.valueof(rlaRecord.getSObject('Subject_Property__r').get('City__c')));
         //addr.city = string.valueof(rlaRecord.getSObject('Subject_Property__r').get('PropertyCity')).length()>20 ? string.valueof(rlaRecord.getSObject('Subject_Property__r').get('PropertyCity')).substr(0,20):string.valueof(rlaRecord.getSObject('Subject_Property__r').get('PropertyCity'));
-        addr.provinceDd = getFullProvinceName(
-          string.valueof(
-            rlaRecord.getSObject('Subject_Property__r').get('Province__c')
-          )
-        );
-        if (
-          postalFSAGen(
-            string.valueof(
-              rlaRecord.getSObject('Subject_Property__r').get('PostalCode__c')
-            )
-          ) != ''
-        ) {
-          addr.postalFsa = postalFSAGen(
-            string.valueof(
-              rlaRecord.getSObject('Subject_Property__r').get('PostalCode__c')
-            )
-          );
+        addr.provinceDd = getFullProvinceName(string.valueof(rlaRecord.getSObject('Subject_Property__r').get('Province__c')));
+        if (postalFSAGen(string.valueof(rlaRecord.getSObject('Subject_Property__r').get('PostalCode__c'))) != '') {
+          addr.postalFsa = postalFSAGen(string.valueof(rlaRecord.getSObject('Subject_Property__r').get('PostalCode__c')));
         }
-        if (
-          postalLDUGen(
-            string.valueof(
-              rlaRecord.getSObject('Subject_Property__r').get('PostalCode__c')
-            )
-          ) != ''
-        ) {
-          addr.postalLdu = postalLDUGen(
-            string.valueof(
-              rlaRecord.getSObject('Subject_Property__r').get('PostalCode__c')
-            )
-          );
+        if (postalLDUGen(string.valueof(rlaRecord.getSObject('Subject_Property__r').get('PostalCode__c'))) != '') {
+          addr.postalLdu = postalLDUGen(string.valueof(rlaRecord.getSObject('Subject_Property__r').get('PostalCode__c')));
         }
-        addr.countryTypeDd = getFullCountryName(
-          string.valueof(
-            rlaRecord.getSObject('Subject_Property__r').get('Country__c')
-          )
-        );
+        addr.countryTypeDd = getFullCountryName(string.valueof(rlaRecord.getSObject('Subject_Property__r').get('Country__c')));
 
-        System.debug(
-          'Country::' +
-          rlaRecord.getSObject('Subject_Property__r').get('Country__c')
-        );
+        System.debug('Country::' + rlaRecord.getSObject('Subject_Property__r').get('Country__c'));
 
         //Required fields check
-        if (
-          rlaRecord.getSObject('Subject_Property__r').get('Country__c') == null
-        ) {
-          requiredFieldsError(
-            objNamePrefix + 'LoanApplicationProperty' + customFieldSuffix,
-            'Country__c',
-            String.valueof(
-              rlaRecord.getSObject('Subject_Property__r').get('Name')
-            ),
-            String.valueof(
-              rlaRecord.getSObject('Subject_Property__r').get('Id')
-            )
-          );
-            
-        } 
-        
+        if (rlaRecord.getSObject('Subject_Property__r').get('Country__c') == null) {
+          requiredFieldsError(objNamePrefix + 'LoanApplicationProperty' + customFieldSuffix, 'Country__c', String.valueof(rlaRecord.getSObject('Subject_Property__r').get('Name')), String.valueof(rlaRecord.getSObject('Subject_Property__r').get('Id')));
+        }
+
         /*Filogix API v1.6.1*/
-        if (addr.countryTypeDd!=null && addr.countryTypeDd.contains('United')) {
-          requiredFieldError+='Subject Property should be Canadian Property only';
+        if (addr.countryTypeDd != null && addr.countryTypeDd.contains('United')) {
+          requiredFieldError += 'Subject Property should be Canadian Property only';
         }
         //Required fields check
         /*Filogix API v1.6.1
@@ -2311,260 +1371,70 @@ global without sharing class FilogixWrapperBinding {
           );
         } */
         //Required fields check
-        if (
-          rlaRecord.getSObject('Subject_Property__r').get('PostalCode__c') ==
-          null
-        ) {
-          requiredFieldsError(
-            objNamePrefix + 'LoanApplicationProperty' + customFieldSuffix,
-            'PostalCode__c',
-            String.valueof(
-              rlaRecord.getSObject('Subject_Property__r').get('Name')
-            ),
-            String.valueof(
-              rlaRecord.getSObject('Subject_Property__r').get('Id')
-            )
-          );
+        if (rlaRecord.getSObject('Subject_Property__r').get('PostalCode__c') == null) {
+          requiredFieldsError(objNamePrefix + 'LoanApplicationProperty' + customFieldSuffix, 'PostalCode__c', String.valueof(rlaRecord.getSObject('Subject_Property__r').get('Name')), String.valueof(rlaRecord.getSObject('Subject_Property__r').get('Id')));
         }
 
         // RENTAL INCOME
         // If Occupancy Type contains "Rental"
-        if (
-          !string.isBlank(
-            string.Valueof(
-              rlaRecord.getSObject('Subject_Property__r')
-                .get('PropertyUseType' + customFieldSuffix)
-            )
-          ) &&
-          string.Valueof(
-              rlaRecord.getSObject('Subject_Property__r')
-                .get('PropertyUseType' + customFieldSuffix)
-            )
-            .contains('Rental')
-        ) {
+        if (!string.isBlank(string.Valueof(rlaRecord.getSObject('Subject_Property__r').get('PropertyUseType' + customFieldSuffix))) && string.Valueof(rlaRecord.getSObject('Subject_Property__r').get('PropertyUseType' + customFieldSuffix)).contains('Rental')) {
           FilogixPOSTJSONWrapper.RentalIncome rInc = new FilogixPOSTJSONWrapper.RentalIncome();
-          rInc.incomeAmount = rlaRecord.getSObject('Subject_Property__r')
-              .get('ExpMonthlyRentalIncome' + customFieldSuffix) != null
-            ? Double.valueOf(
-                rlaRecord.getSObject('Subject_Property__r')
-                  .get('ExpMonthlyRentalIncome' + customFieldSuffix)
-              )
-            : null;
-          rInc.incomePeriodDd = string.valueof(
-            rlaRecord.getSObject('Subject_Property__r')
-              .get('Rental_Income_Period__c')
-          );
-          rInc.incomeTypeDd = string.valueof(
-            rlaRecord.getSObject('Subject_Property__r')
-              .get('Rental_Income_Type__c')
-          );
-          rInc.incPercentInTds = rInc.incPercentInGds = rlaRecord.getSObject(
-                'Subject_Property__r'
-              )
-              .get('Rental_IncPercentInTds__c') != null
-            ? Double.valueOf(
-                rlaRecord.getSObject('Subject_Property__r')
-                  .get('Rental_IncPercentInTds__c')
-              )
-            : null;
+          rInc.incomeAmount = rlaRecord.getSObject('Subject_Property__r').get('ExpMonthlyRentalIncome' + customFieldSuffix) != null ? Double.valueOf(rlaRecord.getSObject('Subject_Property__r').get('ExpMonthlyRentalIncome' + customFieldSuffix)) : null;
+          rInc.incomePeriodDd = string.valueof(rlaRecord.getSObject('Subject_Property__r').get('Rental_Income_Period__c'));
+          rInc.incomeTypeDd = string.valueof(rlaRecord.getSObject('Subject_Property__r').get('Rental_Income_Type__c'));
+          rInc.incPercentInTds = rInc.incPercentInGds = rlaRecord.getSObject('Subject_Property__r').get('Rental_IncPercentInTds__c') != null ? Double.valueOf(rlaRecord.getSObject('Subject_Property__r').get('Rental_IncPercentInTds__c')) : null;
           //rInc.incomeDescription (Missing Mappping)
 
           //Required fields check
-          if (
-            rlaRecord.getSObject('Subject_Property__r')
-              .get('ExpMonthlyRentalIncome' + customFieldSuffix) == null
-          ) {
-            requiredFieldsError(
-              objNamePrefix + 'LoanApplicationProperty' + objNameSuffix,
-              'ExpMonthlyRentalIncome' + customFieldSuffix,
-              String.valueof(
-                rlaRecord.getSObject('Subject_Property__r').get('Name')
-              ),
-              String.valueof(
-                rlaRecord.getSObject('Subject_Property__r').get('Id')
-              )
-            );
+          if (rlaRecord.getSObject('Subject_Property__r').get('ExpMonthlyRentalIncome' + customFieldSuffix) == null) {
+            requiredFieldsError(objNamePrefix + 'LoanApplicationProperty' + objNameSuffix, 'ExpMonthlyRentalIncome' + customFieldSuffix, String.valueof(rlaRecord.getSObject('Subject_Property__r').get('Name')), String.valueof(rlaRecord.getSObject('Subject_Property__r').get('Id')));
           }
 
-          if (
-            rlaRecord.getSObject('Subject_Property__r')
-              .get('Rental_Income_Period__c') == null
-          ) {
-            requiredFieldsError(
-              objNamePrefix + 'LoanApplicationProperty' + objNameSuffix,
-              'Rental_Income_Period__c',
-              String.valueof(
-                rlaRecord.getSObject('Subject_Property__r').get('Name')
-              ),
-              String.valueof(
-                rlaRecord.getSObject('Subject_Property__r').get('Id')
-              )
-            );
+          if (rlaRecord.getSObject('Subject_Property__r').get('Rental_Income_Period__c') == null) {
+            requiredFieldsError(objNamePrefix + 'LoanApplicationProperty' + objNameSuffix, 'Rental_Income_Period__c', String.valueof(rlaRecord.getSObject('Subject_Property__r').get('Name')), String.valueof(rlaRecord.getSObject('Subject_Property__r').get('Id')));
           }
 
-          if (
-            rlaRecord.getSObject('Subject_Property__r')
-              .get('Rental_Income_Type__c') == null
-          ) {
-            requiredFieldsError(
-              objNamePrefix + 'LoanApplicationProperty' + objNameSuffix,
-              'Rental_Income_Type__c',
-              String.valueof(
-                rlaRecord.getSObject('Subject_Property__r').get('Name')
-              ),
-              String.valueof(
-                rlaRecord.getSObject('Subject_Property__r').get('Id')
-              )
-            );
+          if (rlaRecord.getSObject('Subject_Property__r').get('Rental_Income_Type__c') == null) {
+            requiredFieldsError(objNamePrefix + 'LoanApplicationProperty' + objNameSuffix, 'Rental_Income_Type__c', String.valueof(rlaRecord.getSObject('Subject_Property__r').get('Name')), String.valueof(rlaRecord.getSObject('Subject_Property__r').get('Id')));
           }
           // Adding rInc to the Subject Property
           subPrp.rentalIncome = rInc;
         }
 
-        subPrp.actualAppraisalValue = rlaRecord.getSObject(
-              'Subject_Property__r'
-            )
-            .get('AppraisedValue__c') != null
-          ? Double.valueof(
-              rlaRecord.getSObject('Subject_Property__r')
-                .get('AppraisedValue__c')
-            )
-          : null;
+        subPrp.actualAppraisalValue = rlaRecord.getSObject('Subject_Property__r').get('AppraisedValue__c') != null ? Double.valueof(rlaRecord.getSObject('Subject_Property__r').get('AppraisedValue__c')) : null;
         subPrp.address = addr;
-        subPrp.appraisalDateAct = rlaRecord.getSObject('Subject_Property__r')
-            .get('Appraisal_Date__c') != null
-          ? formatDateTime(
-              (datetime) rlaRecord.getSObject('Subject_Property__r')
-                .get('Appraisal_Date__c')
-            )
-          : null;
-        subPrp.dwellingStyleDd = string.valueof(
-          rlaRecord.getSObject('Subject_Property__r').get('Style__c')
-        );
-        subPrp.dwellingTypeDd = string.valueof(
-          rlaRecord.getSObject('Subject_Property__r').get('Structure_Type__c')
-        );
-        subPrp.estimatedAppraisalValue = rlaRecord.getSObject(
-              'Subject_Property__r'
-            )
-            .get('PropertyValue' + customFieldSuffix) != null
-          ? Double.valueof(
-              rlaRecord.getSObject('Subject_Property__r')
-                .get('PropertyValue' + customFieldSuffix)
-            )
-          : null;
-        subPrp.originalPurchasePrice = Double.valueof(
-          rlaRecord.getSObject('Subject_Property__r').get('purchasePrice__c')
-        );
-        subPrp.feesIncludeHeat = BooleanToString(
-          string.valueOf(
-            rlaRecord.getSObject('Subject_Property__r')
-              .get('feesIncludeHeat__c')
-          )
-        );
-        subPrp.garageSizeDd = string.valueOf(
-          rlaRecord.getSObject('Subject_Property__r').get('Garage_Size__c')
-        );
-        subPrp.garageTypeDd = string.valueOf(
-          rlaRecord.getSObject('Subject_Property__r').get('Garage_Type__c')
-        );
-        subPrp.heatTypeDd = string.valueOf(
-          rlaRecord.getSObject('Subject_Property__r').get('Heat__c')
-        );
-        subPrp.includetds = BooleanToString(
-          string.valueOf(
-            rlaRecord.getSObject('Subject_Property__r').get('includetds__c')
-          )
-        );
-        subPrp.purchasePrice = Double.valueof(
-          rlaRecord.getSObject('Subject_Property__r').get('purchasePrice__c')
-        );
+        subPrp.appraisalDateAct = rlaRecord.getSObject('Subject_Property__r').get('Appraisal_Date__c') != null ? formatDateTime((datetime) rlaRecord.getSObject('Subject_Property__r').get('Appraisal_Date__c')) : null;
+        subPrp.dwellingStyleDd = string.valueof(rlaRecord.getSObject('Subject_Property__r').get('Style__c'));
+        subPrp.dwellingTypeDd = string.valueof(rlaRecord.getSObject('Subject_Property__r').get('Structure_Type__c'));
+        subPrp.estimatedAppraisalValue = rlaRecord.getSObject('Subject_Property__r').get('PropertyValue' + customFieldSuffix) != null ? Double.valueof(rlaRecord.getSObject('Subject_Property__r').get('PropertyValue' + customFieldSuffix)) : null;
+        subPrp.originalPurchasePrice = Double.valueof(rlaRecord.getSObject('Subject_Property__r').get('purchasePrice__c'));
+        subPrp.feesIncludeHeat = BooleanToString(string.valueOf(rlaRecord.getSObject('Subject_Property__r').get('feesIncludeHeat__c')));
+        subPrp.garageSizeDd = string.valueOf(rlaRecord.getSObject('Subject_Property__r').get('Garage_Size__c'));
+        subPrp.garageTypeDd = string.valueOf(rlaRecord.getSObject('Subject_Property__r').get('Garage_Type__c'));
+        subPrp.heatTypeDd = string.valueOf(rlaRecord.getSObject('Subject_Property__r').get('Heat__c'));
+        subPrp.includetds = BooleanToString(string.valueOf(rlaRecord.getSObject('Subject_Property__r').get('includetds__c')));
+        subPrp.purchasePrice = Double.valueof(rlaRecord.getSObject('Subject_Property__r').get('purchasePrice__c'));
         //subPrp.insulatedWithUffi = mapOfProperties.get(propId).insulatedWithUffi__c;
-        subPrp.legalLine1 = string.valueOf(
-          rlaRecord.getSObject('Subject_Property__r').get('lot__c')
-        );
-        subPrp.legalLine2 = string.valueOf(
-          rlaRecord.getSObject('Subject_Property__r').get('block__c')
-        );
-        subPrp.legalLine3 = string.valueOf(
-          rlaRecord.getSObject('Subject_Property__r').get('Conc_Township__c')
-        );
-        subPrp.livingSpace = rlaRecord.getSObject('Subject_Property__r')
-            .get('livingSpace__c') != null
-          ? Double.valueof(
-              rlaRecord.getSObject('Subject_Property__r').get('livingSpace__c')
-            )
-          : null;
-        subPrp.livingSpaceUnitOfMeasurDd = string.valueof(
-          rlaRecord.getSObject('Subject_Property__r')
-            .get('livingSpaceUnitOfMeasurDd__c')
-        );
-        subPrp.lotSize = rlaRecord.getSObject('Subject_Property__r')
-            .get('lotSize__c') != null
-          ? Double.valueof(
-              rlaRecord.getSObject('Subject_Property__r').get('lotSize__c')
-            )
-          : null;
-        subPrp.lotSizeUnitOfMeasureDd = string.Valueof(
-          rlaRecord.getSObject('Subject_Property__r')
-            .get('lotSizeUnitOfMeasure__c')
-        );
-        subPrp.mlsListingFlag = BooleanToString(
-          String.valueof(
-            rlaRecord.getSObject('Subject_Property__r').get('mlsListingFlag__c')
-          )
-        );
-        subPrp.newConstructionDd = string.Valueof(
-          rlaRecord.getSObject('Subject_Property__r')
-            .get('Construction_Type__c')
-        );
-        subPrp.numberOfUnits = rlaRecord.getSObject('Subject_Property__r')
-            .get('numberOfUnits__c') != null
-          ? Double.valueof(
-              rlaRecord.getSObject('Subject_Property__r')
-                .get('numberOfUnits__c')
-            )
-          : null;
-        subPrp.occupancyTypeDd = string.Valueof(
-          rlaRecord.getSObject('Subject_Property__r')
-            .get('PropertyUseType' + customFieldSuffix)
-        );
-        subPrp.propertyTypeDd = string.Valueof(
-          rlaRecord.getSObject('Subject_Property__r').get('Property_Type__c')
-        );
+        subPrp.legalLine1 = string.valueOf(rlaRecord.getSObject('Subject_Property__r').get('lot__c'));
+        subPrp.legalLine2 = string.valueOf(rlaRecord.getSObject('Subject_Property__r').get('block__c'));
+        subPrp.legalLine3 = string.valueOf(rlaRecord.getSObject('Subject_Property__r').get('Conc_Township__c'));
+        subPrp.livingSpace = rlaRecord.getSObject('Subject_Property__r').get('livingSpace__c') != null ? Double.valueof(rlaRecord.getSObject('Subject_Property__r').get('livingSpace__c')) : null;
+        subPrp.livingSpaceUnitOfMeasurDd = string.valueof(rlaRecord.getSObject('Subject_Property__r').get('livingSpaceUnitOfMeasurDd__c'));
+        subPrp.lotSize = rlaRecord.getSObject('Subject_Property__r').get('lotSize__c') != null ? Double.valueof(rlaRecord.getSObject('Subject_Property__r').get('lotSize__c')) : null;
+        subPrp.lotSizeUnitOfMeasureDd = string.Valueof(rlaRecord.getSObject('Subject_Property__r').get('lotSizeUnitOfMeasure__c'));
+        subPrp.mlsListingFlag = BooleanToString(String.valueof(rlaRecord.getSObject('Subject_Property__r').get('mlsListingFlag__c')));
+        subPrp.newConstructionDd = string.Valueof(rlaRecord.getSObject('Subject_Property__r').get('Construction_Type__c'));
+        subPrp.numberOfUnits = rlaRecord.getSObject('Subject_Property__r').get('numberOfUnits__c') != null ? Double.valueof(rlaRecord.getSObject('Subject_Property__r').get('numberOfUnits__c')) : null;
+        subPrp.occupancyTypeDd = string.Valueof(rlaRecord.getSObject('Subject_Property__r').get('PropertyUseType' + customFieldSuffix));
+        subPrp.propertyTypeDd = string.Valueof(rlaRecord.getSObject('Subject_Property__r').get('Property_Type__c'));
         //subPrp.propertyValueIndexId = mapOfProperties.get(propId).propertyValueIndexId__c;
-        subPrp.purchasePrice = rlaRecord.getSObject('Subject_Property__r')
-            .get('Original_Purchase_Price__c') != null
-          ? Double.valueof(
-              rlaRecord.getSObject('Subject_Property__r')
-                .get('Original_Purchase_Price__c')
-            )
-          : null;
-        subPrp.realtorInfo = string.valueof(
-          rlaRecord.getSObject('Subject_Property__r').get('realtorInfo__c')
-        );
-        subPrp.rentalOffsetOption = string.valueof(
-          rlaRecord.getSObject('Subject_Property__r')
-            .get('rentalOffsetOption__c')
-        );
-        subPrp.sewageTypeDd = string.valueof(
-          rlaRecord.getSObject('Subject_Property__r').get('Sewage_Type__c')
-        );
-        subPrp.structureAge = rlaRecord.getSObject('Subject_Property__r')
-            .get('structureAge__c') != null
-          ? Double.valueof(
-              rlaRecord.getSObject('Subject_Property__r').get('structureAge__c')
-            )
-          : null;
-        subPrp.taxationYear = rlaRecord.getSObject('Subject_Property__r')
-            .get('taxationYear__c') != null
-          ? Double.valueof(
-              rlaRecord.getSObject('Subject_Property__r').get('taxationYear__c')
-            )
-          : null;
-        subPrp.waterTypeDd = string.Valueof(
-          rlaRecord.getSObject('Subject_Property__r').get('Water_Type__c')
-        );
+        subPrp.purchasePrice = rlaRecord.getSObject('Subject_Property__r').get('Original_Purchase_Price__c') != null ? Double.valueof(rlaRecord.getSObject('Subject_Property__r').get('Original_Purchase_Price__c')) : null;
+        subPrp.realtorInfo = string.valueof(rlaRecord.getSObject('Subject_Property__r').get('realtorInfo__c'));
+        subPrp.rentalOffsetOption = string.valueof(rlaRecord.getSObject('Subject_Property__r').get('rentalOffsetOption__c'));
+        subPrp.sewageTypeDd = string.valueof(rlaRecord.getSObject('Subject_Property__r').get('Sewage_Type__c'));
+        subPrp.structureAge = rlaRecord.getSObject('Subject_Property__r').get('structureAge__c') != null ? Double.valueof(rlaRecord.getSObject('Subject_Property__r').get('structureAge__c')) : null;
+        subPrp.taxationYear = rlaRecord.getSObject('Subject_Property__r').get('taxationYear__c') != null ? Double.valueof(rlaRecord.getSObject('Subject_Property__r').get('taxationYear__c')) : null;
+        subPrp.waterTypeDd = string.Valueof(rlaRecord.getSObject('Subject_Property__r').get('Water_Type__c'));
         subPrp.propertyExpense = ListExpenses;
         //}
       } else {
@@ -2596,10 +1466,8 @@ global without sharing class FilogixWrapperBinding {
     String ContactRelation = 'Contact';
     String LoanApplicant = objNamePrefix + 'LoanApplicant';
     String LoanApplicantAddress = objNamePrefix + 'LoanApplicantAddress';
-    String LoanApplicationAssetRelation =
-      objNamePrefix + 'LoanApplicationAsset';
-    String LoanApplicationLiabilityRelation =
-      objNamePrefix + 'LoanApplicationLiability';
+    String LoanApplicationAssetRelation = objNamePrefix + 'LoanApplicationAsset';
+    String LoanApplicationLiabilityRelation = objNamePrefix + 'LoanApplicationLiability';
     String LoanApplicationRelation = objNamePrefix + 'LoanApplication';
 
     if (isNonFSC == true) {
@@ -2607,10 +1475,8 @@ global without sharing class FilogixWrapperBinding {
       ContactRelation = objNamePrefix + 'ContactId__r';
       LoanApplicant = objNamePrefix + 'LoanApplicant__c';
       LoanApplicantAddress = objNamePrefix + 'LoanApplicantAddress__c';
-      LoanApplicationAssetRelation =
-        objNamePrefix + 'LoanApplicationAssetId__r';
-      LoanApplicationLiabilityRelation =
-        objNamePrefix + 'LoanApplicationLiabilityId__r';
+      LoanApplicationAssetRelation = objNamePrefix + 'LoanApplicationAssetId__r';
+      LoanApplicationLiabilityRelation = objNamePrefix + 'LoanApplicationLiabilityId__r';
       LoanApplicationRelation = objNamePrefix + 'LoanApplicationId__r';
     }
 
@@ -2623,26 +1489,12 @@ global without sharing class FilogixWrapperBinding {
       list<FilogixPOSTJSONWrapper.Applicant> ListOfApplicants = new List<FilogixPOSTJSONWrapper.Applicant>();
 
       if (mapofLoanAppIdAndApplicants.containskey(rlaId)) {
-        map<string, sObject> mapApplicants = mapofLoanAppIdAndApplicants.get(
-          rlaId
-        );
+        map<string, sObject> mapApplicants = mapofLoanAppIdAndApplicants.get(rlaId);
         //integer Borrowerid = 0;
         for (string applicantId : mapApplicants.keySet()) {
           // Making sure to have at least one lookup populated either Business or Contact
-          if (
-            (mapApplicants.get(applicantId).get(ContactId) != null &&
-            mapApplicants.get(applicantId)
-              .get(appNameSpace + 'Business_Account__c') != null) ||
-            (mapApplicants.get(applicantId).get(ContactId) == null &&
-            mapApplicants.get(applicantId)
-              .get(appNameSpace + 'Business_Account__c') == null)
-          ) {
-            requiredFieldError +=
-              'Please fill either Business Account or Contact Lookup for Applicant <a href="/' +
-              applicantId +
-              '">' +
-              String.valueof(mapApplicants.get(applicantId).get('Name')) +
-              '</a></br>';
+          if ((mapApplicants.get(applicantId).get(ContactId) != null && mapApplicants.get(applicantId).get(appNameSpace + 'Business_Account__c') != null) || (mapApplicants.get(applicantId).get(ContactId) == null && mapApplicants.get(applicantId).get(appNameSpace + 'Business_Account__c') == null)) {
+            requiredFieldError += 'Please fill either Business Account or Contact Lookup for Applicant <a href="/' + applicantId + '">' + String.valueof(mapApplicants.get(applicantId).get('Name')) + '</a></br>';
           }
 
           //Borrowerid += 1;
@@ -2651,42 +1503,15 @@ global without sharing class FilogixWrapperBinding {
           FilogixPOSTJSONWrapper.Name appName = new FilogixPOSTJSONWrapper.Name();
           String fullName = '';
           // For Person Account
-          if (
-            mapApplicants.get(applicantId).getSObject(ContactRelation) != null
-          ) {
-            appName.firstName = string.valueof(
-                mapApplicants.get(applicantId).getSObject(ContactRelation)
-              ) != null
-              ? string.valueof(
-                  mapApplicants.get(applicantId)
-                    .getSObject(ContactRelation)
-                    .get('firstname')
-                )
-              : ' ';
-            appName.lastName = string.valueof(
-                mapApplicants.get(applicantId).getSObject(ContactRelation)
-              ) != null
-              ? string.valueof(
-                  mapApplicants.get(applicantId)
-                    .getSObject(ContactRelation)
-                    .get('LastName')
-                )
-              : '';
+          if (mapApplicants.get(applicantId).getSObject(ContactRelation) != null) {
+            appName.firstName = string.valueof(mapApplicants.get(applicantId).getSObject(ContactRelation)) != null ? string.valueof(mapApplicants.get(applicantId).getSObject(ContactRelation).get('firstname')) : ' ';
+            appName.lastName = string.valueof(mapApplicants.get(applicantId).getSObject(ContactRelation)) != null ? string.valueof(mapApplicants.get(applicantId).getSObject(ContactRelation).get('LastName')) : '';
             fullName = appName.firstName + ' ' + appName.lastName;
             // For Business Account
-          } else if (
-            mapApplicants.get(applicantId).getSObject('Business_Account__r') !=
-            null
-          ) {
-            fullName = String.valueof(
-              mapApplicants.get(applicantId)
-                .getSObject('Business_Account__r')
-                .get('Name')
-            );
+          } else if (mapApplicants.get(applicantId).getSObject('Business_Account__r') != null) {
+            fullName = String.valueof(mapApplicants.get(applicantId).getSObject('Business_Account__r').get('Name'));
           } else {
-            fullName = String.valueof(
-              mapApplicants.get(applicantId).get('Name')
-            );
+            fullName = String.valueof(mapApplicants.get(applicantId).get('Name'));
             //   fullName = String.valueof(mapApplicants.get(applicantId).getSObject('Contact').get('FirstName'));
           }
 
@@ -2695,10 +1520,7 @@ global without sharing class FilogixWrapperBinding {
           system.debug('appName.fullName' + fullName);
 
           //Splitting First and Last Name from the Either Business or Loan Applicant's Name.
-          if (
-            (appName.firstName != '' || appName.firstName != null) &&
-            fullName != ''
-          ) {
+          if ((appName.firstName != '' || appName.firstName != null) && fullName != '') {
             fullName = fullName.trim();
             String firstName = '';
             String lastName = '';
@@ -2707,10 +1529,7 @@ global without sharing class FilogixWrapperBinding {
             if (hasLength) {
               if (containsSpace) {
                 firstName = fullName.Substring(0, fullName.indexOf(' '));
-                lastName = fullName.Substring(
-                  fullName.indexOf(' '),
-                  fullName.length()
-                );
+                lastName = fullName.Substring(fullName.indexOf(' '), fullName.length());
                 lastName = lastName.trim();
                 if (lastName.length() == 0) {
                   lastName = '';
@@ -2726,158 +1545,64 @@ global without sharing class FilogixWrapperBinding {
             appName.firstName = firstName;
             appName.lastName = lastName;
           } else {
-            requiredFieldsError(
-              LoanApplicant,
-              'Name',
-              String.valueof(mapApplicants.get(applicantId).get('Name')),
-              String.valueof(mapApplicants.get(applicantId).get('Id'))
-            );
+            requiredFieldsError(LoanApplicant, 'Name', String.valueof(mapApplicants.get(applicantId).get('Name')), String.valueof(mapApplicants.get(applicantId).get('Id')));
           }
 
           appName.middleInitial = null;
           //Handling Salutation
-          String salutation = string.valueof(
-              mapApplicants.get(applicantId).getSObject(ContactRelation)
-            ) != null
-            ? string.valueof(
-                mapApplicants.get(applicantId)
-                  .getSObject(ContactRelation)
-                  .get('Salutation')
-              )
-            : null;
-            appName.salutationDd =null;
-            // When Salutation contains ".", Remove it as Filogix doesn't support it.
-          if (
-            salutation != null &&
-            salutation != '' &&
-            salutation.contains('.')
-          ) {
+          String salutation = string.valueof(mapApplicants.get(applicantId).getSObject(ContactRelation)) != null ? string.valueof(mapApplicants.get(applicantId).getSObject(ContactRelation).get('Salutation')) : null;
+          appName.salutationDd = null;
+          // When Salutation contains ".", Remove it as Filogix doesn't support it.
+          if (salutation != null && salutation != '' && salutation.contains('.')) {
             appName.salutationDd = salutation.replace('.', '');
           } else {
-            appName.salutationDd =salutation;
+            appName.salutationDd = salutation;
           }
           appName.suffixDd = null;
 
           // Making sure the Salutation value is from the Supported values
-          if(appName.salutationDd!=null){
+          if (appName.salutationDd != null) {
             // Set of Acceptable values
-            Set<String> salutationValues = new set<String>{'Dr','Judge','Miss','Mr','Mrs','Ms','Rev'};
+            Set<String> salutationValues = new Set<String>{ 'Dr', 'Judge', 'Miss', 'Mr', 'Mrs', 'Ms', 'Rev' };
             //Showing an error if the selected salutation value is other than the accepted value by Filogix
-            if(!salutationValues.contains(appName.salutationDd)){
-              requiredFieldError +=
-                'Please select the valid Saluatation for Account <a href="/' +
-                mapApplicants.get(applicantId).getSObject(ContactRelation).get('Id') +
-                '">' +
-                String.valueof(mapApplicants.get(applicantId).getSObject(ContactRelation).get('Name')) +
-                '</a></br>';
+            if (!salutationValues.contains(appName.salutationDd)) {
+              requiredFieldError += 'Please select the valid Saluatation for Account <a href="/' + mapApplicants.get(applicantId).getSObject(ContactRelation).get('Id') + '">' + String.valueof(mapApplicants.get(applicantId).getSObject(ContactRelation).get('Name')) + '</a></br>';
             }
           }
 
-          if (
-            mapApplicants.get(applicantId)
-              .get(appNameSpace + 'Applicant_Group_Type__c') == null ||
-            String.isBlank(
-              String.valueof(
-                mapApplicants.get(applicantId)
-                  .get(appNameSpace + 'Applicant_Group_Type__c')
-              )
-            )
-          ) {
-            requiredFieldsError(
-              LoanApplicant,
-              appNameSpace + 'Applicant_Group_Type__c',
-              String.valueof(mapApplicants.get(applicantId).get('Name')),
-              String.valueof(mapApplicants.get(applicantId).get('Id'))
-            );
+          if (mapApplicants.get(applicantId).get(appNameSpace + 'Applicant_Group_Type__c') == null || String.isBlank(String.valueof(mapApplicants.get(applicantId).get(appNameSpace + 'Applicant_Group_Type__c')))) {
+            requiredFieldsError(LoanApplicant, appNameSpace + 'Applicant_Group_Type__c', String.valueof(mapApplicants.get(applicantId).get('Name')), String.valueof(mapApplicants.get(applicantId).get('Id')));
           }
 
           // Applicant Identification Mapping
           list<FilogixPOSTJSONWrapper.Identification> listOfIdentity = new List<FilogixPOSTJSONWrapper.Identification>();
           if (mapofApplicantIdAndIdentification.containsKey(applicantId)) {
-            map<string, sObject> mapOfIdentity = mapofApplicantIdAndIdentification.get(
-              applicantId
-            );
+            map<string, sObject> mapOfIdentity = mapofApplicantIdAndIdentification.get(applicantId);
 
             //Exception when identifications records are more then 3  per applicant
             if (mapOfIdentity.size() > 2) {
-              requiredFieldError +=
-                'Identification records for applicant <a href="/' +
-                applicantId +
-                '">' +
-                String.valueof(mapApplicants.get(applicantId).get('Name')) +
-                '</a> should not be more than <b> Two </b>.';
+              requiredFieldError += 'Identification records for applicant <a href="/' + applicantId + '">' + String.valueof(mapApplicants.get(applicantId).get('Name')) + '</a> should not be more than <b> Two </b>.';
             }
 
             for (string Identity : mapOfIdentity.keySet()) {
               // Adding the Address
               FilogixPOSTJSONWrapper.Identification AppIdentity = new FilogixPOSTJSONWrapper.Identification();
-              AppIdentity.identificationNumber = String.valueof(
-                mapOfIdentity.get(Identity)
-                  .get(appNameSpace + 'IdentificationNumber__c')
-              );
-              AppIdentity.identificationCountry = String.valueof(
-                mapOfIdentity.get(Identity).get(appNameSpace + 'Country__c')
-              ); //!String.isEmpty(String.valueof(mapOfAddr.get(addrId).get('ResidenceStreet')))?String.valueof(mapOfAddr.get(addrId).get('ResidenceStreet')).SubStringBefore(' '):'';
-              AppIdentity.identificationTypeDd = String.valueof(
-                mapOfIdentity.get(Identity).get(appNameSpace + 'Type__c')
-              );
+              AppIdentity.identificationNumber = String.valueof(mapOfIdentity.get(Identity).get(appNameSpace + 'IdentificationNumber__c'));
+              AppIdentity.identificationCountry = String.valueof(mapOfIdentity.get(Identity).get(appNameSpace + 'Country__c')); //!String.isEmpty(String.valueof(mapOfAddr.get(addrId).get('ResidenceStreet')))?String.valueof(mapOfAddr.get(addrId).get('ResidenceStreet')).SubStringBefore(' '):'';
+              AppIdentity.identificationTypeDd = String.valueof(mapOfIdentity.get(Identity).get(appNameSpace + 'Type__c'));
 
               listOfIdentity.add(AppIdentity);
 
-              if (
-                string.Valueof(
-                  mapOfIdentity.get(Identity)
-                    .get(appNameSpace + 'IdentificationNumber__c')
-                ) == null ||
-                String.isBlank(
-                  String.valueof(
-                    mapOfIdentity.get(Identity)
-                      .get(appNameSpace + 'IdentificationNumber__c')
-                  )
-                )
-              ) {
-                requiredFieldsError(
-                  'Identification__c',
-                  'IdentificationNumber__c',
-                  String.valueof(mapOfIdentity.get(Identity).get('Name')),
-                  String.valueof(mapOfIdentity.get(Identity).get('Id'))
-                );
+              if (string.Valueof(mapOfIdentity.get(Identity).get(appNameSpace + 'IdentificationNumber__c')) == null || String.isBlank(String.valueof(mapOfIdentity.get(Identity).get(appNameSpace + 'IdentificationNumber__c')))) {
+                requiredFieldsError('Identification__c', 'IdentificationNumber__c', String.valueof(mapOfIdentity.get(Identity).get('Name')), String.valueof(mapOfIdentity.get(Identity).get('Id')));
               }
 
-              if (
-                string.Valueof(
-                  mapOfIdentity.get(Identity).get(appNameSpace + 'Country__c')
-                ) == null ||
-                String.isBlank(
-                  String.valueof(
-                    mapOfIdentity.get(Identity).get(appNameSpace + 'Country__c')
-                  )
-                )
-              ) {
-                requiredFieldsError(
-                  'Identification__c',
-                  'Country__c',
-                  String.valueof(mapOfIdentity.get(Identity).get('Name')),
-                  String.valueof(mapOfIdentity.get(Identity).get('Id'))
-                );
+              if (string.Valueof(mapOfIdentity.get(Identity).get(appNameSpace + 'Country__c')) == null || String.isBlank(String.valueof(mapOfIdentity.get(Identity).get(appNameSpace + 'Country__c')))) {
+                requiredFieldsError('Identification__c', 'Country__c', String.valueof(mapOfIdentity.get(Identity).get('Name')), String.valueof(mapOfIdentity.get(Identity).get('Id')));
               }
 
-              if (
-                string.Valueof(
-                  mapOfIdentity.get(Identity).get(appNameSpace + 'Type__c')
-                ) == null ||
-                String.isBlank(
-                  String.valueof(
-                    mapOfIdentity.get(Identity).get(appNameSpace + 'Type__c')
-                  )
-                )
-              ) {
-                requiredFieldsError(
-                  'Identification__c',
-                  'Type__c',
-                  String.valueof(mapOfIdentity.get(Identity).get('Name')),
-                  String.valueof(mapOfIdentity.get(Identity).get('Id'))
-                );
+              if (string.Valueof(mapOfIdentity.get(Identity).get(appNameSpace + 'Type__c')) == null || String.isBlank(String.valueof(mapOfIdentity.get(Identity).get(appNameSpace + 'Type__c')))) {
+                requiredFieldsError('Identification__c', 'Type__c', String.valueof(mapOfIdentity.get(Identity).get('Name')), String.valueof(mapOfIdentity.get(Identity).get('Id')));
               }
             }
           }
@@ -2885,173 +1610,59 @@ global without sharing class FilogixWrapperBinding {
           // Applicant Address Mapping
           list<FilogixPOSTJSONWrapper.AddressDetail> listOfAddresses = new List<FilogixPOSTJSONWrapper.AddressDetail>();
           if (mapofApplicantIdAndAddr.containsKey(applicantId)) {
-            map<string, sObject> mapOfAddr = mapofApplicantIdAndAddr.get(
-              applicantId
-            );
+            map<string, sObject> mapOfAddr = mapofApplicantIdAndAddr.get(applicantId);
 
             for (string addrId : mapOfAddr.keySet()) {
               //Checking for Mailing Address
-              if (
-                Boolean.valueof(
-                  mapOfAddr.get(addrId).get('Mailing_Address__c')
-                ) == true
-              ) {
+              if (Boolean.valueof(mapOfAddr.get(addrId).get('Mailing_Address__c')) == true) {
                 // Mapping Mailing Address for this Applicant Group
                 FilogixPOSTJSONWrapper.MailingAddr mailAddr = new FilogixPOSTJSONWrapper.MailingAddr();
-                mailAddr.unitNumber = String.valueof(
-                  mapOfAddr.get(addrId).get(appNameSpace + 'Unit_Number__c')
-                );
-                mailAddr.streetNumber = String.valueof(
-                  mapOfAddr.get(addrId).get(appNameSpace + 'Street_Number__c')
-                ); //!String.isEmpty(String.valueof(mapOfAddr.get(addrId).get('ResidenceStreet')))?String.valueof(mapOfAddr.get(addrId).get('ResidenceStreet')).SubStringBefore(' '):'';
-                mailAddr.streetName = !String.isEmpty(
-                    String.valueof(
-                      mapOfAddr.get(addrId).get(appNameSpace + 'Street_Name__c')
-                    )
-                  )
-                  ? String.valueof(
-                      mapOfAddr.get(addrId).get(appNameSpace + 'Street_Name__c')
-                    )
-                  : '';
-                mailAddr.streetTypeDd = String.valueof(
-                  mapOfAddr.get(addrId).get(appNameSpace + 'Street_Type__c')
-                );
-                mailAddr.streetDirectionDd = String.valueof(
-                  mapOfAddr.get(addrId)
-                    .get(appNameSpace + 'Street_Direction__c')
-                );
+                mailAddr.unitNumber = String.valueof(mapOfAddr.get(addrId).get(appNameSpace + 'Unit_Number__c'));
+                mailAddr.streetNumber = String.valueof(mapOfAddr.get(addrId).get(appNameSpace + 'Street_Number__c')); //!String.isEmpty(String.valueof(mapOfAddr.get(addrId).get('ResidenceStreet')))?String.valueof(mapOfAddr.get(addrId).get('ResidenceStreet')).SubStringBefore(' '):'';
+                mailAddr.streetName = !String.isEmpty(String.valueof(mapOfAddr.get(addrId).get(appNameSpace + 'Street_Name__c'))) ? String.valueof(mapOfAddr.get(addrId).get(appNameSpace + 'Street_Name__c')) : '';
+                mailAddr.streetTypeDd = String.valueof(mapOfAddr.get(addrId).get(appNameSpace + 'Street_Type__c'));
+                mailAddr.streetDirectionDd = String.valueof(mapOfAddr.get(addrId).get(appNameSpace + 'Street_Direction__c'));
                 // Filogix supports upto 20 characters for City
-                mailAddr.city = cityNamegen(
-                  String.valueof(
-                    mapOfAddr.get(addrId).get(appNameSpace + 'City__c')
-                  )
-                );
-                mailAddr.provinceDd = getFullProvinceName(
-                  String.valueof(
-                    mapOfAddr.get(addrId).get(appNameSpace + 'Province__c')
-                  )
-                );
+                mailAddr.city = cityNamegen(String.valueof(mapOfAddr.get(addrId).get(appNameSpace + 'City__c')));
+                mailAddr.provinceDd = getFullProvinceName(String.valueof(mapOfAddr.get(addrId).get(appNameSpace + 'Province__c')));
 
                 // To support USA postalcodes
-                if (
-                  mapOfAddr.get(addrId).get(appNameSpace + 'PostalCode__c') !=
-                  null &&
-                  String.valueof(
-                      mapOfAddr.get(addrId).get(appNameSpace + 'PostalCode__c')
-                    )
-                    .length() < 6
-                ) {
-                  mailAddr.internationalPostalCode = string.Valueof(
-                    mapOfAddr.get(addrId).get(appNameSpace + 'PostalCode__c')
-                  );
-                } else if (
-                  mapOfAddr.get(addrId).get(appNameSpace + 'PostalCode__c') !=
-                  null &&
-                  String.valueof(
-                      mapOfAddr.get(addrId).get(appNameSpace + 'PostalCode__c')
-                    )
-                    .length() >= 6
-                ) {
-                  mailAddr.postalFsa = postalFSAGen(
-                    string.Valueof(
-                      mapOfAddr.get(addrId).get(appNameSpace + 'PostalCode__c')
-                    )
-                  );
-                  mailAddr.postalLdu = postalLDUGen(
-                    string.Valueof(
-                      mapOfAddr.get(addrId).get(appNameSpace + 'PostalCode__c')
-                    )
-                  );
+                if (mapOfAddr.get(addrId).get(appNameSpace + 'PostalCode__c') != null && String.valueof(mapOfAddr.get(addrId).get(appNameSpace + 'PostalCode__c')).length() < 6) {
+                  mailAddr.internationalPostalCode = string.Valueof(mapOfAddr.get(addrId).get(appNameSpace + 'PostalCode__c'));
+                } else if (mapOfAddr.get(addrId).get(appNameSpace + 'PostalCode__c') != null && String.valueof(mapOfAddr.get(addrId).get(appNameSpace + 'PostalCode__c')).length() >= 6) {
+                  mailAddr.postalFsa = postalFSAGen(string.Valueof(mapOfAddr.get(addrId).get(appNameSpace + 'PostalCode__c')));
+                  mailAddr.postalLdu = postalLDUGen(string.Valueof(mapOfAddr.get(addrId).get(appNameSpace + 'PostalCode__c')));
                 }
-                mailAddr.countryTypeDd = getFullCountryName(
-                  String.valueof(
-                    mapOfAddr.get(addrId).get(appNameSpace + 'Country__c')
-                  )
-                );
+                mailAddr.countryTypeDd = getFullCountryName(String.valueof(mapOfAddr.get(addrId).get(appNameSpace + 'Country__c')));
 
                 AppGrp.mailingAddr = mailAddr;
               }
 
               // Adding the Address
               FilogixPOSTJSONWrapper.Address addr = new FilogixPOSTJSONWrapper.Address();
-              addr.unitNumber = String.valueof(
-                mapOfAddr.get(addrId).get('Unit_Number__c')
-              );
+              addr.unitNumber = String.valueof(mapOfAddr.get(addrId).get('Unit_Number__c'));
 
-              addr.streetNumber = String.valueof(
-                mapOfAddr.get(addrId).get('Street_Number__c')
-              ); //!String.isEmpty(String.valueof(mapOfAddr.get(addrId).get('ResidenceStreet')))?String.valueof(mapOfAddr.get(addrId).get('ResidenceStreet')).SubStringBefore(' '):'';
-              addr.streetName = !String.isEmpty(
-                  String.valueof(mapOfAddr.get(addrId).get('Street_Name__c'))
-                )
-                ? String.valueof(mapOfAddr.get(addrId).get('Street_Name__c'))
-                : ''; //.SubStringAfter(' '):'';
+              addr.streetNumber = String.valueof(mapOfAddr.get(addrId).get('Street_Number__c')); //!String.isEmpty(String.valueof(mapOfAddr.get(addrId).get('ResidenceStreet')))?String.valueof(mapOfAddr.get(addrId).get('ResidenceStreet')).SubStringBefore(' '):'';
+              addr.streetName = !String.isEmpty(String.valueof(mapOfAddr.get(addrId).get('Street_Name__c'))) ? String.valueof(mapOfAddr.get(addrId).get('Street_Name__c')) : ''; //.SubStringAfter(' '):'';
 
-              addr.streetTypeDd = String.valueof(
-                mapOfAddr.get(addrId).get('Street_Type__c')
-              );
-              addr.streetDirectionDd = String.valueof(
-                mapOfAddr.get(addrId).get('Street_Direction__c')
-              );
+              addr.streetTypeDd = String.valueof(mapOfAddr.get(addrId).get('Street_Type__c'));
+              addr.streetDirectionDd = String.valueof(mapOfAddr.get(addrId).get('Street_Direction__c'));
               // Filogix supports upto 20 characters for City
-              addr.city = cityNamegen(
-                String.valueof(
-                  mapOfAddr.get(addrId).get(appNameSpace + 'City__c')
-                )
-              );
-              addr.provinceDd = getFullProvinceName(
-                String.valueof(
-                  mapOfAddr.get(addrId).get(appNameSpace + 'Province__c')
-                )
-              );
-              addr.postalFsa = postalFSAGen(
-                String.valueof(
-                  mapOfAddr.get(addrId).get(appNameSpace + 'PostalCode__c')
-                )
-              );
-              addr.postalLdu = postalLDUGen(
-                String.valueof(
-                  mapOfAddr.get(addrId).get(appNameSpace + 'PostalCode__c')
-                )
-              );
-              addr.countryTypeDd = getFullCountryName(
-                String.valueof(
-                  mapOfAddr.get(addrId).get(appNameSpace + 'Country__c')
-                )
-              );
+              addr.city = cityNamegen(String.valueof(mapOfAddr.get(addrId).get(appNameSpace + 'City__c')));
+              addr.provinceDd = getFullProvinceName(String.valueof(mapOfAddr.get(addrId).get(appNameSpace + 'Province__c')));
+              addr.postalFsa = postalFSAGen(String.valueof(mapOfAddr.get(addrId).get(appNameSpace + 'PostalCode__c')));
+              addr.postalLdu = postalLDUGen(String.valueof(mapOfAddr.get(addrId).get(appNameSpace + 'PostalCode__c')));
+              addr.countryTypeDd = getFullCountryName(String.valueof(mapOfAddr.get(addrId).get(appNameSpace + 'Country__c')));
 
               FilogixPOSTJSONWrapper.AddressDetail addrDet = new FilogixPOSTJSONWrapper.AddressDetail();
               addrDet.address = addr;
-              addrDet.addressTypeDd = String.valueof(
-                mapOfAddr.get(addrId).get('ResidencyType' + customFieldSuffix)
-              );
-              Double monthsCal = Double.valueof(
-                  mapOfAddr.get(addrId)
-                    .get('ResidenceYearCount' + customFieldSuffix)
-                ) != null
-                ? 12 *
-                  Double.valueof(
-                    mapOfAddr.get(addrId)
-                      .get('ResidenceYearCount' + customFieldSuffix)
-                  )
-                : 0;
-              Double monthsVal = Double.valueof(
-                  mapOfAddr.get(addrId)
-                    .get('ResidenceAdditionalMonthCount' + customFieldSuffix)
-                ) != null
-                ? Double.valueof(
-                    mapOfAddr.get(addrId)
-                      .get('ResidenceAdditionalMonthCount' + customFieldSuffix)
-                  )
-                : 0;
+              addrDet.addressTypeDd = String.valueof(mapOfAddr.get(addrId).get('ResidencyType' + customFieldSuffix));
+              Double monthsCal = Double.valueof(mapOfAddr.get(addrId).get('ResidenceYearCount' + customFieldSuffix)) != null ? 12 * Double.valueof(mapOfAddr.get(addrId).get('ResidenceYearCount' + customFieldSuffix)) : 0;
+              Double monthsVal = Double.valueof(mapOfAddr.get(addrId).get('ResidenceAdditionalMonthCount' + customFieldSuffix)) != null ? Double.valueof(mapOfAddr.get(addrId).get('ResidenceAdditionalMonthCount' + customFieldSuffix)) : 0;
               addrDet.monthsAtAddress = monthsCal + monthsVal;
               //addrDet.monthsAtAddress = Double.valueof(mapOfAddr.get(addrId).get('ResidenceYearCount'));
-              addrDet.residentialStatusDd = String.valueof(
-                mapOfAddr.get(addrId)
-                  .get('AddressOwnership' + customFieldSuffix)
-              );
-              addrDet.rentPaymentAmount = (decimal) mapOfAddr.get(addrId)
-                .get('MonthlyRentPayment' + customFieldSuffix);
+              addrDet.residentialStatusDd = String.valueof(mapOfAddr.get(addrId).get('AddressOwnership' + customFieldSuffix));
+              addrDet.rentPaymentAmount = (decimal) mapOfAddr.get(addrId).get('MonthlyRentPayment' + customFieldSuffix);
 
               listOfAddresses.add(addrDet);
               //Required fields check
@@ -3093,40 +1704,12 @@ global without sharing class FilogixWrapperBinding {
                 );
               }*/
 
-              if (
-                mapOfAddr.get(addrId).get(appNameSpace + 'Country__c') ==
-                null ||
-                String.isBlank(
-                  String.valueof(
-                    mapOfAddr.get(addrId).get(appNameSpace + 'Country__c')
-                  )
-                )
-              ) {
-                requiredFieldsError(
-                  LoanApplicantAddress,
-                  appNameSpace + 'Country__c',
-                  String.valueof(mapOfAddr.get(addrId).get('Name')),
-                  String.valueof(mapOfAddr.get(addrId).get('Id'))
-                );
+              if (mapOfAddr.get(addrId).get(appNameSpace + 'Country__c') == null || String.isBlank(String.valueof(mapOfAddr.get(addrId).get(appNameSpace + 'Country__c')))) {
+                requiredFieldsError(LoanApplicantAddress, appNameSpace + 'Country__c', String.valueof(mapOfAddr.get(addrId).get('Name')), String.valueof(mapOfAddr.get(addrId).get('Id')));
               }
 
-              if (
-                string.Valueof(
-                  mapOfAddr.get(addrId).get('ResidencyType' + customFieldSuffix)
-                ) == null ||
-                String.isBlank(
-                  String.valueof(
-                    mapOfAddr.get(addrId)
-                      .get('ResidencyType' + customFieldSuffix)
-                  )
-                )
-              ) {
-                requiredFieldsError(
-                  LoanApplicantAddress,
-                  'ResidencyType' + customFieldSuffix,
-                  String.valueof(mapOfAddr.get(addrId).get('Name')),
-                  String.valueof(mapOfAddr.get(addrId).get('Id'))
-                );
+              if (string.Valueof(mapOfAddr.get(addrId).get('ResidencyType' + customFieldSuffix)) == null || String.isBlank(String.valueof(mapOfAddr.get(addrId).get('ResidencyType' + customFieldSuffix)))) {
+                requiredFieldsError(LoanApplicantAddress, 'ResidencyType' + customFieldSuffix, String.valueof(mapOfAddr.get(addrId).get('Name')), String.valueof(mapOfAddr.get(addrId).get('Id')));
               }
 
               // NO NEED to show validation error as the defaul 0 will be passed.
@@ -3135,7 +1718,6 @@ global without sharing class FilogixWrapperBinding {
                                 requiredFieldError +='Please make sure the field "Years in Residence"  <b> or "Additional Months in Residence"</b> is populated on your applicant(s) address record.</br>';
                             }*/
 
-              
               /*if (
                 string.Valueof(
                   mapOfAddr.get(addrId)
@@ -3162,7 +1744,7 @@ global without sharing class FilogixWrapperBinding {
                 //requiredFieldError +='Please make sure the field <b> "Years in Residence" </b> or <b> "Additional Months in Residence"</b> is populated on your applicant(s) address record.</br>';
               }*/
             }
-          } 
+          }
           /* Filogix v.1.6.1 - Not needed anymore
            * else {
             requiredFieldError +=
@@ -3176,9 +1758,7 @@ global without sharing class FilogixWrapperBinding {
           // Loan Applicant Asset
           list<FilogixPOSTJSONWrapper.Asset> listOfAssets = new List<FilogixPOSTJSONWrapper.Asset>();
           if (mapofApplicantIdAndAsset.containsKey(applicantId)) {
-            map<string, sObject> mapOfAssets = mapofApplicantIdAndAsset.get(
-              applicantId
-            );
+            map<string, sObject> mapOfAssets = mapofApplicantIdAndAsset.get(applicantId);
             for (string asstId : mapOfAssets.keyset()) {
               /*// As of v.1.6.1 Filogix POST Schema - These values are not supported but available in GET
               // Making sure to not process the assets having this value to prevent error on user-end.
@@ -3199,736 +1779,299 @@ global without sharing class FilogixWrapperBinding {
                     .get('AssetType' + customFieldSuffix)
                 ) != 'Rental Property'
               ) {*/
-                FilogixPOSTJSONWrapper.Asset asst = new FilogixPOSTJSONWrapper.Asset();
-                asst.assetDescription = String.valueof(
-                  mapOfAssets.get(asstId)
-                    .getSObject(LoanApplicationAssetRelation)
-                    .get('Description__c')
-                ); //String.valueof(mapOfAssets.get(asstId).get('Name'));
-                asst.assetTypeDd = String.valueof(
-                  mapOfAssets.get(asstId)
-                    .getSObject(LoanApplicationAssetRelation)
-                    .get('AssetType' + customFieldSuffix)
-                );
-                asst.assetValue = mapOfAssets.get(asstId)
-                    .getSObject(LoanApplicationAssetRelation)
-                    .get('CashOrMarketValue' + customFieldSuffix) != null
-                  ? Double.valueof(
-                      mapOfAssets.get(asstId)
-                        .getSObject(LoanApplicationAssetRelation)
-                        .get('CashOrMarketValue' + customFieldSuffix)
-                    )
-                  : null;
-                asst.downpaymentAmount = mapOfAssets.get(asstId)
-                    .getSObject(LoanApplicationAssetRelation)
-                    .get(appNameSpace + 'Down_Payment_Amount__c') != null
-                  ? Double.valueof(
-                      mapOfAssets.get(asstId)
-                        .getSObject(LoanApplicationAssetRelation)
-                        .get(appNameSpace + 'Down_Payment_Amount__c')
-                    )
-                  : null;
+              FilogixPOSTJSONWrapper.Asset asst = new FilogixPOSTJSONWrapper.Asset();
+              asst.assetDescription = String.valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('Description__c')); //String.valueof(mapOfAssets.get(asstId).get('Name'));
+              asst.assetTypeDd = String.valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('AssetType' + customFieldSuffix));
+              asst.assetValue = mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('CashOrMarketValue' + customFieldSuffix) != null ? Double.valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('CashOrMarketValue' + customFieldSuffix)) : null;
+              asst.downpaymentAmount = mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get(appNameSpace + 'Down_Payment_Amount__c') != null ? Double.valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get(appNameSpace + 'Down_Payment_Amount__c')) : null;
 
-                //Required fields check
-                if (
-                  string.Valueof(
-                    mapOfAssets.get(asstId)
-                      .getSObject(LoanApplicationAssetRelation)
-                      .get('Description__c')
-                  ) == null ||
-                  String.isBlank(
-                    String.valueof(
-                      mapOfAssets.get(asstId)
-                        .getSObject(LoanApplicationAssetRelation)
-                        .get('Description__c')
-                    )
-                  )
-                ) {
-                  requiredFieldsError(
-                    objNamePrefix +
-                      'LoanApplicationAsset' +
-                      customFieldSuffix,
-                    'Description__c',
-                    String.valueof(
-                      mapOfAssets.get(asstId)
-                        .getSObject(LoanApplicationAssetRelation)
-                        .get('Name')
-                    ),
-                    String.valueof(
-                      mapOfAssets.get(asstId)
-                        .getSObject(LoanApplicationAssetRelation)
-                        .get('Id')
-                    )
-                  );
-                }
-                //Required fields check
-                if (
-                  string.Valueof(
-                    mapOfAssets.get(asstId)
-                      .getSObject(LoanApplicationAssetRelation)
-                      .get('AssetType' + customFieldSuffix)
-                  ) == null ||
-                  String.isBlank(
-                    String.valueof(
-                      mapOfAssets.get(asstId)
-                        .getSObject(LoanApplicationAssetRelation)
-                        .get('AssetType' + customFieldSuffix)
-                    )
-                  )
-                ) {
-                  requiredFieldsError(
-                    objNamePrefix + 'LoanApplicationAsset' + customFieldSuffix,
-                    'AssetType' + customFieldSuffix,
-                    String.valueof(
-                      mapOfAssets.get(asstId)
-                        .getSObject(LoanApplicationAssetRelation)
-                        .get('Name')
-                    ),
-                    String.valueof(
-                      mapOfAssets.get(asstId)
-                        .getSObject(LoanApplicationAssetRelation)
-                        .get('Id')
-                    )
-                  );
-                }
-                //Required fields check
-                if (
-                  string.Valueof(
-                    mapOfAssets.get(asstId)
-                      .getSObject(LoanApplicationAssetRelation)
-                      .get('CashOrMarketValue' + customFieldSuffix)
-                  ) == null ||
-                  String.isBlank(
-                    String.valueof(
-                      mapOfAssets.get(asstId)
-                        .getSObject(LoanApplicationAssetRelation)
-                        .get('CashOrMarketValue' + customFieldSuffix)
-                    )
-                  )
-                ) {
-                  requiredFieldsError(
-                    objNamePrefix + 'LoanApplicationAsset' + customFieldSuffix,
-                    'CashOrMarketValue' + customFieldSuffix,
-                    String.valueof(
-                      mapOfAssets.get(asstId)
-                        .getSObject(LoanApplicationAssetRelation)
-                        .get('Name')
-                    ),
-                    String.valueof(
-                      mapOfAssets.get(asstId)
-                        .getSObject(LoanApplicationAssetRelation)
-                        .get('Id')
-                    )
-                  );
-                }
+              //Required fields check
+              if (string.Valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('Description__c')) == null || String.isBlank(String.valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('Description__c')))) {
+                requiredFieldsError(objNamePrefix + 'LoanApplicationAsset' + customFieldSuffix, 'Description__c', String.valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('Name')), String.valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('Id')));
+              }
+              //Required fields check
+              if (string.Valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('AssetType' + customFieldSuffix)) == null || String.isBlank(String.valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('AssetType' + customFieldSuffix)))) {
+                requiredFieldsError(objNamePrefix + 'LoanApplicationAsset' + customFieldSuffix, 'AssetType' + customFieldSuffix, String.valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('Name')), String.valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('Id')));
+              }
+              //Required fields check
+              if (string.Valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('CashOrMarketValue' + customFieldSuffix)) == null || String.isBlank(String.valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('CashOrMarketValue' + customFieldSuffix)))) {
+                requiredFieldsError(objNamePrefix + 'LoanApplicationAsset' + customFieldSuffix, 'CashOrMarketValue' + customFieldSuffix, String.valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('Name')), String.valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('Id')));
+              }
 
-                system.debug('AssetType='+string.Valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('AssetType' + customFieldSuffix)));
+              system.debug('AssetType=' + string.Valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('AssetType' + customFieldSuffix)));
 
-                //Filogix Schema 1.60 Change
-                //Filogix Removed "Property" and "Rental Property" from POST
-                //Adding a validation rule instead of removing from picklist values
-                //Reason: These values are still valid for GET
-                if (
-                  !String.isBlank(String.valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('AssetType' + customFieldSuffix)))
-                  && (
-                      String.valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('AssetType' + customFieldSuffix)) == 'Property' 
-                      ||
-                      string.Valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('AssetType' + customFieldSuffix)) == 'Rental Property'
-                     )
-                ) {
-                  requiredFieldError +='The Asset Type should not be a "Property" or "Rental Property". Please create the Property record(s) instead.</br>';
-                }
+              //Filogix Schema 1.60 Change
+              //Filogix Removed "Property" and "Rental Property" from POST
+              //Adding a validation rule instead of removing from picklist values
+              //Reason: These values are still valid for GET
+              if (!String.isBlank(String.valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('AssetType' + customFieldSuffix))) && (String.valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('AssetType' + customFieldSuffix)) == 'Property' || string.Valueof(mapOfAssets.get(asstId).getSObject(LoanApplicationAssetRelation).get('AssetType' + customFieldSuffix)) == 'Rental Property')) {
+                requiredFieldError += 'The Asset Type should not be a "Property" or "Rental Property". Please create the Property record(s) instead.</br>';
+              }
 
-                listOfAssets.add(asst);
+              listOfAssets.add(asst);
               /*}*/
             }
           }
 
           list<FilogixPOSTJSONWrapper.Liability> listOfLiabilities = new List<FilogixPOSTJSONWrapper.Liability>();
           if (mapofApplicantIdAndLiability.containsKey(applicantId)) {
-            map<string, sObject> mapOfLia = mapofApplicantIdAndLiability.get(
-              applicantId
-            );
+            map<string, sObject> mapOfLia = mapofApplicantIdAndLiability.get(applicantId);
             for (string liaId : mapOfLia.keySet()) {
               FilogixPOSTJSONWrapper.Liability lia = new FilogixPOSTJSONWrapper.Liability();
-              lia.cbScraped = BooleantoString(
-                String.valueof(
-                  mapOfLia.get(liaId)
-                    .getSObject(LoanApplicationLiabilityRelation)
-                    .get('Credit_Bureau__c')
-                )
-              );
-              lia.creditLimit = mapOfLia.get(liaId)
-                  .getSObject(LoanApplicationLiabilityRelation)
-                  .get('CreditLimitAmount' + customFieldSuffix) != null
-                ? Double.valueof(
-                    mapOfLia.get(liaId)
-                      .getSObject(LoanApplicationLiabilityRelation)
-                      .get('CreditLimitAmount' + customFieldSuffix)
-                  )
-                : null;
-              lia.liabilityAmount = mapOfLia.get(liaId)
-                  .getSObject(LoanApplicationLiabilityRelation)
-                  .get(appNameSpace + 'Liability_Amount__c') != null
-                ? Double.valueof(
-                    mapOfLia.get(liaId)
-                      .getSObject(LoanApplicationLiabilityRelation)
-                      .get(appNameSpace + 'Liability_Amount__c')
-                  )
-                : null;
-              lia.liabilityDescription = String.valueof(
-                mapOfLia.get(liaId)
-                  .getSObject(LoanApplicationLiabilityRelation)
-                  .get(appNameSpace + 'Liability_Description__c')
-              );
-              lia.liabilityMonthlyPayment = mapOfLia.get(liaId)
-                  .getSObject(LoanApplicationLiabilityRelation)
-                  .get('MonthlyPaymentAmount' + customFieldSuffix) != null
-                ? Double.valueof(
-                    mapOfLia.get(liaId)
-                      .getSObject(LoanApplicationLiabilityRelation)
-                      .get('MonthlyPaymentAmount' + customFieldSuffix)
-                  )
-                : null;
-              lia.liabilityTypeDd = String.valueof(
-                mapOfLia.get(liaId)
-                  .getSObject(LoanApplicationLiabilityRelation)
-                  .get('OtherLiabilityType' + customFieldSuffix)
-              );
-              lia.maturityDate = mapOfLia.get(liaId)
-                  .getSObject(LoanApplicationLiabilityRelation)
-                  .get(appNameSpace + 'Maturity_Date__c') != null
-                ? formatDateTime(
-                    (DateTime) mapOfLia.get(liaId)
-                      .getSObject(LoanApplicationLiabilityRelation)
-                      .get(appNameSpace + 'Maturity_Date__c')
-                  )
-                : null;
-                
-                
-              lia.monthlyPaymentOverride = BooleantoString(
-                string.valueOf(
-                  mapOfLia.get(liaId)
-                    .getSObject(LoanApplicationLiabilityRelation)
-                    .get(appNameSpace + 'Monthly_Payment_Override__c')
-                )
-              );
-              lia.liabilityPayOffTypeDd = string.valueOf(
-                mapOfLia.get(liaId)
-                  .getSObject(LoanApplicationLiabilityRelation)
-                  .get(appNameSpace + 'Pay_Off__c')
-              );
+              lia.cbScraped = BooleantoString(String.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('Credit_Bureau__c')));
+              lia.creditLimit = mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('CreditLimitAmount' + customFieldSuffix) != null ? Double.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('CreditLimitAmount' + customFieldSuffix)) : null;
+              lia.liabilityAmount = mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get(appNameSpace + 'Liability_Amount__c') != null ? Double.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get(appNameSpace + 'Liability_Amount__c')) : null;
+              lia.liabilityDescription = String.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get(appNameSpace + 'Liability_Description__c'));
+              lia.liabilityMonthlyPayment = mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('MonthlyPaymentAmount' + customFieldSuffix) != null ? Double.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('MonthlyPaymentAmount' + customFieldSuffix)) : null;
+              lia.liabilityTypeDd = String.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('OtherLiabilityType' + customFieldSuffix));
+              lia.maturityDate = mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get(appNameSpace + 'Maturity_Date__c') != null ? formatDateTime((DateTime) mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get(appNameSpace + 'Maturity_Date__c')) : null;
+
+              lia.monthlyPaymentOverride = BooleantoString(string.valueOf(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get(appNameSpace + 'Monthly_Payment_Override__c')));
+              lia.liabilityPayOffTypeDd = string.valueOf(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get(appNameSpace + 'Pay_Off__c'));
               listOfLiabilities.add(lia);
 
               //Required fields check
-              
+
               // Required Liability_Description__c - liabilityDescription
-                
-              if (
-                String.valueof(
-                mapOfLia.get(liaId)
-                  .getSObject(LoanApplicationLiabilityRelation)
-                  .get(appNameSpace + 'Liability_Description__c')
-              ) == null ||
-                String.isBlank(
-                  String.valueof(
-                    mapOfLia.get(liaId)
-                      .getSObject(LoanApplicationLiabilityRelation)
-                      .get(appNameSpace + 'Liability_Description__c')
-                  )
-                )
-              ) {
-                requiredFieldsError(
-                  objNamePrefix +
-                    'LoanApplicationLiability' +
-                    customFieldSuffix,
-                  'Liability_Description__c',
-                  String.valueof(
-                    mapOfLia.get(liaId)
-                      .getSObject(LoanApplicationLiabilityRelation)
-                      .get('Name')
-                  ),
-                  String.valueof(
-                    mapOfLia.get(liaId)
-                      .getSObject(LoanApplicationLiabilityRelation)
-                      .get('Id')
-                  )
-                );
+
+              if (String.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get(appNameSpace + 'Liability_Description__c')) == null || String.isBlank(String.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get(appNameSpace + 'Liability_Description__c')))) {
+                requiredFieldsError(objNamePrefix + 'LoanApplicationLiability' + customFieldSuffix, 'Liability_Description__c', String.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('Name')), String.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('Id')));
               }
-                
-              // Required OtherLiabilityType - liabilityTypeDd  
-          
-              if (
-                string.Valueof(
-                  mapOfLia.get(liaId)
-                    .getSObject(LoanApplicationLiabilityRelation)
-                    .get('OtherLiabilityType' + customFieldSuffix)
-                ) == null ||
-                String.isBlank(
-                  String.valueof(
-                    mapOfLia.get(liaId)
-                      .getSObject(LoanApplicationLiabilityRelation)
-                      .get('OtherLiabilityType' + customFieldSuffix)
-                  )
-                )
-              ) {
-                requiredFieldsError(
-                  objNamePrefix +
-                    'LoanApplicationLiability' +
-                    customFieldSuffix,
-                  'OtherLiabilityType' + customFieldSuffix,
-                  String.valueof(
-                    mapOfLia.get(liaId)
-                      .getSObject(LoanApplicationLiabilityRelation)
-                      .get('Name')
-                  ),
-                  String.valueof(
-                    mapOfLia.get(liaId)
-                      .getSObject(LoanApplicationLiabilityRelation)
-                      .get('Id')
-                  )
-                );
+
+              // Required OtherLiabilityType - liabilityTypeDd
+
+              if (string.Valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('OtherLiabilityType' + customFieldSuffix)) == null || String.isBlank(String.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('OtherLiabilityType' + customFieldSuffix)))) {
+                requiredFieldsError(objNamePrefix + 'LoanApplicationLiability' + customFieldSuffix, 'OtherLiabilityType' + customFieldSuffix, String.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('Name')), String.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('Id')));
               }
-               
+
               // Required Liability_Amount__c - liabilityAmount
-              
-              if (
-                string.Valueof(
-                  mapOfLia.get(liaId)
-                    .getSObject(LoanApplicationLiabilityRelation)
-                    .get('Liability_Amount__c')
-                ) == null ||
-                String.isBlank(
-                  String.valueof(
-                    mapOfLia.get(liaId)
-                      .getSObject(LoanApplicationLiabilityRelation)
-                      .get('Liability_Amount__c')
-                  )
-                )
-              ) {
-                requiredFieldsError(
-                  objNamePrefix +
-                    'LoanApplicationLiability' +
-                    customFieldSuffix,
-                  'Liability_Amount__c',
-                  String.valueof(
-                    mapOfLia.get(liaId)
-                      .getSObject(LoanApplicationLiabilityRelation)
-                      .get('Name')
-                  ),
-                  String.valueof(
-                    mapOfLia.get(liaId)
-                      .getSObject(LoanApplicationLiabilityRelation)
-                      .get('Id')
-                  )
-                );
+
+              if (string.Valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('Liability_Amount__c')) == null || String.isBlank(String.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('Liability_Amount__c')))) {
+                requiredFieldsError(objNamePrefix + 'LoanApplicationLiability' + customFieldSuffix, 'Liability_Amount__c', String.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('Name')), String.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('Id')));
               }
 
               // Filogix v.1.6.1 Changes
-              if (
-                String.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('OtherLiabilityType' + customFieldSuffix)) == 'Mortgage on a Rental Property' ||
-                String.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('OtherLiabilityType' + customFieldSuffix)) == 'Mortgage' ||
-                String.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('OtherLiabilityType' + customFieldSuffix)) == 'Rent'
-              ) {
-                requiredFieldError +='Please Choose Liability Type other than "Mortgage on a Rental Property", "Mortgage","Rent"';
+              if (String.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('OtherLiabilityType' + customFieldSuffix)) == 'Mortgage on a Rental Property' || String.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('OtherLiabilityType' + customFieldSuffix)) == 'Mortgage' || String.valueof(mapOfLia.get(liaId).getSObject(LoanApplicationLiabilityRelation).get('OtherLiabilityType' + customFieldSuffix)) == 'Rent') {
+                requiredFieldError += 'Please Choose Liability Type other than "Mortgage on a Rental Property", "Mortgage","Rent"';
               }
-
             }
           }
           list<FilogixPOSTJSONWrapper.OtherIncome> listOfOtherIncomes = new List<FilogixPOSTJSONWrapper.OtherIncome>();
           if (mapofApplicantIdAndIncome.containsKey(applicantId)) {
-            map<string, sObject> mapOfOthInc = mapofApplicantIdAndIncome.get(
-              applicantId
-            );
+            map<string, sObject> mapOfOthInc = mapofApplicantIdAndIncome.get(applicantId);
             for (string incId : mapOfOthInc.keySet()) {
               FilogixPOSTJSONWrapper.OtherIncome othInc = new FilogixPOSTJSONWrapper.OtherIncome();
-              othInc.incomeAmount = mapOfOthInc.get(incId)
-                  .get('Income_Amount__c') != null
-                ? Double.valueof(mapOfOthInc.get(incId).get('Income_Amount__c'))
-                : null;
-              othInc.incomeDescription = String.valueof(
-                mapOfOthInc.get(incId).get('Name')
-              );
-              othInc.incomePeriodDd = String.valueof(
-                mapOfOthInc.get(incId).get('Income_Period__c')
-              );
-              othInc.incomeTypeDd = String.valueof(
-                mapOfOthInc.get(incId)
-                  .get('IncomeSourceType' + customFieldSuffix)
-              );
+              othInc.incomeAmount = mapOfOthInc.get(incId).get('Income_Amount__c') != null ? Double.valueof(mapOfOthInc.get(incId).get('Income_Amount__c')) : null;
+              othInc.incomeDescription = String.valueof(mapOfOthInc.get(incId).get('Name'));
+              othInc.incomePeriodDd = String.valueof(mapOfOthInc.get(incId).get('Income_Period__c'));
+              othInc.incomeTypeDd = String.valueof(mapOfOthInc.get(incId).get('IncomeSourceType' + customFieldSuffix));
 
               listOfOtherIncomes.add(othInc);
 
               if (mapOfOthInc.get(incId).get('Income_Amount__c') == null) {
                 //requiredFieldError += '<b>Object</b> : Loan Applicant Income, <b>Field</b> : Monthly Income \n';
-                requiredFieldsError(
-                  objNamePrefix + 'LoanApplicantIncome' + customFieldSuffix,
-                  'Income_Amount__c',
-                  String.valueof(mapOfOthInc.get(incId).get('Name')),
-                  String.valueof(mapOfOthInc.get(incId).get('Id'))
-                );
+                requiredFieldsError(objNamePrefix + 'LoanApplicantIncome' + customFieldSuffix, 'Income_Amount__c', String.valueof(mapOfOthInc.get(incId).get('Name')), String.valueof(mapOfOthInc.get(incId).get('Id')));
               }
 
-              if (
-                mapOfOthInc.get(incId).get('Income_Period__c') == null ||
-                String.isBlank(
-                  String.valueof(mapOfOthInc.get(incId).get('Income_Period__c'))
-                )
-              ) {
+              if (mapOfOthInc.get(incId).get('Income_Period__c') == null || String.isBlank(String.valueof(mapOfOthInc.get(incId).get('Income_Period__c')))) {
                 //requiredFieldError += '<b>Object</b> : Loan Applicant Income, <b>Field</b> : Income Period \n';
-                requiredFieldsError(
-                  objNamePrefix + 'LoanApplicantIncome' + customFieldSuffix,
-                  'Income_Period__c',
-                  String.valueof(mapOfOthInc.get(incId).get('Name')),
-                  String.valueof(mapOfOthInc.get(incId).get('Id'))
-                );
+                requiredFieldsError(objNamePrefix + 'LoanApplicantIncome' + customFieldSuffix, 'Income_Period__c', String.valueof(mapOfOthInc.get(incId).get('Name')), String.valueof(mapOfOthInc.get(incId).get('Id')));
               }
-              if (
-                mapOfOthInc.get(incId)
-                  .get('IncomeSourceType' + customFieldSuffix) == null ||
-                String.isBlank(
-                  String.valueof(
-                    mapOfOthInc.get(incId)
-                      .get('IncomeSourceType' + customFieldSuffix)
-                  )
-                )
-              ) {
+              if (mapOfOthInc.get(incId).get('IncomeSourceType' + customFieldSuffix) == null || String.isBlank(String.valueof(mapOfOthInc.get(incId).get('IncomeSourceType' + customFieldSuffix)))) {
                 //requiredFieldError += '<b>Object</b> : Loan Applicant Income, <b>Field</b> : Income Source Type \n';
-                requiredFieldsError(
-                  objNamePrefix + 'LoanApplicantIncome' + customFieldSuffix,
-                  'IncomeSourceType' + customFieldSuffix,
-                  String.valueof(mapOfOthInc.get(incId).get('Name')),
-                  String.valueof(mapOfOthInc.get(incId).get('Id'))
-                );
+                requiredFieldsError(objNamePrefix + 'LoanApplicantIncome' + customFieldSuffix, 'IncomeSourceType' + customFieldSuffix, String.valueof(mapOfOthInc.get(incId).get('Name')), String.valueof(mapOfOthInc.get(incId).get('Id')));
               }
             }
           }
           list<FilogixPOSTJSONWrapper.EmploymentHistory> listEmp = new List<FilogixPOSTJSONWrapper.EmploymentHistory>();
           if (mapofApplicantIdAndEmployment.containsKey(applicantId)) {
-            map<string, sObject> mapOfEmp = mapofApplicantIdAndEmployment.get(
-              applicantId
-            );
+            map<string, sObject> mapOfEmp = mapofApplicantIdAndEmployment.get(applicantId);
             for (string empId : mapOfEmp.keySet()) {
               FilogixPOSTJSONWrapper.Address_Z addrZ = new FilogixPOSTJSONWrapper.Address_Z();
-              addrZ.addressLine1 = String.valueof(
-                mapOfEmp.get(empId).get('EmployerStreet' + customFieldSuffix)
-              );
-              addrZ.addressLine2 = String.valueof(
-                mapOfEmp.get(empId).get('Address_Line_2__c')
-              );
+              addrZ.addressLine1 = String.valueof(mapOfEmp.get(empId).get('EmployerStreet' + customFieldSuffix));
+              addrZ.addressLine2 = String.valueof(mapOfEmp.get(empId).get('Address_Line_2__c'));
               // Filogix supports upto 20 characters for City
-              addrZ.city = cityNamegen(
-                String.valueof(
-                  mapOfEmp.get(empId).get('EmployerCity' + customFieldSuffix)
-                )
-              );
-              if (
-                mapOfEmp.get(empId)
-                  .get('EmployerPostalCode' + customFieldSuffix) != null &&
-                String.valueof(
-                    mapOfEmp.get(empId)
-                      .get('EmployerPostalCode' + customFieldSuffix)
-                  )
-                  .length() < 6
-              ) {
-                addrZ.internationalPostalCode = String.valueof(
-                  mapOfEmp.get(empId)
-                    .get('EmployerPostalCode' + customFieldSuffix)
-                );
-              } else if (
-                mapOfEmp.get(empId)
-                  .get('EmployerPostalCode' + customFieldSuffix) != null &&
-                String.valueof(
-                    mapOfEmp.get(empId)
-                      .get('EmployerPostalCode' + customFieldSuffix)
-                  )
-                  .length() >= 6
-              ) {
-                addrZ.postalFsa = postalFSAGen(
-                  String.valueof(
-                    mapOfEmp.get(empId)
-                      .get('EmployerPostalCode' + customFieldSuffix)
-                  )
-                );
-                addrZ.postalLdu = postalLDUGen(
-                  String.valueof(
-                    mapOfEmp.get(empId)
-                      .get('EmployerPostalCode' + customFieldSuffix)
-                  )
-                );
+              addrZ.city = cityNamegen(String.valueof(mapOfEmp.get(empId).get('EmployerCity' + customFieldSuffix)));
+              if (mapOfEmp.get(empId).get('EmployerPostalCode' + customFieldSuffix) != null && String.valueof(mapOfEmp.get(empId).get('EmployerPostalCode' + customFieldSuffix)).length() < 6) {
+                addrZ.internationalPostalCode = String.valueof(mapOfEmp.get(empId).get('EmployerPostalCode' + customFieldSuffix));
+              } else if (mapOfEmp.get(empId).get('EmployerPostalCode' + customFieldSuffix) != null && String.valueof(mapOfEmp.get(empId).get('EmployerPostalCode' + customFieldSuffix)).length() >= 6) {
+                addrZ.postalFsa = postalFSAGen(String.valueof(mapOfEmp.get(empId).get('EmployerPostalCode' + customFieldSuffix)));
+                addrZ.postalLdu = postalLDUGen(String.valueof(mapOfEmp.get(empId).get('EmployerPostalCode' + customFieldSuffix)));
               }
 
-              addrZ.countryTypeDd = getFullCountryName(
-                String.valueof(
-                  mapOfEmp.get(empId).get('EmployerCountry' + customFieldSuffix)
-                )
-              );
-              addrZ.provinceDd = getFullProvinceName(
-                String.valueof(
-                  mapOfEmp.get(empId).get('EmployerState' + customFieldSuffix)
-                )
-              );
-              
+              addrZ.countryTypeDd = getFullCountryName(String.valueof(mapOfEmp.get(empId).get('EmployerCountry' + customFieldSuffix)));
+              addrZ.provinceDd = getFullProvinceName(String.valueof(mapOfEmp.get(empId).get('EmployerState' + customFieldSuffix)));
+
               // For FSC
               //Set of Countries Names accepted by Filogix.
-              Set<String> ListofCountryNames = new Set<String>{
-                  'Canada', 'United States'
-                  };
+              Set<String> ListofCountryNames = new Set<String>{ 'Canada', 'United States' };
               //Set of Province Names accepted by Filogix.
               Set<String> ListofProvinceNames = new Set<String>{
-                  'Alabama', 'Alaska', 'Alberta', 'American Samoa', 'Arizona', 'Arkansas', 'Armed Forces Americas except Canada', 'Armed Forces Europe Africa The Middle East and Canada', 'Armed Forces Pacific', 'British Columbia', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District of Columbia', 'Federated States of Micronesia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Manitoba', 'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Brunswick', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'Newfoundland and Labrador', 'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Northwest Territories', 'Nova Scotia', 'Nunavut', 'Ohio', 'Oklahoma', 'Ontario', 'Oregon', 'Palau', 'Pennsylvania', 'Prince Edward Island', 'Puerto Rico', 'Quebec', 'Rhode Island', 'Saskatchewan', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin islands', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming', 'Yukon'
-                  };
-              
-              
+                'Alabama',
+                'Alaska',
+                'Alberta',
+                'American Samoa',
+                'Arizona',
+                'Arkansas',
+                'Armed Forces Americas except Canada',
+                'Armed Forces Europe Africa The Middle East and Canada',
+                'Armed Forces Pacific',
+                'British Columbia',
+                'California',
+                'Colorado',
+                'Connecticut',
+                'Delaware',
+                'District of Columbia',
+                'Federated States of Micronesia',
+                'Florida',
+                'Georgia',
+                'Guam',
+                'Hawaii',
+                'Idaho',
+                'Illinois',
+                'Indiana',
+                'Iowa',
+                'Kansas',
+                'Kentucky',
+                'Louisiana',
+                'Maine',
+                'Manitoba',
+                'Marshall Islands',
+                'Maryland',
+                'Massachusetts',
+                'Michigan',
+                'Minnesota',
+                'Mississippi',
+                'Missouri',
+                'Montana',
+                'Nebraska',
+                'Nevada',
+                'New Brunswick',
+                'New Hampshire',
+                'New Jersey',
+                'New Mexico',
+                'New York',
+                'Newfoundland and Labrador',
+                'North Carolina',
+                'North Dakota',
+                'Northern Mariana Islands',
+                'Northwest Territories',
+                'Nova Scotia',
+                'Nunavut',
+                'Ohio',
+                'Oklahoma',
+                'Ontario',
+                'Oregon',
+                'Palau',
+                'Pennsylvania',
+                'Prince Edward Island',
+                'Puerto Rico',
+                'Quebec',
+                'Rhode Island',
+                'Saskatchewan',
+                'South Carolina',
+                'South Dakota',
+                'Tennessee',
+                'Texas',
+                'Utah',
+                'Vermont',
+                'Virgin islands',
+                'Virginia',
+                'Washington',
+                'West Virginia',
+                'Wisconsin',
+                'Wyoming',
+                'Yukon'
+              };
+
               //Required fields check
-              if (
-                mapOfEmp.get(empId)
-                  .get('EmployerCountry' + customFieldSuffix) == null ||
-                String.isBlank(
-                  String.valueof(
-                    mapOfEmp.get(empId)
-                      .get('EmployerCountry' + customFieldSuffix)
-                  )
-                )
-              ) {
-                requiredFieldsError(
-                  objNamePrefix + 'LoanApplicantEmployment' + customFieldSuffix,
-                  'EmployerCountry' + customFieldSuffix,
-                  String.valueof(mapOfEmp.get(empId).get('Name')),
-                  String.valueof(mapOfEmp.get(empId).get('Id'))
-                );
+              if (mapOfEmp.get(empId).get('EmployerCountry' + customFieldSuffix) == null || String.isBlank(String.valueof(mapOfEmp.get(empId).get('EmployerCountry' + customFieldSuffix)))) {
+                requiredFieldsError(objNamePrefix + 'LoanApplicantEmployment' + customFieldSuffix, 'EmployerCountry' + customFieldSuffix, String.valueof(mapOfEmp.get(empId).get('Name')), String.valueof(mapOfEmp.get(empId).get('Id')));
                 //requiredFieldError += '<b>Object</b> : Loan Applicant Employment, <b>Field</b> : Employer Country \n';
               }
-              
+
               // For FSC
               // Making sure the Country value is correct - Specially for FSC because we're using the standard TEXT field.
-              if (mapOfEmp.get(empId).get('EmployerCountry' + customFieldSuffix)!=null) {
-                  if(!ListofCountryNames.contains(String.valueof(mapOfEmp.get(empId).get('EmployerCountry' + customFieldSuffix)))){
-                      requiredFieldError += '<b><u>Invalid Country</u></b> - <b>Object</b> : Loan Applicant Employment';
-                      requiredFieldError +=' , <b>Record Name</b> : <a href="/' +String.valueof(mapOfEmp.get(empId).get('Id')) +'"> ' + String.valueof(mapOfEmp.get(empId).get('Name')) + ' </a></br>';
-                  }
+              if (mapOfEmp.get(empId).get('EmployerCountry' + customFieldSuffix) != null) {
+                if (!ListofCountryNames.contains(String.valueof(mapOfEmp.get(empId).get('EmployerCountry' + customFieldSuffix)))) {
+                  requiredFieldError += '<b><u>Invalid Country</u></b> - <b>Object</b> : Loan Applicant Employment';
+                  requiredFieldError += ' , <b>Record Name</b> : <a href="/' + String.valueof(mapOfEmp.get(empId).get('Id')) + '"> ' + String.valueof(mapOfEmp.get(empId).get('Name')) + ' </a></br>';
+                }
               }
 
-              if (
-                mapOfEmp.get(empId).get('EmployerState' + customFieldSuffix) ==
-                null ||
-                String.isBlank(
-                  String.valueof(
-                    mapOfEmp.get(empId).get('EmployerState' + customFieldSuffix)
-                  )
-                )
-              ) {
-                requiredFieldsError(
-                  objNamePrefix + 'LoanApplicantEmployment' + customFieldSuffix,
-                  'EmployerState' + customFieldSuffix,
-                  String.valueof(mapOfEmp.get(empId).get('Name')),
-                  String.valueof(mapOfEmp.get(empId).get('Id'))
-                );
+              if (mapOfEmp.get(empId).get('EmployerState' + customFieldSuffix) == null || String.isBlank(String.valueof(mapOfEmp.get(empId).get('EmployerState' + customFieldSuffix)))) {
+                requiredFieldsError(objNamePrefix + 'LoanApplicantEmployment' + customFieldSuffix, 'EmployerState' + customFieldSuffix, String.valueof(mapOfEmp.get(empId).get('Name')), String.valueof(mapOfEmp.get(empId).get('Id')));
                 //requiredFieldError += '<b>Object</b> : Loan Applicant Employment, <b>Field</b> : Employer State \n';
               }
-              
+
               // For FSC
               // Making sure the Province value is correct - Specially for FSC because we're using the standard TEXT field.
-              if (mapOfEmp.get(empId).get('EmployerState' + customFieldSuffix)!=null) {
-                  if(!ListofProvinceNames.contains(String.valueof(mapOfEmp.get(empId).get('EmployerState' + customFieldSuffix)))){
-                      requiredFieldError += '<b><u>Invalid Province</u></b> - <b>Object</b> : Loan Applicant Employment';
-                      requiredFieldError +=' , <b>Record Name</b> : <a href="/' +String.valueof(mapOfEmp.get(empId).get('Id')) +'"> ' + String.valueof(mapOfEmp.get(empId).get('Name')) + ' </a></br>';
-                  }
+              if (mapOfEmp.get(empId).get('EmployerState' + customFieldSuffix) != null) {
+                if (!ListofProvinceNames.contains(String.valueof(mapOfEmp.get(empId).get('EmployerState' + customFieldSuffix)))) {
+                  requiredFieldError += '<b><u>Invalid Province</u></b> - <b>Object</b> : Loan Applicant Employment';
+                  requiredFieldError += ' , <b>Record Name</b> : <a href="/' + String.valueof(mapOfEmp.get(empId).get('Id')) + '"> ' + String.valueof(mapOfEmp.get(empId).get('Name')) + ' </a></br>';
+                }
               }
-                
+
               FilogixPOSTJSONWrapper.Contact con = new FilogixPOSTJSONWrapper.Contact();
-              con.contactPhoneNumber = removeSpeacialChar(
-                String.valueof(
-                  mapOfEmp.get(empId).get('EmployerPhone' + customFieldSuffix)
-                )
-              );
+              con.contactPhoneNumber = removeSpeacialChar(String.valueof(mapOfEmp.get(empId).get('EmployerPhone' + customFieldSuffix)));
               con.address = addrZ;
 
               FilogixPOSTJSONWrapper.Income inc = new FilogixPOSTJSONWrapper.Income();
-              inc.incomeAmount = mapOfEmp.get(empId).get('Amount__c') != null
-                ? Double.valueof(mapOfEmp.get(empId).get('Amount__c'))
-                : null;
-              inc.incomePeriodDd = mapOfEmp.get(empId)
-                  .get('Income_Frequency__c') != null
-                ? string.valueOf(mapOfEmp.get(empId).get('Income_Frequency__c'))
-                : null;
-              inc.incomeTypeDd = String.valueof(
-                mapOfEmp.get(empId).get('Type__c')
-              );
+              inc.incomeAmount = mapOfEmp.get(empId).get('Amount__c') != null ? Double.valueof(mapOfEmp.get(empId).get('Amount__c')) : null;
+              inc.incomePeriodDd = mapOfEmp.get(empId).get('Income_Frequency__c') != null ? string.valueOf(mapOfEmp.get(empId).get('Income_Frequency__c')) : null;
+              inc.incomeTypeDd = String.valueof(mapOfEmp.get(empId).get('Type__c'));
 
               //Required fields check
-              if (
-                mapOfEmp.get(empId).get('Amount__c') == null ||
-                mapOfEmp.get(empId).get('Amount__c') == ''
-              ) {
-                requiredFieldsError(
-                  objNamePrefix + 'LoanApplicantEmployment' + customFieldSuffix,
-                  'Amount__c',
-                  String.valueof(mapOfEmp.get(empId).get('Name')),
-                  String.valueof(mapOfEmp.get(empId).get('Id'))
-                );
+              if (mapOfEmp.get(empId).get('Amount__c') == null || mapOfEmp.get(empId).get('Amount__c') == '') {
+                requiredFieldsError(objNamePrefix + 'LoanApplicantEmployment' + customFieldSuffix, 'Amount__c', String.valueof(mapOfEmp.get(empId).get('Name')), String.valueof(mapOfEmp.get(empId).get('Id')));
               }
-              String phoneval = removeSpeacialChar(
-                String.valueof(
-                  mapOfEmp.get(empId).get('EmployerPhone' + customFieldSuffix)
-                )
-              );
+              String phoneval = removeSpeacialChar(String.valueof(mapOfEmp.get(empId).get('EmployerPhone' + customFieldSuffix)));
               if (!String.isblank(phoneval) && phoneval.length() > 10) {
-                throw FilogixWrapperBinding.createCustomException(
-                  'Phone number should not contain country code. Example: 1112223333 - Current value= ' +
-                  phoneval
-                );
+                throw FilogixWrapperBinding.createCustomException('Phone number should not contain country code. Example: 1112223333 - Current value= ' + phoneval);
               }
 
-              if (
-                mapOfEmp.get(empId).get('Income_Frequency__c') == null ||
-                string.isBlank(
-                  String.valueof(mapOfEmp.get(empId).get('Income_Frequency__c'))
-                )
-              ) {
-                requiredFieldsError(
-                  objNamePrefix + 'LoanApplicantEmployment' + customFieldSuffix,
-                  'Income_Frequency__c',
-                  String.valueof(mapOfEmp.get(empId).get('Name')),
-                  String.valueof(mapOfEmp.get(empId).get('Id'))
-                );
+              if (mapOfEmp.get(empId).get('Income_Frequency__c') == null || string.isBlank(String.valueof(mapOfEmp.get(empId).get('Income_Frequency__c')))) {
+                requiredFieldsError(objNamePrefix + 'LoanApplicantEmployment' + customFieldSuffix, 'Income_Frequency__c', String.valueof(mapOfEmp.get(empId).get('Name')), String.valueof(mapOfEmp.get(empId).get('Id')));
                 //requiredFieldError += '<b>Object</b> : Loan Applicant Employment, <b>Field</b> : Income Frequency \n';
               }
 
-              if (
-                mapOfEmp.get(empId).get('Type__c') == null ||
-                string.isBlank(
-                  String.valueof(mapOfEmp.get(empId).get('Type__c'))
-                )
-              ) {
-                requiredFieldsError(
-                  objNamePrefix + 'LoanApplicantEmployment' + customFieldSuffix,
-                  'Type__c',
-                  String.valueof(mapOfEmp.get(empId).get('Name')),
-                  String.valueof(mapOfEmp.get(empId).get('Id'))
-                );
+              if (mapOfEmp.get(empId).get('Type__c') == null || string.isBlank(String.valueof(mapOfEmp.get(empId).get('Type__c')))) {
+                requiredFieldsError(objNamePrefix + 'LoanApplicantEmployment' + customFieldSuffix, 'Type__c', String.valueof(mapOfEmp.get(empId).get('Name')), String.valueof(mapOfEmp.get(empId).get('Id')));
               }
 
-              if (
-                mapOfEmp.get(empId).get('History_Status__c') == null ||
-                string.isBlank(
-                  String.valueof(mapOfEmp.get(empId).get('History_Status__c'))
-                )
-              ) {
-                requiredFieldsError(
-                  objNamePrefix + 'LoanApplicantEmployment' + customFieldSuffix,
-                  'History_Status__c',
-                  String.valueof(mapOfEmp.get(empId).get('Name')),
-                  String.valueof(mapOfEmp.get(empId).get('Id'))
-                );
+              if (mapOfEmp.get(empId).get('History_Status__c') == null || string.isBlank(String.valueof(mapOfEmp.get(empId).get('History_Status__c')))) {
+                requiredFieldsError(objNamePrefix + 'LoanApplicantEmployment' + customFieldSuffix, 'History_Status__c', String.valueof(mapOfEmp.get(empId).get('Name')), String.valueof(mapOfEmp.get(empId).get('Id')));
               }
 
               FilogixPOSTJSONWrapper.EmploymentHistory emp = new FilogixPOSTJSONWrapper.EmploymentHistory();
-              emp.companyType = String.valueof(
-                mapOfEmp.get(empId).get('Company_Type__c')
-              );
+              emp.companyType = String.valueof(mapOfEmp.get(empId).get('Company_Type__c'));
               emp.contact = con;
-              emp.employerName = String.valueof(
-                mapOfEmp.get(empId).get('EmployerName' + customFieldSuffix)
-              );
-              emp.employmentHistoryStatusDd = String.valueof(
-                mapOfEmp.get(empId).get('History_Status__c')
-              );
-              emp.employmentHistoryTypeDd = String.valueof(
-                mapOfEmp.get(empId).get('History_Type__c')
-              );
-              emp.grossRevenue = mapOfEmp.get(empId).get('Gross_Revenue__c') !=
-                null
-                ? Double.valueof(mapOfEmp.get(empId).get('Gross_Revenue__c'))
-                : null;
+              emp.employerName = String.valueof(mapOfEmp.get(empId).get('EmployerName' + customFieldSuffix));
+              emp.employmentHistoryStatusDd = String.valueof(mapOfEmp.get(empId).get('History_Status__c'));
+              emp.employmentHistoryTypeDd = String.valueof(mapOfEmp.get(empId).get('History_Type__c'));
+              emp.grossRevenue = mapOfEmp.get(empId).get('Gross_Revenue__c') != null ? Double.valueof(mapOfEmp.get(empId).get('Gross_Revenue__c')) : null;
               emp.income = inc;
-              emp.industrySectorDd = String.valueof(
-                mapOfEmp.get(empId).get('Industry_Sector__c')
-              );
-              emp.jobTitle = String.valueof(
-                mapOfEmp.get(empId).get('JobTitle' + customFieldSuffix)
-              );
-              Double monthsCal = Double.valueof(
-                  mapOfEmp.get(empId)
-                    .get('CurrentJobYearCount' + customFieldSuffix)
-                ) != null
-                ? 12 *
-                  Double.valueof(
-                    mapOfEmp.get(empId)
-                      .get('CurrentJobYearCount' + customFieldSuffix)
-                  )
-                : 0;
-              Double monthsVal = Double.valueof(
-                  mapOfEmp.get(empId)
-                    .get('CurrentJobAdditionalMonthCount' + customFieldSuffix)
-                ) != null
-                ? Double.valueof(
-                    mapOfEmp.get(empId)
-                      .get('CurrentJobAdditionalMonthCount' + customFieldSuffix)
-                  )
-                : 0;
+              emp.industrySectorDd = String.valueof(mapOfEmp.get(empId).get('Industry_Sector__c'));
+              emp.jobTitle = String.valueof(mapOfEmp.get(empId).get('JobTitle' + customFieldSuffix));
+              Double monthsCal = Double.valueof(mapOfEmp.get(empId).get('CurrentJobYearCount' + customFieldSuffix)) != null ? 12 * Double.valueof(mapOfEmp.get(empId).get('CurrentJobYearCount' + customFieldSuffix)) : 0;
+              Double monthsVal = Double.valueof(mapOfEmp.get(empId).get('CurrentJobAdditionalMonthCount' + customFieldSuffix)) != null ? Double.valueof(mapOfEmp.get(empId).get('CurrentJobAdditionalMonthCount' + customFieldSuffix)) : 0;
               emp.monthsOfService = monthsCal + monthsVal;
-              emp.occupationDd = String.valueof(
-                mapOfEmp.get(empId).get('Occupation__c')
-              );
-              emp.operatingAs = String.valueof(
-                mapOfEmp.get(empId).get('Operating_As__c')
-              );
-              emp.selfEmploymentFlag = BooleanToString(
-                string.valueOf(
-                  mapOfEmp.get(empId).get('IsSelfEmployed' + customFieldSuffix)
-                )
-              );
-              emp.timeInIndustry = Double.valueof(
-                mapOfEmp.get(empId).get('Time_In_Industry__c')
-              );
+              emp.occupationDd = String.valueof(mapOfEmp.get(empId).get('Occupation__c'));
+              emp.operatingAs = String.valueof(mapOfEmp.get(empId).get('Operating_As__c'));
+              emp.selfEmploymentFlag = BooleanToString(string.valueOf(mapOfEmp.get(empId).get('IsSelfEmployed' + customFieldSuffix)));
+              emp.timeInIndustry = Double.valueof(mapOfEmp.get(empId).get('Time_In_Industry__c'));
 
-              if (
-                String.valueof(
-                  mapOfEmp.get(empId).get('EmployerName' + customFieldSuffix)
-                ) == null ||
-                String.isBlank(
-                  String.valueof(
-                    mapOfEmp.get(empId).get('EmployerName' + customFieldSuffix)
-                  )
-                )
-              ) {
-                requiredFieldsError(
-                  objNamePrefix + 'LoanApplicantEmployment' + customFieldSuffix,
-                  'EmployerName' + customFieldSuffix,
-                  String.valueof(mapOfEmp.get(empId).get('Name')),
-                  String.valueof(mapOfEmp.get(empId).get('Id'))
-                );
+              if (String.valueof(mapOfEmp.get(empId).get('EmployerName' + customFieldSuffix)) == null || String.isBlank(String.valueof(mapOfEmp.get(empId).get('EmployerName' + customFieldSuffix)))) {
+                requiredFieldsError(objNamePrefix + 'LoanApplicantEmployment' + customFieldSuffix, 'EmployerName' + customFieldSuffix, String.valueof(mapOfEmp.get(empId).get('Name')), String.valueof(mapOfEmp.get(empId).get('Id')));
               }
 
-              if (
-                String.valueof(mapOfEmp.get(empId).get('History_Status__c')) ==
-                null ||
-                String.isBlank(
-                  String.valueof(mapOfEmp.get(empId).get('History_Status__c'))
-                )
-              ) {
-                requiredFieldsError(
-                  objNamePrefix + 'LoanApplicantEmployment' + customFieldSuffix,
-                  'History_Status__c',
-                  String.valueof(mapOfEmp.get(empId).get('Name')),
-                  String.valueof(mapOfEmp.get(empId).get('Id'))
-                );
+              if (String.valueof(mapOfEmp.get(empId).get('History_Status__c')) == null || String.isBlank(String.valueof(mapOfEmp.get(empId).get('History_Status__c')))) {
+                requiredFieldsError(objNamePrefix + 'LoanApplicantEmployment' + customFieldSuffix, 'History_Status__c', String.valueof(mapOfEmp.get(empId).get('Name')), String.valueof(mapOfEmp.get(empId).get('Id')));
               }
 
-              if (
-                String.valueof(mapOfEmp.get(empId).get('History_Type__c')) ==
-                null ||
-                String.isBlank(
-                  String.valueof(mapOfEmp.get(empId).get('History_Type__c'))
-                )
-              ) {
-                requiredFieldsError(
-                  objNamePrefix + 'LoanApplicantEmployment' + customFieldSuffix,
-                  'History_Type__c',
-                  String.valueof(mapOfEmp.get(empId).get('Name')),
-                  String.valueof(mapOfEmp.get(empId).get('Id'))
-                );
+              if (String.valueof(mapOfEmp.get(empId).get('History_Type__c')) == null || String.isBlank(String.valueof(mapOfEmp.get(empId).get('History_Type__c')))) {
+                requiredFieldsError(objNamePrefix + 'LoanApplicantEmployment' + customFieldSuffix, 'History_Type__c', String.valueof(mapOfEmp.get(empId).get('Name')), String.valueof(mapOfEmp.get(empId).get('Id')));
               }
 
               listEmp.add(emp);
@@ -3938,73 +2081,22 @@ global without sharing class FilogixWrapperBinding {
           //Other Properties
           list<FilogixPOSTJSONWrapper.OtherProperty> listOthProp = new List<FilogixPOSTJSONWrapper.OtherProperty>();
           if (mapofLoanAppIdAndProperties.containsKey(applicantId)) {
-            map<string, sObject> mapOfProps = mapofLoanAppIdAndProperties.get(
-              applicantId
-            );
+            map<string, sObject> mapOfProps = mapofLoanAppIdAndProperties.get(applicantId);
             for (string propId : mapOfProps.keySet()) {
               // Proceed only when the Property is not a Subject Property
-              if (
-                Boolean.valueOf(
-                  mapOfProps.get(propId).get('Is_Subject_Property__c')
-                ) == false
-              ) {
+              if (Boolean.valueOf(mapOfProps.get(propId).get('Is_Subject_Property__c')) == false) {
                 list<FilogixPOSTJSONWrapper.PropertyExpense> listPrpExp = new List<FilogixPOSTJSONWrapper.PropertyExpense>();
 
                 // Property Expenses
-                Double Municipal = mapOfProps.get(propId)
-                    .get('Annual_Taxes__c') != null
-                  ? Double.valueOf(
-                      mapOfProps.get(propId).get('Annual_Taxes__c')
-                    )
-                  : 0;
-                Double Insurance = mapOfProps.get(propId)
-                    .get('Insurance_Expenses__c') != null
-                  ? Double.valueOf(
-                      mapOfProps.get(propId).get('Insurance_Expenses__c')
-                    )
-                  : 0;
-                Double Heat = mapOfProps.get(propId)
-                    .get('Heating_Expenses__c') != null
-                  ? Double.valueOf(
-                      mapOfProps.get(propId).get('Heating_Expenses__c')
-                    )
-                  : 0;
-                Double Hydro = mapOfProps.get(propId)
-                    .get('Hydro_Expenses__c') != null
-                  ? Double.valueOf(
-                      mapOfProps.get(propId).get('Hydro_Expenses__c')
-                    )
-                  : 0;
-                Double Interest = mapOfProps.get(propId)
-                    .get('Interest_Expenses__c') != null
-                  ? Double.valueOf(
-                      mapOfProps.get(propId).get('Interest_Expenses__c')
-                    )
-                  : 0;
-                Double General = mapOfProps.get(propId)
-                    .get('Management_Expenses__c') != null
-                  ? Double.valueOf(
-                      mapOfProps.get(propId).get('Management_Expenses__c')
-                    )
-                  : 0;
-                Double Other = mapOfProps.get(propId)
-                    .get('Other_Expenses__c') != null
-                  ? Double.valueOf(
-                      mapOfProps.get(propId).get('Other_Expenses__c')
-                    )
-                  : 0;
-                Double Repair = mapOfProps.get(propId)
-                    .get('Repairs_Expenses__c') != null
-                  ? Double.valueOf(
-                      mapOfProps.get(propId).get('Repairs_Expenses__c')
-                    )
-                  : 0;
-                Double Condo = mapOfProps.get(propId)
-                    .get('Total_Condo_Fees__c') != null
-                  ? Double.valueOf(
-                      mapOfProps.get(propId).get('Total_Condo_Fees__c')
-                    )
-                  : 0;
+                Double Municipal = mapOfProps.get(propId).get('Annual_Taxes__c') != null ? Double.valueOf(mapOfProps.get(propId).get('Annual_Taxes__c')) : 0;
+                Double Insurance = mapOfProps.get(propId).get('Insurance_Expenses__c') != null ? Double.valueOf(mapOfProps.get(propId).get('Insurance_Expenses__c')) : 0;
+                Double Heat = mapOfProps.get(propId).get('Heating_Expenses__c') != null ? Double.valueOf(mapOfProps.get(propId).get('Heating_Expenses__c')) : 0;
+                Double Hydro = mapOfProps.get(propId).get('Hydro_Expenses__c') != null ? Double.valueOf(mapOfProps.get(propId).get('Hydro_Expenses__c')) : 0;
+                Double Interest = mapOfProps.get(propId).get('Interest_Expenses__c') != null ? Double.valueOf(mapOfProps.get(propId).get('Interest_Expenses__c')) : 0;
+                Double General = mapOfProps.get(propId).get('Management_Expenses__c') != null ? Double.valueOf(mapOfProps.get(propId).get('Management_Expenses__c')) : 0;
+                Double Other = mapOfProps.get(propId).get('Other_Expenses__c') != null ? Double.valueOf(mapOfProps.get(propId).get('Other_Expenses__c')) : 0;
+                Double Repair = mapOfProps.get(propId).get('Repairs_Expenses__c') != null ? Double.valueOf(mapOfProps.get(propId).get('Repairs_Expenses__c')) : 0;
+                Double Condo = mapOfProps.get(propId).get('Total_Condo_Fees__c') != null ? Double.valueOf(mapOfProps.get(propId).get('Total_Condo_Fees__c')) : 0;
 
                 if (Municipal != 0) {
                   FilogixPOSTJSONWrapper.PropertyExpense MunicipalExpense = new FilogixPOSTJSONWrapper.PropertyExpense();
@@ -4074,46 +2166,16 @@ global without sharing class FilogixWrapperBinding {
                 /* Expense END */
 
                 FilogixPOSTJSONWrapper.Address_Y addrY = new FilogixPOSTJSONWrapper.Address_Y();
-                addrY.streetNumber = String.valueof(
-                  mapOfProps.get(propId).get('Street_Number__c')
-                ); //!String.isEmpty(String.valueof(mapOfProps.get(propId).get('Street_Number__c')))?String.valueof(mapOfProps.get(propId).get('Street_Number__c')).SubStringBefore(' '):'';
-                addrY.streetName = !String.isEmpty(
-                    String.valueof(mapOfProps.get(propId).get('Street_Name__c'))
-                  )
-                  ? String.valueof(mapOfProps.get(propId).get('Street_Name__c'))
-                  : '';
-                addrY.streetTypeDd = String.valueof(
-                  mapOfProps.get(propId).get('Street_Type__c')
-                );
-                addrY.streetDirectionDd = String.valueof(
-                  mapOfProps.get(propId).get('Direction__c')
-                );
+                addrY.streetNumber = String.valueof(mapOfProps.get(propId).get('Street_Number__c')); //!String.isEmpty(String.valueof(mapOfProps.get(propId).get('Street_Number__c')))?String.valueof(mapOfProps.get(propId).get('Street_Number__c')).SubStringBefore(' '):'';
+                addrY.streetName = !String.isEmpty(String.valueof(mapOfProps.get(propId).get('Street_Name__c'))) ? String.valueof(mapOfProps.get(propId).get('Street_Name__c')) : '';
+                addrY.streetTypeDd = String.valueof(mapOfProps.get(propId).get('Street_Type__c'));
+                addrY.streetDirectionDd = String.valueof(mapOfProps.get(propId).get('Direction__c'));
                 // Filogix supports upto 20 characters for City
-                addrY.city = cityNamegen(
-                  String.valueof(
-                    mapOfProps.get(propId).get(appNameSpace + 'City__c')
-                  )
-                );
-                addrY.postalFsa = postalFSAGen(
-                  String.valueof(
-                    mapOfProps.get(propId).get(appNameSpace + 'PostalCode__c')
-                  )
-                );
-                addrY.postalLdu = postalLDUGen(
-                  String.valueof(
-                    mapOfProps.get(propId).get(appNameSpace + 'PostalCode__c')
-                  )
-                );
-                addrY.countryTypeDd = getFullCountryName(
-                  String.valueof(
-                    mapOfProps.get(propId).get(appNameSpace + 'Country__c')
-                  )
-                );
-                addrY.provinceDd = getFullProvinceName(
-                  String.valueof(
-                    mapOfProps.get(propId).get(appNameSpace + 'Province__c')
-                  )
-                );
+                addrY.city = cityNamegen(String.valueof(mapOfProps.get(propId).get(appNameSpace + 'City__c')));
+                addrY.postalFsa = postalFSAGen(String.valueof(mapOfProps.get(propId).get(appNameSpace + 'PostalCode__c')));
+                addrY.postalLdu = postalLDUGen(String.valueof(mapOfProps.get(propId).get(appNameSpace + 'PostalCode__c')));
+                addrY.countryTypeDd = getFullCountryName(String.valueof(mapOfProps.get(propId).get(appNameSpace + 'Country__c')));
+                addrY.provinceDd = getFullProvinceName(String.valueof(mapOfProps.get(propId).get(appNameSpace + 'Province__c')));
 
                 //Required fields check
                 /*Filogix API v1.6.1
@@ -4136,74 +2198,23 @@ global without sharing class FilogixWrapperBinding {
                   );
                 }
                 */
-                if (
-                  mapOfProps.get(propId).get(appNameSpace + 'Country__c') ==
-                  null ||
-                  string.isBlank(
-                    String.valueof(
-                      mapOfProps.get(propId).get(appNameSpace + 'Country__c')
-                    )
-                  )
-                ) {
-                  requiredFieldsError(
-                    objNamePrefix +
-                      'LoanApplicationProperty' +
-                      customFieldSuffix,
-                    appNameSpace + 'Country__c',
-                    String.valueof(mapOfProps.get(propId).get('Name')),
-                    String.valueof(mapOfProps.get(propId).get('Id'))
-                  );
+                if (mapOfProps.get(propId).get(appNameSpace + 'Country__c') == null || string.isBlank(String.valueof(mapOfProps.get(propId).get(appNameSpace + 'Country__c')))) {
+                  requiredFieldsError(objNamePrefix + 'LoanApplicationProperty' + customFieldSuffix, appNameSpace + 'Country__c', String.valueof(mapOfProps.get(propId).get('Name')), String.valueof(mapOfProps.get(propId).get('Id')));
                 }
-                if (
-                  mapOfProps.get(propId).get(appNameSpace + 'PostalCode__c') ==
-                  null ||
-                  string.isBlank(
-                    String.valueof(
-                      mapOfProps.get(propId).get(appNameSpace + 'PostalCode__c')
-                    )
-                  )
-                ) {
-                  requiredFieldsError(
-                    objNamePrefix +
-                      'LoanApplicationProperty' +
-                      customFieldSuffix,
-                    appNameSpace + 'PostalCode__c',
-                    String.valueof(mapOfProps.get(propId).get('Name')),
-                    String.valueof(mapOfProps.get(propId).get('Id'))
-                  );
+                if (mapOfProps.get(propId).get(appNameSpace + 'PostalCode__c') == null || string.isBlank(String.valueof(mapOfProps.get(propId).get(appNameSpace + 'PostalCode__c')))) {
+                  requiredFieldsError(objNamePrefix + 'LoanApplicationProperty' + customFieldSuffix, appNameSpace + 'PostalCode__c', String.valueof(mapOfProps.get(propId).get('Name')), String.valueof(mapOfProps.get(propId).get('Id')));
                 }
 
                 FilogixPOSTJSONWrapper.Property prp = new FilogixPOSTJSONWrapper.Property();
                 prp.address = addrY;
 
                 //     prp.actualAppraisalValue = mapOfProps.get(propId).get('AppraisedValue__c') != null? Double.valueof(mapOfProps.get(propId).get('AppraisedValue__c')): null;
-                prp.estimatedAppraisalValue = mapOfProps.get(propId)
-                    .get('PropertyValue' + customFieldSuffix) != null
-                  ? Double.valueof(
-                      mapOfProps.get(propId)
-                        .get('PropertyValue' + customFieldSuffix)
-                    )
-                  : null;
-                prp.feesIncludeHeat = BooleanToString(
-                  string.valueOf(
-                    mapOfProps.get(propId).get('feesIncludeHeat__c')
-                  )
-                );
-                prp.includetds = BooleanToString(
-                  string.valueOf(mapOfProps.get(propId).get('includetds__c'))
-                );
-                prp.occupancyTypeDd = string.valueOf(
-                  mapOfProps.get(propId)
-                    .get('PropertyUseType' + customFieldSuffix)
-                );
-                prp.originalPurchasePrice = Double.valueof(
-                  mapOfProps.get(propId).get('Original_Purchase_Price__c')
-                );
-                prp.refiOrigPurchaseDate = formatDateTime(
-                  dateTime.valueof(
-                    mapOfProps.get(propId).get('Purchase_Date__c')
-                  )
-                );
+                prp.estimatedAppraisalValue = mapOfProps.get(propId).get('PropertyValue' + customFieldSuffix) != null ? Double.valueof(mapOfProps.get(propId).get('PropertyValue' + customFieldSuffix)) : null;
+                prp.feesIncludeHeat = BooleanToString(string.valueOf(mapOfProps.get(propId).get('feesIncludeHeat__c')));
+                prp.includetds = BooleanToString(string.valueOf(mapOfProps.get(propId).get('includetds__c')));
+                prp.occupancyTypeDd = string.valueOf(mapOfProps.get(propId).get('PropertyUseType' + customFieldSuffix));
+                prp.originalPurchasePrice = Double.valueof(mapOfProps.get(propId).get('Original_Purchase_Price__c'));
+                prp.refiOrigPurchaseDate = formatDateTime(dateTime.valueof(mapOfProps.get(propId).get('Purchase_Date__c')));
                 //       prp.purchasePrice = mapOfProps.get(propId).get('Original_Purchase_Price__c') != null? Double.valueof(mapOfProps.get(propId).get('Original_Purchase_Price__c')): null;
 
                 //Filogix API does not support other values.
@@ -4236,82 +2247,25 @@ global without sharing class FilogixWrapperBinding {
 
                 // RENTAL INCOME
                 // If Occupancy Type contains "Rental"
-                if (
-                  !string.isBlank(
-                    string.valueOf(
-                      mapOfProps.get(propId)
-                        .get('PropertyUseType' + customFieldSuffix)
-                    )
-                  ) &&
-                  string.valueOf(
-                      mapOfProps.get(propId)
-                        .get('PropertyUseType' + customFieldSuffix)
-                    )
-                    .contains('Rental')
-                ) {
+                if (!string.isBlank(string.valueOf(mapOfProps.get(propId).get('PropertyUseType' + customFieldSuffix))) && string.valueOf(mapOfProps.get(propId).get('PropertyUseType' + customFieldSuffix)).contains('Rental')) {
                   // Adding Rental Values
                   FilogixPOSTJSONWrapper.RentalIncome renInc = new FilogixPOSTJSONWrapper.RentalIncome();
-                  renInc.incomeAmount = mapOfProps.get(propId)
-                      .get('ExpMonthlyRentalIncome' + customFieldSuffix) != null
-                    ? Double.valueof(
-                        mapOfProps.get(propId)
-                          .get('ExpMonthlyRentalIncome' + customFieldSuffix)
-                      )
-                    : 0;
-                  renInc.incomePeriodDd = String.valueof(
-                    mapOfProps.get(propId).get('Rental_Income_Period__c')
-                  );
-                  renInc.incomeTypeDd = String.valueof(
-                    mapOfProps.get(propId).get('Rental_Income_Type__c')
-                  );
-                  renInc.incPercentInTds = renInc.incPercentInGds = Double.valueof(
-                      mapOfProps.get(propId).get('Rental_IncPercentInTds__c')
-                    ) != null
-                    ? Double.valueof(
-                        mapOfProps.get(propId).get('Rental_IncPercentInTds__c')
-                      )
-                    : 0;
+                  renInc.incomeAmount = mapOfProps.get(propId).get('ExpMonthlyRentalIncome' + customFieldSuffix) != null ? Double.valueof(mapOfProps.get(propId).get('ExpMonthlyRentalIncome' + customFieldSuffix)) : 0;
+                  renInc.incomePeriodDd = String.valueof(mapOfProps.get(propId).get('Rental_Income_Period__c'));
+                  renInc.incomeTypeDd = String.valueof(mapOfProps.get(propId).get('Rental_Income_Type__c'));
+                  renInc.incPercentInTds = renInc.incPercentInGds = Double.valueof(mapOfProps.get(propId).get('Rental_IncPercentInTds__c')) != null ? Double.valueof(mapOfProps.get(propId).get('Rental_IncPercentInTds__c')) : 0;
                   //renInc.incomeDescription (Missing Mappping)
                   //Required fields check
-                  if (
-                    mapOfProps.get(propId)
-                      .get('ExpMonthlyRentalIncome' + customFieldSuffix) == null
-                  ) {
-                    requiredFieldsError(
-                      objNamePrefix +
-                        'LoanApplicationProperty' +
-                        customFieldSuffix,
-                      'ExpMonthlyRentalIncome' + customFieldSuffix,
-                      String.valueof(mapOfProps.get(propId).get('Name')),
-                      String.valueof(mapOfProps.get(propId).get('Id'))
-                    );
+                  if (mapOfProps.get(propId).get('ExpMonthlyRentalIncome' + customFieldSuffix) == null) {
+                    requiredFieldsError(objNamePrefix + 'LoanApplicationProperty' + customFieldSuffix, 'ExpMonthlyRentalIncome' + customFieldSuffix, String.valueof(mapOfProps.get(propId).get('Name')), String.valueof(mapOfProps.get(propId).get('Id')));
                   }
 
-                  if (
-                    mapOfProps.get(propId).get('Rental_Income_Period__c') ==
-                    null
-                  ) {
-                    requiredFieldsError(
-                      objNamePrefix +
-                        'LoanApplicationProperty' +
-                        customFieldSuffix,
-                      'Rental_Income_Period__c',
-                      String.valueof(mapOfProps.get(propId).get('Name')),
-                      String.valueof(mapOfProps.get(propId).get('Id'))
-                    );
+                  if (mapOfProps.get(propId).get('Rental_Income_Period__c') == null) {
+                    requiredFieldsError(objNamePrefix + 'LoanApplicationProperty' + customFieldSuffix, 'Rental_Income_Period__c', String.valueof(mapOfProps.get(propId).get('Name')), String.valueof(mapOfProps.get(propId).get('Id')));
                   }
 
-                  if (
-                    mapOfProps.get(propId).get('Rental_Income_Type__c') == null
-                  ) {
-                    requiredFieldsError(
-                      objNamePrefix +
-                        'LoanApplicationProperty' +
-                        customFieldSuffix,
-                      'Rental_Income_Type__c',
-                      String.valueof(mapOfProps.get(propId).get('Name')),
-                      String.valueof(mapOfProps.get(propId).get('Id'))
-                    );
+                  if (mapOfProps.get(propId).get('Rental_Income_Type__c') == null) {
+                    requiredFieldsError(objNamePrefix + 'LoanApplicationProperty' + customFieldSuffix, 'Rental_Income_Type__c', String.valueof(mapOfProps.get(propId).get('Name')), String.valueof(mapOfProps.get(propId).get('Id')));
                   }
                   // Adding RentalIncome to the Property
                   prp.rentalIncome = renInc;
@@ -4319,98 +2273,33 @@ global without sharing class FilogixWrapperBinding {
 
                 list<FilogixPOSTJSONWrapper.OtherPropMortgage> listMort = new List<FilogixPOSTJSONWrapper.OtherPropMortgage>();
 
-                if (
-                  mapOfMortgageAgainstProp.containsKey(propId) &&
-                  mapOfMortgageAgainstProp.get(propId).size() > 3
-                ) {
-                  requiredFieldError +=
-                    'Existing Mortgages against property <a href="/' +
-                    propId +
-                    '">' +
-                    String.valueof(mapOfProps.get(propId).get('Name')) +
-                    '</a> should not be more than <b> Three </b>.';
+                if (mapOfMortgageAgainstProp.containsKey(propId) && mapOfMortgageAgainstProp.get(propId).size() > 3) {
+                  requiredFieldError += 'Existing Mortgages against property <a href="/' + propId + '">' + String.valueof(mapOfProps.get(propId).get('Name')) + '</a> should not be more than <b> Three </b>.';
                 }
 
-                if (
-                  mapOfMortgageAgainstProp.containsKey(propId) &&
-                  mapOfMortgageAgainstProp.get(propId).size() > 0 &&
-                  mapOfMortgageAgainstProp.get(propId).size() < 4
-                ) {
-                  for (
-                    sObject mortgageRecord : mapOfMortgageAgainstProp.get(
-                      propId
-                    )
-                  ) {
+                if (mapOfMortgageAgainstProp.containsKey(propId) && mapOfMortgageAgainstProp.get(propId).size() > 0 && mapOfMortgageAgainstProp.get(propId).size() < 4) {
+                  for (sObject mortgageRecord : mapOfMortgageAgainstProp.get(propId)) {
                     // Making sure to create Mortgage only if it's Existing
                     // API doedsn't allow Existing Mortgage to be FALSE for OTHER PROPERTIES
-                    if (
-                      Boolean.valueof(
-                        mortgageRecord.get(
-                          appNameSpace + 'Existing_Mortgage__c'
-                        )
-                      ) == true &&
-                      Boolean.valueof(
-                        mapOfProps.get(propId).get('Is_Subject_Property__c')
-                      ) == false
-                    ) {
+                    if (Boolean.valueof(mortgageRecord.get(appNameSpace + 'Existing_Mortgage__c')) == true && Boolean.valueof(mapOfProps.get(propId).get('Is_Subject_Property__c')) == false) {
                       FilogixPOSTJSONWrapper.Rate_Z rt = new FilogixPOSTJSONWrapper.Rate_Z();
-                      rt.interestRate = mortgageRecord.get(
-                          'Interest_Rate__c'
-                        ) != null
-                        ? Double.valueof(mortgageRecord.get('Interest_Rate__c'))
-                        : null;
+                      rt.interestRate = mortgageRecord.get('Interest_Rate__c') != null ? Double.valueof(mortgageRecord.get('Interest_Rate__c')) : null;
 
                       // Initializing Mortgages
                       //===========================
                       FilogixPOSTJSONWrapper.OtherPropMortgage mortgage = new FilogixPOSTJSONWrapper.OtherPropMortgage();
                       //mortgage.borrowerIds = brIDs;
-                      mortgage.balanceRemaining = mortgageRecord.get(
-                          'Balance_Remaining__c'
-                        ) != null
-                        ? Double.valueof(
-                            mortgageRecord.get('Balance_Remaining__c')
-                          )
-                        : null;
-                      mortgage.existingMortgageFlag = BooleanToString(
-                        String.valueof(
-                          mortgageRecord.get(
-                            appNameSpace + 'Existing_Mortgage__c'
-                          )
-                        )
-                      );
-                      mortgage.existingMortgageHolder = String.valueof(
-                        mortgageRecord.get(
-                          appNameSpace + 'Existing_Mortgage_Holder__c'
-                        )
-                      );
-                      mortgage.interestTypeDd = String.valueof(
-                        mortgageRecord.get(appNameSpace + 'Interest_Type__c')
-                      );
-                      mortgage.loanTypeDd = String.valueof(
-                        mortgageRecord.get('Loan_Type__c')
-                      );
-                      mortgage.maturityDate = formatDateTime(
-                        (DateTime) mortgageRecord.get('Maturity_Date__c')
-                      );
-                      mortgage.mortgageTypeDd = String.valueof(
-                        mortgageRecord.get('Mortgage_Type__c')
-                      ); //mapOfLoanApplication.get(rlaId).Mortgage_Type__c;
-                      mortgage.PAndIPaymentAmount = mortgageRecord.get(
-                          'PAndIPaymentAmount__c'
-                        ) != null
-                        ? Double.valueOf(
-                            mortgageRecord.get('PAndIPaymentAmount__c')
-                          )
-                        : null;
-                      mortgage.paymentFrequencyDd = string.valueof(
-                        mortgageRecord.get('Payment_Frequency__c')
-                      );
-                      mortgage.paymentTermDd = string.valueof(
-                        mortgageRecord.get('Payment_Term__c')
-                      );
-                      mortgage.payoffTypeDd = String.valueof(
-                        mortgageRecord.get('Payoff_Type__c')
-                      );
+                      mortgage.balanceRemaining = mortgageRecord.get('Balance_Remaining__c') != null ? Double.valueof(mortgageRecord.get('Balance_Remaining__c')) : null;
+                      mortgage.existingMortgageFlag = BooleanToString(String.valueof(mortgageRecord.get(appNameSpace + 'Existing_Mortgage__c')));
+                      mortgage.existingMortgageHolder = String.valueof(mortgageRecord.get(appNameSpace + 'Existing_Mortgage_Holder__c'));
+                      mortgage.interestTypeDd = String.valueof(mortgageRecord.get(appNameSpace + 'Interest_Type__c'));
+                      mortgage.loanTypeDd = String.valueof(mortgageRecord.get('Loan_Type__c'));
+                      mortgage.maturityDate = formatDateTime((DateTime) mortgageRecord.get('Maturity_Date__c'));
+                      mortgage.mortgageTypeDd = String.valueof(mortgageRecord.get('Mortgage_Type__c')); //mapOfLoanApplication.get(rlaId).Mortgage_Type__c;
+                      mortgage.PAndIPaymentAmount = mortgageRecord.get('PAndIPaymentAmount__c') != null ? Double.valueOf(mortgageRecord.get('PAndIPaymentAmount__c')) : null;
+                      mortgage.paymentFrequencyDd = string.valueof(mortgageRecord.get('Payment_Frequency__c'));
+                      mortgage.paymentTermDd = string.valueof(mortgageRecord.get('Payment_Term__c'));
+                      mortgage.payoffTypeDd = String.valueof(mortgageRecord.get('Payoff_Type__c'));
                       mortgage.rate = rt;
 
                       listMort.add(mortgage);
@@ -4418,95 +2307,42 @@ global without sharing class FilogixWrapperBinding {
                       //Required fields Check
 
                       if (mortgageRecord.get('Balance_Remaining__c') == null) {
-                        requiredFieldsError(
-                          'Mortgage__c',
-                          'Balance_Remaining__c',
-                          String.valueof(mortgageRecord.get('Name')),
-                          String.valueof(mortgageRecord.get('Id'))
-                        );
+                        requiredFieldsError('Mortgage__c', 'Balance_Remaining__c', String.valueof(mortgageRecord.get('Name')), String.valueof(mortgageRecord.get('Id')));
                       }
 
                       if (mortgageRecord.get('Existing_Mortgage__c') == null) {
-                        requiredFieldsError(
-                          'Mortgage__c',
-                          'Existing_Mortgage__c',
-                          String.valueof(mortgageRecord.get('Name')),
-                          String.valueof(mortgageRecord.get('Id'))
-                        );
+                        requiredFieldsError('Mortgage__c', 'Existing_Mortgage__c', String.valueof(mortgageRecord.get('Name')), String.valueof(mortgageRecord.get('Id')));
                       }
-                      if (
-                        mortgageRecord.get('Existing_Mortgage_Holder__c') ==
-                        null
-                      ) {
-                        requiredFieldsError(
-                          'Mortgage__c',
-                          'Existing_Mortgage_Holder__c',
-                          String.valueof(mortgageRecord.get('Name')),
-                          String.valueof(mortgageRecord.get('Id'))
-                        );
+                      if (mortgageRecord.get('Existing_Mortgage_Holder__c') == null) {
+                        requiredFieldsError('Mortgage__c', 'Existing_Mortgage_Holder__c', String.valueof(mortgageRecord.get('Name')), String.valueof(mortgageRecord.get('Id')));
                       }
 
                       if (mortgageRecord.get('Interest_Type__c') == null) {
-                        requiredFieldsError(
-                          'Mortgage__c',
-                          'Interest_Type__c',
-                          String.valueof(mortgageRecord.get('Name')),
-                          String.valueof(mortgageRecord.get('Id'))
-                        );
+                        requiredFieldsError('Mortgage__c', 'Interest_Type__c', String.valueof(mortgageRecord.get('Name')), String.valueof(mortgageRecord.get('Id')));
                       }
 
                       if (mortgageRecord.get('Loan_Type__c') == null) {
-                        requiredFieldsError(
-                          'Mortgage__c',
-                          'Loan_Type__c',
-                          String.valueof(mortgageRecord.get('Name')),
-                          String.valueof(mortgageRecord.get('Id'))
-                        );
+                        requiredFieldsError('Mortgage__c', 'Loan_Type__c', String.valueof(mortgageRecord.get('Name')), String.valueof(mortgageRecord.get('Id')));
                       }
 
                       if (mortgageRecord.get('Maturity_Date__c') == null) {
-                        requiredFieldsError(
-                          'Mortgage__c',
-                          'Maturity_Date__c',
-                          String.valueof(mortgageRecord.get('Name')),
-                          String.valueof(mortgageRecord.get('Id'))
-                        );
+                        requiredFieldsError('Mortgage__c', 'Maturity_Date__c', String.valueof(mortgageRecord.get('Name')), String.valueof(mortgageRecord.get('Id')));
                       }
 
                       if (mortgageRecord.get('Mortgage_Type__c') == null) {
-                        requiredFieldsError(
-                          'Mortgage__c',
-                          'Mortgage_Type__c',
-                          String.valueof(mortgageRecord.get('Name')),
-                          String.valueof(mortgageRecord.get('Id'))
-                        );
+                        requiredFieldsError('Mortgage__c', 'Mortgage_Type__c', String.valueof(mortgageRecord.get('Name')), String.valueof(mortgageRecord.get('Id')));
                       }
 
                       if (mortgageRecord.get('PAndIPaymentAmount__c') == null) {
-                        requiredFieldsError(
-                          'Mortgage__c',
-                          'PAndIPaymentAmount__c',
-                          String.valueof(mortgageRecord.get('Name')),
-                          String.valueof(mortgageRecord.get('Id'))
-                        );
+                        requiredFieldsError('Mortgage__c', 'PAndIPaymentAmount__c', String.valueof(mortgageRecord.get('Name')), String.valueof(mortgageRecord.get('Id')));
                       }
 
                       if (mortgageRecord.get('Payment_Frequency__c') == null) {
-                        requiredFieldsError(
-                          'Mortgage__c',
-                          'Payment_Frequency__c',
-                          String.valueof(mortgageRecord.get('Name')),
-                          String.valueof(mortgageRecord.get('Id'))
-                        );
+                        requiredFieldsError('Mortgage__c', 'Payment_Frequency__c', String.valueof(mortgageRecord.get('Name')), String.valueof(mortgageRecord.get('Id')));
                       }
 
                       if (mortgageRecord.get('Payment_Term__c') == null) {
-                        requiredFieldsError(
-                          'Mortgage__c',
-                          'Payment_Term__c',
-                          String.valueof(mortgageRecord.get('Name')),
-                          String.valueof(mortgageRecord.get('Id'))
-                        );
+                        requiredFieldsError('Mortgage__c', 'Payment_Term__c', String.valueof(mortgageRecord.get('Name')), String.valueof(mortgageRecord.get('Id')));
                       }
 
                       /*if (mortgageRecord.get('Interest_Rate__c') == null) {
@@ -4532,96 +2368,19 @@ global without sharing class FilogixWrapperBinding {
           // Field mappings from Account/Contact Object
 
           // Person Account Mapping
-          if (
-            mapApplicants.get(applicantId)
-              .get('ContactId' + customFieldSuffix) != null
-          ) {
-            String appPhoneval = removeSpeacialChar(
-              String.valueof(
-                mapApplicants.get(applicantId)
-                  .getSObject(ContactRelation)
-                  .get('Phone')
-              )
-            );
+          if (mapApplicants.get(applicantId).get('ContactId' + customFieldSuffix) != null) {
+            String appPhoneval = removeSpeacialChar(String.valueof(mapApplicants.get(applicantId).getSObject(ContactRelation).get('Phone')));
             if (!String.isblank(appPhoneval) && appPhoneval.length() > 10) {
-              throw FilogixWrapperBinding.createCustomException(
-                'Phone number should not contain country code. Example: 1112223333 - Current value= ' +
-                appPhoneval
-              );
+              throw FilogixWrapperBinding.createCustomException('Phone number should not contain country code. Example: 1112223333 - Current value= ' + appPhoneval);
             }
-            Applicant.borrowerCellNumber = removeSpeacialChar(
-              String.valueof(
-                mapApplicants.get(applicantId)
-                  .getSObject(ContactRelation)
-                  .get('Phone')
-              )
-            ); //string.valueOf(mapApplicants.get(applicantId).getSObject('Contact')) != null ? String.valueof(mapApplicants.get(applicantId).getSObject('Contact').getSObject('Account').get('PersonMobilePhone')) : '';
-            Applicant.borrowerFaxNumber = string.valueOf(
-                mapApplicants.get(applicantId).getSObject(ContactRelation)
-              ) != null
-              ? removeSpeacialChar(
-                  String.valueof(
-                    mapApplicants.get(applicantId)
-                      .getSObject(ContactRelation)
-                      .get('Fax')
-                  )
-                )
-              : '';
-            Applicant.borrowerHomePhoneNumber = removeSpeacialChar(
-                string.valueOf(
-                  mapApplicants.get(applicantId).getSObject(ContactRelation)
-                )
-              ) != null
-              ? removeSpeacialChar(
-                  String.valueof(
-                    mapApplicants.get(applicantId)
-                      .getSObject(ContactRelation)
-                      .get('HomePhone')
-                  )
-                )
-              : '';
-            Applicant.borrowerWorkPhoneExtension = removeSpeacialChar(
-                string.valueOf(
-                  mapApplicants.get(applicantId).getSObject(ContactRelation)
-                )
-              ) != null
-              ? removeSpeacialChar(
-                  String.valueof(
-                    mapApplicants.get(applicantId)
-                      .getSObject(ContactRelation)
-                      .get(appNamespace + 'Work_Phone_Extension__c')
-                  )
-                )
-              : '';
-            Applicant.borrowerWorkPhoneNumber = removeSpeacialChar(
-                string.valueOf(
-                  mapApplicants.get(applicantId).getSObject(ContactRelation)
-                )
-              ) != null
-              ? removeSpeacialChar(
-                  String.valueof(
-                    mapApplicants.get(applicantId)
-                      .getSObject(ContactRelation)
-                      .get(appNamespace + 'Work_Phone__c')
-                  )
-                )
-              : '';
-            
-             if (
-              !String.isBlank(
-                String.valueOf(
-                  mapApplicants.get(applicantId)
-                    .getSObject(ContactRelation)
-                    .get('Birthdate')
-                )
-              )
-            ) {
-              Applicant.birthDate = String.valueOf(
-                  mapApplicants.get(applicantId)
-                    .getSObject(ContactRelation)
-                    .get('Birthdate')
-                )
-                .removeEnd(' 00:00:00');
+            Applicant.borrowerCellNumber = removeSpeacialChar(String.valueof(mapApplicants.get(applicantId).getSObject(ContactRelation).get('Phone'))); //string.valueOf(mapApplicants.get(applicantId).getSObject('Contact')) != null ? String.valueof(mapApplicants.get(applicantId).getSObject('Contact').getSObject('Account').get('PersonMobilePhone')) : '';
+            Applicant.borrowerFaxNumber = string.valueOf(mapApplicants.get(applicantId).getSObject(ContactRelation)) != null ? removeSpeacialChar(String.valueof(mapApplicants.get(applicantId).getSObject(ContactRelation).get('Fax'))) : '';
+            Applicant.borrowerHomePhoneNumber = removeSpeacialChar(string.valueOf(mapApplicants.get(applicantId).getSObject(ContactRelation))) != null ? removeSpeacialChar(String.valueof(mapApplicants.get(applicantId).getSObject(ContactRelation).get('HomePhone'))) : '';
+            Applicant.borrowerWorkPhoneExtension = removeSpeacialChar(string.valueOf(mapApplicants.get(applicantId).getSObject(ContactRelation))) != null ? removeSpeacialChar(String.valueof(mapApplicants.get(applicantId).getSObject(ContactRelation).get(appNamespace + 'Work_Phone_Extension__c'))) : '';
+            Applicant.borrowerWorkPhoneNumber = removeSpeacialChar(string.valueOf(mapApplicants.get(applicantId).getSObject(ContactRelation))) != null ? removeSpeacialChar(String.valueof(mapApplicants.get(applicantId).getSObject(ContactRelation).get(appNamespace + 'Work_Phone__c'))) : '';
+
+            if (!String.isBlank(String.valueOf(mapApplicants.get(applicantId).getSObject(ContactRelation).get('Birthdate')))) {
+              Applicant.birthDate = String.valueOf(mapApplicants.get(applicantId).getSObject(ContactRelation).get('Birthdate')).removeEnd(' 00:00:00');
             } /* Filogix V.1.6.1 - Not required anymore
                * else {
               requiredFieldsError(
@@ -4640,50 +2399,19 @@ global without sharing class FilogixWrapperBinding {
               );
               // requiredFieldsError('Account','PersonBirthdate',String.valueof(mapApplicants.get(applicantId).getSObject('contact').get('Name')),String.valueof(mapApplicants.get(applicantId).getSObject('contact').get('Id')));
             }*/
-            Applicant.emailAddress = String.valueof(
-              mapApplicants.get(applicantId)
-                .getsObject(ContactRelation)
-                .get('Email')
-            );
-            Applicant.preferredContactMethodDd = string.valueOf(
-              mapApplicants.get(applicantId)
-                .get(appNameSpace + 'Preferred_Contact_Method__c')
-            );
-            Applicant.socialInsuranceNumber = removeSpeacialChar(
-              string.valueOf(
-                mapApplicants.get(applicantId)
-                  .getSObject(ContactRelation)
-                  .get('Social_Insurance_Number__c')
-              )
-            );
+            Applicant.emailAddress = String.valueof(mapApplicants.get(applicantId).getsObject(ContactRelation).get('Email'));
+            Applicant.preferredContactMethodDd = string.valueOf(mapApplicants.get(applicantId).get(appNameSpace + 'Preferred_Contact_Method__c'));
+            Applicant.socialInsuranceNumber = removeSpeacialChar(string.valueOf(mapApplicants.get(applicantId).getSObject(ContactRelation).get('Social_Insurance_Number__c')));
 
             //Business Account mapping
-          } else if (
-            mapApplicants.get(applicantId)
-              .get(appNameSpace + 'Business_Account__c') != null
-          ) {
-            String appPhoneval = removeSpeacialChar(
-              String.valueof(
-                mapApplicants.get(applicantId)
-                  .getSObject('Business_Account__r')
-                  .get('Phone')
-              )
-            );
+          } else if (mapApplicants.get(applicantId).get(appNameSpace + 'Business_Account__c') != null) {
+            String appPhoneval = removeSpeacialChar(String.valueof(mapApplicants.get(applicantId).getSObject('Business_Account__r').get('Phone')));
             if (!String.isblank(appPhoneval) && appPhoneval.length() > 10) {
-              throw FilogixWrapperBinding.createCustomException(
-                'Phone number should not contain country code. Example: 1112223333 - Current value= ' +
-                appPhoneval
-              );
+              throw FilogixWrapperBinding.createCustomException('Phone number should not contain country code. Example: 1112223333 - Current value= ' + appPhoneval);
             }
             /* Filogix V.1.6.1 - Not required anymore */
             //Applicant.birthDate = '2000-01-01'; //Adding a dummy birthDate because the field is required and Corporate doesn't have the birthdate.
-            Applicant.borrowerCellNumber = removeSpeacialChar(
-              String.valueof(
-                mapApplicants.get(applicantId)
-                  .getSObject('Business_Account__r')
-                  .get('Phone')
-              )
-            ); //string.valueOf(mapApplicants.get(applicantId).getSObject('Contact')) != null ? String.valueof(mapApplicants.get(applicantId).getSObject('Contact').getSObject('Account').get('PersonMobilePhone')) : '';
+            Applicant.borrowerCellNumber = removeSpeacialChar(String.valueof(mapApplicants.get(applicantId).getSObject('Business_Account__r').get('Phone'))); //string.valueOf(mapApplicants.get(applicantId).getSObject('Contact')) != null ? String.valueof(mapApplicants.get(applicantId).getSObject('Contact').getSObject('Account').get('PersonMobilePhone')) : '';
             //Applicant.borrowerFaxNumber = string.valueOf(mapApplicants.get(applicantId).getSObject('Business_Account__r')) != null ? removeSpeacialChar(String.valueof(mapApplicants.get(applicantId).getSObject('Business_Account__r').get('Fax'))) : '';
             //Applicant.borrowerHomePhoneNumber = removeSpeacialChar(string.valueOf(mapApplicants.get(applicantId).getSObject('Contact'))) != null ? removeSpeacialChar(String.valueof(mapApplicants.get(applicantId).getSObject('Contact').getSObject('Account').get('PersonHomePhone'))) : '';
             //Applicant.borrowerWorkPhoneExtension = removeSpeacialChar(string.valueOf(mapApplicants.get(applicantId).getSObject('Contact'))) != null ? removeSpeacialChar(String.valueof(mapApplicants.get(applicantId).getSObject('Contact').getSObject('Account').get(appNamespace+'Work_Phone_Extension__pc'))) : '';
@@ -4703,21 +2431,12 @@ global without sharing class FilogixWrapperBinding {
           //Applicant.birthDate = string.valueof(date.parse(string.valueof(mapApplicants.get(applicantId).get(appNamespace+'Birthday__c'))));
           //https://salesforce.stackexchange.com/questions/229075/how-to-remove-time-from-date
 
-          Applicant.languagePreferenceDd = String.valueof(
-            mapApplicants.get(applicantId)
-              .get('PreferredLanguage' + customFieldSuffix)
-          );
-          Applicant.maritalStatusDd = String.valueof(
-            mapApplicants.get(applicantId)
-              .get('MaritalStatus' + customFieldSuffix)
-          );
+          Applicant.languagePreferenceDd = String.valueof(mapApplicants.get(applicantId).get('PreferredLanguage' + customFieldSuffix));
+          Applicant.maritalStatusDd = String.valueof(mapApplicants.get(applicantId).get('MaritalStatus' + customFieldSuffix));
           Applicant.name = appName;
-          Applicant.numberOfDependents = Double.valueof(
-            mapApplicants.get(applicantId)
-              .get('DependentCount' + customFieldSuffix)
-          );
+          Applicant.numberOfDependents = Double.valueof(mapApplicants.get(applicantId).get('DependentCount' + customFieldSuffix));
           /* Filogix v.1.6.1*/
-          if(listOfAddresses.size() >0 && listOfAddresses!=null){
+          if (listOfAddresses.size() > 0 && listOfAddresses != null) {
             Applicant.addressDetail = listOfAddresses;
           }
           Applicant.clientReferenceNumber = mapApplicants.get(applicantId).id;
@@ -4727,24 +2446,11 @@ global without sharing class FilogixWrapperBinding {
           if (
             !PrimaryAppExist &&
             //        mapApplicants.get(applicantId).get('LoanApplication.AccountId') != null &&
-            mapApplicants.get(applicantId)
-              .getSObject(LoanApplicationRelation)
-              .get('AccountId' + customFieldSuffix) != null &&
-            mapApplicants.get(applicantId).getSObject(ContactRelation) !=
-            null &&
-            mapApplicants.get(applicantId)
-              .getSObject(ContactRelation)
-              .get('AccountId') != null &&
+            mapApplicants.get(applicantId).getSObject(LoanApplicationRelation).get('AccountId' + customFieldSuffix) != null &&
+            mapApplicants.get(applicantId).getSObject(ContactRelation) != null &&
+            mapApplicants.get(applicantId).getSObject(ContactRelation).get('AccountId') != null &&
             //   mapApplicants.get(applicantId).get('LoanApplication.AccountId') == mapApplicants.get(applicantId).getSObject('Contact').get('AccountId')
-            mapApplicants.get(applicantId)
-              .getSObject(LoanApplicationRelation)
-              .get('AccountId' + customFieldSuffix) ==
-            mapApplicants.get(applicantId)
-              .getSObject(ContactRelation)
-              .get('AccountId') ||
-            Boolean.valueof(
-              mapApplicants.get(applicantId).get('Primary_Applicant__c')
-            ) == true
+            mapApplicants.get(applicantId).getSObject(LoanApplicationRelation).get('AccountId' + customFieldSuffix) == mapApplicants.get(applicantId).getSObject(ContactRelation).get('AccountId') || Boolean.valueof(mapApplicants.get(applicantId).get('Primary_Applicant__c')) == true
           ) {
             Applicant.primaryApplicantFlag = 'Y';
             PrimaryAppExist = true;
@@ -4752,10 +2458,7 @@ global without sharing class FilogixWrapperBinding {
             Applicant.primaryApplicantFlag = 'N';
           }
 
-          Applicant.relationshipToPrimaryApplicant = String.valueof(
-            mapApplicants.get(applicantId)
-              .get('Relationship_To_Primary_Applicant__c')
-          );
+          Applicant.relationshipToPrimaryApplicant = String.valueof(mapApplicants.get(applicantId).get('Relationship_To_Primary_Applicant__c'));
           Applicant.employmentHistory = listEmp;
           Applicant.otherIncome = listOfOtherIncomes;
           Applicant.asset = listOfAssets;
@@ -4765,70 +2468,36 @@ global without sharing class FilogixWrapperBinding {
           //ListOfApplicants.add(Applicant);
 
           // Checking If the current applicant is a business coroporation
-          if (
-            mapApplicants.get(applicantId)
-              .get(appNameSpace + 'Business_Account__c') != null
-          ) {
+          if (mapApplicants.get(applicantId).get(appNameSpace + 'Business_Account__c') != null) {
             //Adding this Business corporation in a new Group
             List<FilogixPOSTJSONWrapper.Applicant> lstofAppl = new List<FilogixPOSTJSONWrapper.Applicant>();
             lstofAppl.add(Applicant);
             AppGrp.applicant = lstofAppl;
-            AppGrp.applicantGroupTypeDd = string.Valueof(
-              mapApplicants.get(applicantId).get('Applicant_Group_Type__c')
-            );
+            AppGrp.applicantGroupTypeDd = string.Valueof(mapApplicants.get(applicantId).get('Applicant_Group_Type__c'));
             ListAppGrp.add(AppGrp);
             AppGrp = new FilogixPOSTJSONWrapper.ApplicantGroup(); // Resetting AppGrp instance
           } else {
             // Populating map of applicants w.r.t their group type
-            if (
-              mapofLoanApplicantsbyGroup.containskey(
-                string.Valueof(
-                  mapApplicants.get(applicantId).get('Applicant_Group_Type__c')
-                )
-              )
-            ) {
-              List<FilogixPOSTJSONWrapper.Applicant> lstofApplicantsbyGroup = mapofLoanApplicantsbyGroup.get(
-                string.Valueof(
-                  mapApplicants.get(applicantId).get('Applicant_Group_Type__c')
-                )
-              );
+            if (mapofLoanApplicantsbyGroup.containskey(string.Valueof(mapApplicants.get(applicantId).get('Applicant_Group_Type__c')))) {
+              List<FilogixPOSTJSONWrapper.Applicant> lstofApplicantsbyGroup = mapofLoanApplicantsbyGroup.get(string.Valueof(mapApplicants.get(applicantId).get('Applicant_Group_Type__c')));
               lstofApplicantsbyGroup.add(Applicant);
 
               // When the list has 2 or Applicant is a Business Account, Create a New Applicant Group
               if (lstofApplicantsbyGroup.size() == 2) {
                 AppGrp.applicant = lstofApplicantsbyGroup;
-                AppGrp.applicantGroupTypeDd = string.Valueof(
-                  mapApplicants.get(applicantId).get('Applicant_Group_Type__c')
-                );
+                AppGrp.applicantGroupTypeDd = string.Valueof(mapApplicants.get(applicantId).get('Applicant_Group_Type__c'));
                 ListAppGrp.add(AppGrp);
 
                 // Removing the list items for the next iteration
-                mapofLoanApplicantsbyGroup.put(
-                  string.Valueof(
-                    mapApplicants.get(applicantId)
-                      .get('Applicant_Group_Type__c')
-                  ),
-                  new List<FilogixPOSTJSONWrapper.Applicant>()
-                );
+                mapofLoanApplicantsbyGroup.put(string.Valueof(mapApplicants.get(applicantId).get('Applicant_Group_Type__c')), new List<FilogixPOSTJSONWrapper.Applicant>());
                 AppGrp = new FilogixPOSTJSONWrapper.ApplicantGroup(); // Resetting AppGrp instance
               } else {
-                mapofLoanApplicantsbyGroup.put(
-                  string.Valueof(
-                    mapApplicants.get(applicantId)
-                      .get('Applicant_Group_Type__c')
-                  ),
-                  lstofApplicantsbyGroup
-                );
+                mapofLoanApplicantsbyGroup.put(string.Valueof(mapApplicants.get(applicantId).get('Applicant_Group_Type__c')), lstofApplicantsbyGroup);
               }
             } else {
               List<FilogixPOSTJSONWrapper.Applicant> lstofApplicantsbyGroup = new List<FilogixPOSTJSONWrapper.Applicant>();
               lstofApplicantsbyGroup.add(Applicant);
-              mapofLoanApplicantsbyGroup.put(
-                string.Valueof(
-                  mapApplicants.get(applicantId).get('Applicant_Group_Type__c')
-                ),
-                lstofApplicantsbyGroup
-              );
+              mapofLoanApplicantsbyGroup.put(string.Valueof(mapApplicants.get(applicantId).get('Applicant_Group_Type__c')), lstofApplicantsbyGroup);
             }
           }
 
@@ -4847,10 +2516,7 @@ global without sharing class FilogixWrapperBinding {
       // Adding Applicant Group for the rest of the types
       if (!mapofLoanApplicantsbyGroup.isEmpty()) {
         for (String groupType : mapofLoanApplicantsbyGroup.keySet()) {
-          if (
-            mapofLoanApplicantsbyGroup.get(groupType).size() > 0 &&
-            mapofLoanApplicantsbyGroup.get(groupType) != null
-          ) {
+          if (mapofLoanApplicantsbyGroup.get(groupType).size() > 0 && mapofLoanApplicantsbyGroup.get(groupType) != null) {
             AppGrp.applicant = mapofLoanApplicantsbyGroup.get(groupType);
             AppGrp.applicantGroupTypeDd = groupType;
             ListAppGrp.add(AppGrp);
@@ -4874,11 +2540,7 @@ global without sharing class FilogixWrapperBinding {
   public static string postalFSAGen(string postalCode) {
     string fsa = null;
 
-    if (
-      !string.isBlank(postalCode) &&
-      postalCode.length() >= 3 &&
-      postalcode != 'null'
-    ) {
+    if (!string.isBlank(postalCode) && postalCode.length() >= 3 && postalcode != 'null') {
       fsa = postalCode.substring(0, 3).toUpperCase();
     }
 
@@ -4894,11 +2556,7 @@ global without sharing class FilogixWrapperBinding {
 
   public static string postalLDUGen(string postalCode) {
     string ldu = null;
-    if (
-      !string.isBlank(postalCode) &&
-      postalCode.length() >= 6 &&
-      postalcode != 'null'
-    ) {
+    if (!string.isBlank(postalCode) && postalCode.length() >= 6 && postalcode != 'null') {
       //ldu = postalCode.substring(3, 6).toUpperCase();
       ldu = postalCode.right(3).toUpperCase(); // To Prevent getting spaces in case if Postalcode is "M2M 2M2".
     }
@@ -4970,7 +2628,6 @@ System.debug('ID: ' + tz.getID());
         'YT' => 'Yukon',
         'NT' => 'Northwest Territories',
         'NU' => 'Nunavut',
-            
         'AL' => 'Alabama',
         'AK' => 'Alaska',
         'AZ' => 'Arizona',
@@ -5027,13 +2684,13 @@ System.debug('ID: ' + tz.getID());
       if (shortCode.length() < 3) {
         return provMap.get(shortCode);
       } else {
-        if(shortCode.contains(' ')){
+        if (shortCode.contains(' ')) {
           List<String> words = shortCode.split(' ');
           String provinceName = '';
-          for (String x : words){
+          for (String x : words) {
             provinceName += x.capitalize() + ' ';
           }
-          System.debug('provinceName='+provinceName);
+          System.debug('provinceName=' + provinceName);
           return provinceName.trim();
         } else {
           return shortCode.capitalize();
@@ -5045,25 +2702,22 @@ System.debug('ID: ' + tz.getID());
 
   public static String getFullCountryName(String shortCode) {
     if (!String.isBlank(shortCode) && shortCode != null) {
-      Map<String, String> provMap = new Map<String, String>{
-        'CA' => 'Canada',
-        'US' => 'United States',
-        'USA' => 'United States'
-      };
+      Map<String, String> provMap = new Map<String, String>{ 'CA' => 'Canada', 'US' => 'United States', 'USA' => 'United States' };
 
-      if (shortCode.length() < 4) { // to support USA
+      if (shortCode.length() < 4) {
+        // to support USA
         return provMap.get(shortCode);
       } else {
         // For "united states"
         // Making sure the output is "United States"
         // Capitalizing every word in a string.
-        if(shortCode.contains(' ')){
+        if (shortCode.contains(' ')) {
           List<String> words = shortCode.split(' ');
           String countryName = '';
-          for (String x : words){
+          for (String x : words) {
             countryName += x.capitalize() + ' ';
           }
-          System.debug('countryName='+countryName);
+          System.debug('countryName=' + countryName);
           return countryName.trim();
         } else {
           return shortCode.capitalize();
@@ -5096,9 +2750,7 @@ System.debug('ID: ' + tz.getID());
   public static boolean getObjectPerm(String objName, string perm) {
     if (!String.isBlank(perm) && !String.isBlank(objName)) {
       try {
-        Schema.DescribeSObjectResult objDesc = Schema.getGlobalDescribe()
-          .get(objName)
-          .getDescribe();
+        Schema.DescribeSObjectResult objDesc = Schema.getGlobalDescribe().get(objName).getDescribe();
         if (perm == 'create') {
           return objDesc.isCreateable();
         } else if (perm == 'update') {
@@ -5123,23 +2775,10 @@ System.debug('ID: ' + tz.getID());
   // 1st Param - sObject API Name
   // 2nd Param - sObject's Field Api Name
   // 3rd Param - create, update, delete, read
-  public static boolean getFieldPerm(
-    String objName,
-    String fieldName,
-    string perm
-  ) {
-    if (
-      !String.isBlank(perm) &&
-      !String.isBlank(objName) &&
-      !String.isBlank(fieldName)
-    ) {
+  public static boolean getFieldPerm(String objName, String fieldName, string perm) {
+    if (!String.isBlank(perm) && !String.isBlank(objName) && !String.isBlank(fieldName)) {
       try {
-        Schema.DescribeFieldResult fieldDesc = Schema.getGlobalDescribe()
-          .get(objName)
-          .getDescribe()
-          .fields.getMap()
-          .get(fieldName)
-          .getDescribe();
+        Schema.DescribeFieldResult fieldDesc = Schema.getGlobalDescribe().get(objName).getDescribe().fields.getMap().get(fieldName).getDescribe();
         if (perm == 'create') {
           return fieldDesc.isCreateable();
         } else if (perm == 'update') {
@@ -5182,24 +2821,13 @@ System.debug('ID: ' + tz.getID());
   /* This method will return the field Api Name against object and the parent relationship name 
         Example: getFieldApiNamefromParentRelationName('LoanApplicantAddress');
     */
-  public static map<string, string> getFieldApiNamefromParentRelationName(
-    String objName
-  ) {
+  public static map<string, string> getFieldApiNamefromParentRelationName(String objName) {
     system.debug('objName::' + objName);
     map<string, string> mapofRelationandName = new Map<string, string>();
     if (!String.isBlank(objName)) {
-      for (
-        Schema.SobjectField strFld : Schema.getGlobalDescribe()
-          .get(objName)
-          .getDescribe()
-          .fields.getMap()
-          .Values()
-      ) {
+      for (Schema.SobjectField strFld : Schema.getGlobalDescribe().get(objName).getDescribe().fields.getMap().Values()) {
         if (strFld.getDescribe().getType() == Schema.DisplayType.REFERENCE) {
-          mapofRelationandName.put(
-            String.valueof(strFld.getDescribe().getReferenceTo()[0]),
-            String.valueof(strFld.getDescribe().getName())
-          );
+          mapofRelationandName.put(String.valueof(strFld.getDescribe().getReferenceTo()[0]), String.valueof(strFld.getDescribe().getName()));
         }
       }
 
@@ -5217,11 +2845,7 @@ System.debug('ID: ' + tz.getID());
 
     customFieldSuffix = '__c';
     for (string customfield : tempList) {
-      if (
-        customfield != 'Name' &&
-        customfield != 'Id' &&
-        !customfield.contains('.Name')
-      ) {
+      if (customfield != 'Name' && customfield != 'Id' && !customfield.contains('.Name')) {
         NonFSCFields_RLA_Std.add(customfield + customFieldSuffix);
       }
     }
@@ -5236,20 +2860,13 @@ System.debug('ID: ' + tz.getID());
 
   //This method will Convert Standard Relationship with custom relationship on NONFSC Obj
   //for ex: Account.PersonMailingAddress will be replaced with AccountId__r.PersonMailingAddress
-  public static String removeStdRelationWithCustom(
-    String relationshipFields,
-    String replace,
-    string replaceWith
-  ) {
+  public static String removeStdRelationWithCustom(String relationshipFields, String replace, string replaceWith) {
     /* relationshipFields = 'Account.PersonMailingAddress,Account.Name';
         replace = 'Account.';
         replaceWith = 'AccountId__r.';*/
 
     if (isNonFSC == true) {
-      string afterreplaced = relationshipFields.replaceAll(
-        replace,
-        replaceWith
-      );
+      string afterreplaced = relationshipFields.replaceAll(replace, replaceWith);
       return afterreplaced;
     }
 

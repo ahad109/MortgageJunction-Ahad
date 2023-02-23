@@ -22,14 +22,12 @@ public class FilogixGETJSONWrapper_Test {
       WHERE Name = 'GET_Sample_Response'
     ];
     String json = srObject.body.toString();
-     
+
     FilogixGETJSONWrapper r = FilogixGETJSONWrapper.parse(json);
     System.assert(r != null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.ApplicantGroup objApplicantGroup = new FilogixGETJSONWrapper.ApplicantGroup(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.ApplicantGroup objApplicantGroup = new FilogixGETJSONWrapper.ApplicantGroup(System.JSON.createParser(json));
     System.assert(objApplicantGroup != null);
     System.assert(objApplicantGroup.applicantGroupTypeDd == null);
     System.assert(objApplicantGroup.applicant == null);
@@ -38,9 +36,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objApplicantGroup.mailingAddressIndicator == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.DocumentList objDocumentList = new FilogixGETJSONWrapper.DocumentList(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.DocumentList objDocumentList = new FilogixGETJSONWrapper.DocumentList(System.JSON.createParser(json));
     System.assert(objDocumentList != null);
     System.assert(objDocumentList.documentTypeDd == null);
     System.assert(objDocumentList.documentImage == null);
@@ -48,9 +44,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objDocumentList.loanDecisionId == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Address objAddress = new FilogixGETJSONWrapper.Address(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Address objAddress = new FilogixGETJSONWrapper.Address(System.JSON.createParser(json));
     System.assert(objAddress != null);
     System.assert(objAddress.addrId == null);
     System.assert(objAddress.unitNumber == null);
@@ -64,9 +58,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objAddress.postalLdu == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.ApplicantList objApplicantList = new FilogixGETJSONWrapper.ApplicantList(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.ApplicantList objApplicantList = new FilogixGETJSONWrapper.ApplicantList(System.JSON.createParser(json));
     System.assert(objApplicantList != null);
     System.assert(objApplicantList.applicantId == null);
     System.assert(objApplicantList.isOnTitle == null);
@@ -75,9 +67,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objApplicantList.name == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Income objIncome = new FilogixGETJSONWrapper.Income(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Income objIncome = new FilogixGETJSONWrapper.Income(System.JSON.createParser(json));
     System.assert(objIncome != null);
     System.assert(objIncome.incomeId == null);
     System.assert(objIncome.annualIncomeAmount == null);
@@ -86,9 +76,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objIncome.incomeTypeDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Co_agentProfile objCo_agentProfile = new FilogixGETJSONWrapper.Co_agentProfile(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Co_agentProfile objCo_agentProfile = new FilogixGETJSONWrapper.Co_agentProfile(System.JSON.createParser(json));
     System.assert(objCo_agentProfile != null);
     System.assert(objCo_agentProfile.contact == null);
     System.assert(objCo_agentProfile.firmCode == null);
@@ -99,9 +87,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objCo_agentProfile.userTypeDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Conditions objConditions = new FilogixGETJSONWrapper.Conditions(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Conditions objConditions = new FilogixGETJSONWrapper.Conditions(System.JSON.createParser(json));
     System.assert(objConditions != null);
     System.assert(objConditions.conditionId == null);
     System.assert(objConditions.conditionLabel == null);
@@ -115,9 +101,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objConditions.conditionUpdateId == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Name objName = new FilogixGETJSONWrapper.Name(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Name objName = new FilogixGETJSONWrapper.Name(System.JSON.createParser(json));
     System.assert(objName != null);
     System.assert(objName.salutationDd == null);
     System.assert(objName.firstName == null);
@@ -126,41 +110,31 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objName.suffixDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Result objResult = new FilogixGETJSONWrapper.Result(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Result objResult = new FilogixGETJSONWrapper.Result(System.JSON.createParser(json));
     System.assert(objResult != null);
     System.assert(objResult.mortgageApplication == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.ContactName_Z objContactName_Z = new FilogixGETJSONWrapper.ContactName_Z(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.ContactName_Z objContactName_Z = new FilogixGETJSONWrapper.ContactName_Z(System.JSON.createParser(json));
     System.assert(objContactName_Z != null);
     System.assert(objContactName_Z.contactFirstName == null);
     System.assert(objContactName_Z.contactLastName == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.ContactName_Y objContactName_Y = new FilogixGETJSONWrapper.ContactName_Y(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.ContactName_Y objContactName_Y = new FilogixGETJSONWrapper.ContactName_Y(System.JSON.createParser(json));
     System.assert(objContactName_Y != null);
     System.assert(objContactName_Y.contactFirstName == null);
     System.assert(objContactName_Y.contactMiddleInitial == null);
     System.assert(objContactName_Y.contactLastName == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.OtherProperty objOtherProperty = new FilogixGETJSONWrapper.OtherProperty(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.OtherProperty objOtherProperty = new FilogixGETJSONWrapper.OtherProperty(System.JSON.createParser(json));
     System.assert(objOtherProperty != null);
     System.assert(objOtherProperty.property == null);
     System.assert(objOtherProperty.mortgage == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.EmploymentHistory objEmploymentHistory = new FilogixGETJSONWrapper.EmploymentHistory(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.EmploymentHistory objEmploymentHistory = new FilogixGETJSONWrapper.EmploymentHistory(System.JSON.createParser(json));
     System.assert(objEmploymentHistory != null);
     System.assert(objEmploymentHistory.employmentHistoryId == null);
     System.assert(objEmploymentHistory.companyType == null);
@@ -179,9 +153,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objEmploymentHistory.timeInIndustry == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Mortgage objMortgage = new FilogixGETJSONWrapper.Mortgage(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Mortgage objMortgage = new FilogixGETJSONWrapper.Mortgage(System.JSON.createParser(json));
     System.assert(objMortgage != null);
     System.assert(objMortgage.mortgageId == null);
     System.assert(objMortgage.borrowerIds == null);
@@ -234,9 +206,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objMortgage.qualifyDetail == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Submission_Z objSubmission_Z = new FilogixGETJSONWrapper.Submission_Z(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Submission_Z objSubmission_Z = new FilogixGETJSONWrapper.Submission_Z(System.JSON.createParser(json));
     System.assert(objSubmission_Z != null);
     System.assert(objSubmission_Z.lenderSubmissionId == null);
     System.assert(objSubmission_Z.appNumber == null);
@@ -258,9 +228,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objSubmission_Z.responses == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Asset objAsset = new FilogixGETJSONWrapper.Asset(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Asset objAsset = new FilogixGETJSONWrapper.Asset(System.JSON.createParser(json));
     System.assert(objAsset != null);
     System.assert(objAsset.assetId == null);
     System.assert(objAsset.assetDescription == null);
@@ -271,9 +239,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objAsset.shared == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.ConditionStatusUpdate objConditionStatusUpdate = new FilogixGETJSONWrapper.ConditionStatusUpdate(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.ConditionStatusUpdate objConditionStatusUpdate = new FilogixGETJSONWrapper.ConditionStatusUpdate(System.JSON.createParser(json));
     System.assert(objConditionStatusUpdate != null);
     System.assert(objConditionStatusUpdate.conditionUpdateId == null);
     System.assert(objConditionStatusUpdate.dealId == null);
@@ -304,9 +270,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objConditionStatusUpdate.conditions == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.MortgageApplication objMortgageApplication = new FilogixGETJSONWrapper.MortgageApplication(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.MortgageApplication objMortgageApplication = new FilogixGETJSONWrapper.MortgageApplication(System.JSON.createParser(json));
     System.assert(objMortgageApplication != null);
     System.assert(objMortgageApplication.deal == null);
     System.assert(objMortgageApplication.applicantGroup == null);
@@ -320,9 +284,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objMortgageApplication.lastChangeDate == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Rate_Z objRate_Z = new FilogixGETJSONWrapper.Rate_Z(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Rate_Z objRate_Z = new FilogixGETJSONWrapper.Rate_Z(System.JSON.createParser(json));
     System.assert(objRate_Z != null);
     System.assert(objRate_Z.applied == null);
     System.assert(objRate_Z.buyDownPercent == null);
@@ -331,9 +293,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objRate_Z.rateTypeDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.FirmProfile objFirmProfile = new FilogixGETJSONWrapper.FirmProfile(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.FirmProfile objFirmProfile = new FilogixGETJSONWrapper.FirmProfile(System.JSON.createParser(json));
     System.assert(objFirmProfile != null);
     System.assert(objFirmProfile.contact == null);
     System.assert(objFirmProfile.firmCode == null);
@@ -341,9 +301,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objFirmProfile.licenseRegistrationNumber == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Contact_S objContact_S = new FilogixGETJSONWrapper.Contact_S(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Contact_S objContact_S = new FilogixGETJSONWrapper.Contact_S(System.JSON.createParser(json));
     System.assert(objContact_S != null);
     System.assert(objContact_S.contactId == null);
     System.assert(objContact_S.address == null);
@@ -353,9 +311,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objContact_S.contactPhoneNumber == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Contact_T objContact_T = new FilogixGETJSONWrapper.Contact_T(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Contact_T objContact_T = new FilogixGETJSONWrapper.Contact_T(System.JSON.createParser(json));
     System.assert(objContact_T != null);
     System.assert(objContact_T.contactId == null);
     System.assert(objContact_T.address == null);
@@ -365,9 +321,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objContact_T.contactPhoneNumber == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Rate objRate = new FilogixGETJSONWrapper.Rate(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Rate objRate = new FilogixGETJSONWrapper.Rate(System.JSON.createParser(json));
     System.assert(objRate != null);
     System.assert(objRate.discount == null);
     System.assert(objRate.premium == null);
@@ -375,9 +329,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objRate.netRate == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Contact_U objContact_U = new FilogixGETJSONWrapper.Contact_U(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Contact_U objContact_U = new FilogixGETJSONWrapper.Contact_U(System.JSON.createParser(json));
     System.assert(objContact_U != null);
     System.assert(objContact_U.contactId == null);
     System.assert(objContact_U.address == null);
@@ -385,18 +337,14 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objContact_U.contactPhoneNumberExtension == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Contact_V objContact_V = new FilogixGETJSONWrapper.Contact_V(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Contact_V objContact_V = new FilogixGETJSONWrapper.Contact_V(System.JSON.createParser(json));
     System.assert(objContact_V != null);
     System.assert(objContact_V.contactId == null);
     System.assert(objContact_V.address == null);
     System.assert(objContact_V.contactPhoneNumber == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.MailingAddr objMailingAddr = new FilogixGETJSONWrapper.MailingAddr(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.MailingAddr objMailingAddr = new FilogixGETJSONWrapper.MailingAddr(System.JSON.createParser(json));
     System.assert(objMailingAddr != null);
     System.assert(objMailingAddr.addrId == null);
     System.assert(objMailingAddr.unitNumber == null);
@@ -409,9 +357,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objMailingAddr.countryTypeDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Contact_W objContact_W = new FilogixGETJSONWrapper.Contact_W(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Contact_W objContact_W = new FilogixGETJSONWrapper.Contact_W(System.JSON.createParser(json));
     System.assert(objContact_W != null);
     System.assert(objContact_W.contactId == null);
     System.assert(objContact_W.address == null);
@@ -425,9 +371,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objContact_W.preferredContactMethodDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Contact_X objContact_X = new FilogixGETJSONWrapper.Contact_X(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Contact_X objContact_X = new FilogixGETJSONWrapper.Contact_X(System.JSON.createParser(json));
     System.assert(objContact_X != null);
     System.assert(objContact_X.contactId == null);
     System.assert(objContact_X.address == null);
@@ -440,9 +384,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objContact_X.preferredContactMethodDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Contact_Y objContact_Y = new FilogixGETJSONWrapper.Contact_Y(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Contact_Y objContact_Y = new FilogixGETJSONWrapper.Contact_Y(System.JSON.createParser(json));
     System.assert(objContact_Y != null);
     System.assert(objContact_Y.contactId == null);
     System.assert(objContact_Y.address == null);
@@ -452,9 +394,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objContact_Y.preferredContactMethodDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Contact_Z objContact_Z = new FilogixGETJSONWrapper.Contact_Z(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Contact_Z objContact_Z = new FilogixGETJSONWrapper.Contact_Z(System.JSON.createParser(json));
     System.assert(objContact_Z != null);
     System.assert(objContact_Z.contactId == null);
     System.assert(objContact_Z.address == null);
@@ -466,9 +406,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objContact_Z.preferredContactMethodDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Deal objDeal = new FilogixGETJSONWrapper.Deal(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Deal objDeal = new FilogixGETJSONWrapper.Deal(System.JSON.createParser(json));
     System.assert(objDeal != null);
     System.assert(objDeal.dealId == null);
     System.assert(objDeal.copyId == null);
@@ -501,9 +439,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objDeal.taxPayorDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.OfficeList objOfficeList = new FilogixGETJSONWrapper.OfficeList(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.OfficeList objOfficeList = new FilogixGETJSONWrapper.OfficeList(System.JSON.createParser(json));
     System.assert(objOfficeList != null);
     System.assert(objOfficeList.address == null);
     System.assert(objOfficeList.loanDecisionId == null);
@@ -512,9 +448,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objOfficeList.representativeList == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Responses objResponses = new FilogixGETJSONWrapper.Responses(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Responses objResponses = new FilogixGETJSONWrapper.Responses(System.JSON.createParser(json));
     System.assert(objResponses != null);
     System.assert(objResponses.adjustmentList == null);
     System.assert(objResponses.applicantList == null);
@@ -557,9 +491,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objResponses.routing == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Mortgage_Z objMortgage_Z = new FilogixGETJSONWrapper.Mortgage_Z(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Mortgage_Z objMortgage_Z = new FilogixGETJSONWrapper.Mortgage_Z(System.JSON.createParser(json));
     System.assert(objMortgage_Z != null);
     System.assert(objMortgage_Z.mortgageId == null);
     System.assert(objMortgage_Z.borrowerIds == null);
@@ -615,9 +547,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objMortgage_Z.submissions == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Participant objParticipant = new FilogixGETJSONWrapper.Participant(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Participant objParticipant = new FilogixGETJSONWrapper.Participant(System.JSON.createParser(json));
     System.assert(objParticipant != null);
     System.assert(objParticipant.contact == null);
     System.assert(objParticipant.notes == null);
@@ -626,9 +556,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objParticipant.partyTypeDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Address_U objAddress_U = new FilogixGETJSONWrapper.Address_U(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Address_U objAddress_U = new FilogixGETJSONWrapper.Address_U(System.JSON.createParser(json));
     System.assert(objAddress_U != null);
     System.assert(objAddress_U.city == null);
     System.assert(objAddress_U.postalZipCode == null);
@@ -637,9 +565,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objAddress_U.streetAddr2 == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Address_V objAddress_V = new FilogixGETJSONWrapper.Address_V(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Address_V objAddress_V = new FilogixGETJSONWrapper.Address_V(System.JSON.createParser(json));
     System.assert(objAddress_V != null);
     System.assert(objAddress_V.addrId == null);
     System.assert(objAddress_V.addressLine1 == null);
@@ -647,9 +573,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objAddress_V.countryTypeDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.DealStatus objDealStatus = new FilogixGETJSONWrapper.DealStatus(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.DealStatus objDealStatus = new FilogixGETJSONWrapper.DealStatus(System.JSON.createParser(json));
     System.assert(objDealStatus != null);
     System.assert(objDealStatus.dealStatusId == null);
     System.assert(objDealStatus.dealStatusUpdateId == null);
@@ -660,9 +584,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objDealStatus.statusTypeFr == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Address_S objAddress_S = new FilogixGETJSONWrapper.Address_S(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Address_S objAddress_S = new FilogixGETJSONWrapper.Address_S(System.JSON.createParser(json));
     System.assert(objAddress_S != null);
     System.assert(objAddress_S.addrId == null);
     System.assert(objAddress_S.addressLine1 == null);
@@ -674,9 +596,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objAddress_S.countryTypeDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Address_T objAddress_T = new FilogixGETJSONWrapper.Address_T(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Address_T objAddress_T = new FilogixGETJSONWrapper.Address_T(System.JSON.createParser(json));
     System.assert(objAddress_T != null);
     System.assert(objAddress_T.city == null);
     System.assert(objAddress_T.postalZipCode == null);
@@ -688,9 +608,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objAddress_T.unit == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Address_Y objAddress_Y = new FilogixGETJSONWrapper.Address_Y(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Address_Y objAddress_Y = new FilogixGETJSONWrapper.Address_Y(System.JSON.createParser(json));
     System.assert(objAddress_Y != null);
     System.assert(objAddress_Y.addrId == null);
     System.assert(objAddress_Y.unitNumber == null);
@@ -705,9 +623,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objAddress_Y.countryTypeDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Address_Z objAddress_Z = new FilogixGETJSONWrapper.Address_Z(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Address_Z objAddress_Z = new FilogixGETJSONWrapper.Address_Z(System.JSON.createParser(json));
     System.assert(objAddress_Z != null);
     System.assert(objAddress_Z.addrId == null);
     System.assert(objAddress_Z.streetNumber == null);
@@ -719,9 +635,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objAddress_Z.postalLdu == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Applicant objApplicant = new FilogixGETJSONWrapper.Applicant(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Applicant objApplicant = new FilogixGETJSONWrapper.Applicant(System.JSON.createParser(json));
     System.assert(objApplicant != null);
     System.assert(objApplicant.borrowerId == null);
     System.assert(objApplicant.borrowerCellNumber == null);
@@ -752,9 +666,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objApplicant.otherProperty == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Address_W objAddress_W = new FilogixGETJSONWrapper.Address_W(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Address_W objAddress_W = new FilogixGETJSONWrapper.Address_W(System.JSON.createParser(json));
     System.assert(objAddress_W != null);
     System.assert(objAddress_W.unitNumber == null);
     System.assert(objAddress_W.streetNumber == null);
@@ -767,9 +679,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objAddress_W.countryTypeDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Address_X objAddress_X = new FilogixGETJSONWrapper.Address_X(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Address_X objAddress_X = new FilogixGETJSONWrapper.Address_X(System.JSON.createParser(json));
     System.assert(objAddress_X != null);
     System.assert(objAddress_X.addrId == null);
     System.assert(objAddress_X.addressLine1 == null);
@@ -779,23 +689,17 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objAddress_X.countryTypeDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Building objBuilding = new FilogixGETJSONWrapper.Building(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Building objBuilding = new FilogixGETJSONWrapper.Building(System.JSON.createParser(json));
     System.assert(objBuilding != null);
     System.assert(objBuilding.type_Z == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Description objDescription = new FilogixGETJSONWrapper.Description(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Description objDescription = new FilogixGETJSONWrapper.Description(System.JSON.createParser(json));
     System.assert(objDescription != null);
     System.assert(objDescription.code == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.RepresentativeList objRepresentativeList = new FilogixGETJSONWrapper.RepresentativeList(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.RepresentativeList objRepresentativeList = new FilogixGETJSONWrapper.RepresentativeList(System.JSON.createParser(json));
     System.assert(objRepresentativeList != null);
     System.assert(objRepresentativeList.address == null);
     System.assert(objRepresentativeList.email == null);
@@ -806,9 +710,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objRepresentativeList.role == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.SubmissionAgentProfile objSubmissionAgentProfile = new FilogixGETJSONWrapper.SubmissionAgentProfile(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.SubmissionAgentProfile objSubmissionAgentProfile = new FilogixGETJSONWrapper.SubmissionAgentProfile(System.JSON.createParser(json));
     System.assert(objSubmissionAgentProfile != null);
     System.assert(objSubmissionAgentProfile.contact == null);
     System.assert(objSubmissionAgentProfile.firmCode == null);
@@ -819,9 +721,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objSubmissionAgentProfile.userTypeDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Identification objIdentification = new FilogixGETJSONWrapper.Identification(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Identification objIdentification = new FilogixGETJSONWrapper.Identification(System.JSON.createParser(json));
     System.assert(objIdentification != null);
     System.assert(objIdentification.borrowerId == null);
     System.assert(objIdentification.identificationId == null);
@@ -829,9 +729,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objIdentification.identificationTypeDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.PropertyExpense objPropertyExpense = new FilogixGETJSONWrapper.PropertyExpense(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.PropertyExpense objPropertyExpense = new FilogixGETJSONWrapper.PropertyExpense(System.JSON.createParser(json));
     System.assert(objPropertyExpense != null);
     System.assert(objPropertyExpense.propertyExpenseId == null);
     System.assert(objPropertyExpense.includeInGDS == null);
@@ -844,9 +742,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objPropertyExpense.propertyExpenseTypeDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.AgentProfile objAgentProfile = new FilogixGETJSONWrapper.AgentProfile(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.AgentProfile objAgentProfile = new FilogixGETJSONWrapper.AgentProfile(System.JSON.createParser(json));
     System.assert(objAgentProfile != null);
     System.assert(objAgentProfile.contact == null);
     System.assert(objAgentProfile.firmCode == null);
@@ -857,9 +753,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objAgentProfile.userTypeDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.DownPaymentSource objDownPaymentSource = new FilogixGETJSONWrapper.DownPaymentSource(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.DownPaymentSource objDownPaymentSource = new FilogixGETJSONWrapper.DownPaymentSource(System.JSON.createParser(json));
     System.assert(objDownPaymentSource != null);
     System.assert(objDownPaymentSource.amount == null);
     System.assert(objDownPaymentSource.description == null);
@@ -867,9 +761,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objDownPaymentSource.downPaymentSourceTypeDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.AdjustmentList objAdjustmentList = new FilogixGETJSONWrapper.AdjustmentList(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.AdjustmentList objAdjustmentList = new FilogixGETJSONWrapper.AdjustmentList(System.JSON.createParser(json));
     System.assert(objAdjustmentList != null);
     System.assert(objAdjustmentList.adjustmentId == null);
     System.assert(objAdjustmentList.amt == null);
@@ -878,9 +770,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objAdjustmentList.loanDecisionId == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.EmploymentHistory_Z objEmploymentHistory_Z = new FilogixGETJSONWrapper.EmploymentHistory_Z(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.EmploymentHistory_Z objEmploymentHistory_Z = new FilogixGETJSONWrapper.EmploymentHistory_Z(System.JSON.createParser(json));
     System.assert(objEmploymentHistory_Z != null);
     System.assert(objEmploymentHistory_Z.employmentHistoryId == null);
     System.assert(objEmploymentHistory_Z.contact == null);
@@ -895,9 +785,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objEmploymentHistory_Z.timeInIndustry == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.AddressDetail objAddressDetail = new FilogixGETJSONWrapper.AddressDetail(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.AddressDetail objAddressDetail = new FilogixGETJSONWrapper.AddressDetail(System.JSON.createParser(json));
     System.assert(objAddressDetail != null);
     System.assert(objAddressDetail.address == null);
     System.assert(objAddressDetail.addressTypeDd == null);
@@ -906,17 +794,13 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objAddressDetail.rentPaymentAmount == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Phone objPhone = new FilogixGETJSONWrapper.Phone(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Phone objPhone = new FilogixGETJSONWrapper.Phone(System.JSON.createParser(json));
     System.assert(objPhone != null);
     System.assert(objPhone.areaCode == null);
     System.assert(objPhone.number_Z == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.AddressDetail_Z objAddressDetail_Z = new FilogixGETJSONWrapper.AddressDetail_Z(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.AddressDetail_Z objAddressDetail_Z = new FilogixGETJSONWrapper.AddressDetail_Z(System.JSON.createParser(json));
     System.assert(objAddressDetail_Z != null);
     System.assert(objAddressDetail_Z.address == null);
     System.assert(objAddressDetail_Z.addressTypeDd == null);
@@ -924,9 +808,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objAddressDetail_Z.residentialStatusDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Property objProperty = new FilogixGETJSONWrapper.Property(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Property objProperty = new FilogixGETJSONWrapper.Property(System.JSON.createParser(json));
     System.assert(objProperty != null);
     System.assert(objProperty.propertyId == null);
     System.assert(objProperty.actualAppraisalValue == null);
@@ -967,9 +849,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objProperty.propertyExpense == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.ClauseList objClauseList = new FilogixGETJSONWrapper.ClauseList(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.ClauseList objClauseList = new FilogixGETJSONWrapper.ClauseList(System.JSON.createParser(json));
     System.assert(objClauseList != null);
     System.assert(objClauseList.clauseId == null);
     System.assert(objClauseList.conditionStatus == null);
@@ -979,9 +859,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objClauseList.text == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Notes objNotes = new FilogixGETJSONWrapper.Notes(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Notes objNotes = new FilogixGETJSONWrapper.Notes(System.JSON.createParser(json));
     System.assert(objNotes != null);
     System.assert(objNotes.categoryDd == null);
     System.assert(objNotes.entryDate == null);
@@ -990,9 +868,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objNotes.text == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.WorkQueueTask objWorkQueueTask = new FilogixGETJSONWrapper.WorkQueueTask(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.WorkQueueTask objWorkQueueTask = new FilogixGETJSONWrapper.WorkQueueTask(System.JSON.createParser(json));
     System.assert(objWorkQueueTask != null);
     System.assert(objWorkQueueTask.workQueueTaskId == null);
     System.assert(objWorkQueueTask.assignToId == null);
@@ -1005,16 +881,12 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objWorkQueueTask.taskTypeDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.BorrowerIds objBorrowerIds = new FilogixGETJSONWrapper.BorrowerIds(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.BorrowerIds objBorrowerIds = new FilogixGETJSONWrapper.BorrowerIds(System.JSON.createParser(json));
     System.assert(objBorrowerIds != null);
     System.assert(objBorrowerIds.borrowerId == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.AdministratorProfile objAdministratorProfile = new FilogixGETJSONWrapper.AdministratorProfile(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.AdministratorProfile objAdministratorProfile = new FilogixGETJSONWrapper.AdministratorProfile(System.JSON.createParser(json));
     System.assert(objAdministratorProfile != null);
     System.assert(objAdministratorProfile.contact == null);
     System.assert(objAdministratorProfile.firmCode == null);
@@ -1025,9 +897,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objAdministratorProfile.userTypeDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Submission objSubmission = new FilogixGETJSONWrapper.Submission(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Submission objSubmission = new FilogixGETJSONWrapper.Submission(System.JSON.createParser(json));
     System.assert(objSubmission != null);
     System.assert(objSubmission.lenderSubmissionId == null);
     System.assert(objSubmission.appNumber == null);
@@ -1046,9 +916,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objSubmission.userProfileId == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Name_Z objName_Z = new FilogixGETJSONWrapper.Name_Z(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Name_Z objName_Z = new FilogixGETJSONWrapper.Name_Z(System.JSON.createParser(json));
     System.assert(objName_Z != null);
     System.assert(objName_Z.salutationDd == null);
     System.assert(objName_Z.firstName == null);
@@ -1056,18 +924,14 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objName_Z.lastName == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Name_Y objName_Y = new FilogixGETJSONWrapper.Name_Y(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Name_Y objName_Y = new FilogixGETJSONWrapper.Name_Y(System.JSON.createParser(json));
     System.assert(objName_Y != null);
     System.assert(objName_Y.first == null);
     System.assert(objName_Y.last == null);
     System.assert(objName_Y.prefix == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Name_X objName_X = new FilogixGETJSONWrapper.Name_X(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Name_X objName_X = new FilogixGETJSONWrapper.Name_X(System.JSON.createParser(json));
     System.assert(objName_X != null);
     System.assert(objName_X.first == null);
     System.assert(objName_X.last == null);
@@ -1075,25 +939,19 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objName_X.prefix == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.FeesPmtMethod objFeesPmtMethod = new FilogixGETJSONWrapper.FeesPmtMethod(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.FeesPmtMethod objFeesPmtMethod = new FilogixGETJSONWrapper.FeesPmtMethod(System.JSON.createParser(json));
     System.assert(objFeesPmtMethod != null);
     System.assert(objFeesPmtMethod.code == null);
     System.assert(objFeesPmtMethod.desc_Z == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Routing objRouting = new FilogixGETJSONWrapper.Routing(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Routing objRouting = new FilogixGETJSONWrapper.Routing(System.JSON.createParser(json));
     System.assert(objRouting != null);
     System.assert(objRouting.receiver == null);
     System.assert(objRouting.sender == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.OtherIncome objOtherIncome = new FilogixGETJSONWrapper.OtherIncome(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.OtherIncome objOtherIncome = new FilogixGETJSONWrapper.OtherIncome(System.JSON.createParser(json));
     System.assert(objOtherIncome != null);
     System.assert(objOtherIncome.incomeId == null);
     System.assert(objOtherIncome.annualIncomeAmount == null);
@@ -1103,9 +961,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objOtherIncome.incomeTypeDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Fees objFees = new FilogixGETJSONWrapper.Fees(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Fees objFees = new FilogixGETJSONWrapper.Fees(System.JSON.createParser(json));
     System.assert(objFees != null);
     System.assert(objFees.dealFeeId == null);
     System.assert(objFees.deduct == null);
@@ -1115,9 +971,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objFees.feeAmount == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.DealStatusUpdate objDealStatusUpdate = new FilogixGETJSONWrapper.DealStatusUpdate(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.DealStatusUpdate objDealStatusUpdate = new FilogixGETJSONWrapper.DealStatusUpdate(System.JSON.createParser(json));
     System.assert(objDealStatusUpdate != null);
     System.assert(objDealStatusUpdate.dealId == null);
     System.assert(objDealStatusUpdate.dealStatusTimeStamp == null);
@@ -1126,9 +980,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objDealStatusUpdate.dealStatus == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.QualifyDetail objQualifyDetail = new FilogixGETJSONWrapper.QualifyDetail(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.QualifyDetail objQualifyDetail = new FilogixGETJSONWrapper.QualifyDetail(System.JSON.createParser(json));
     System.assert(objQualifyDetail != null);
     System.assert(objQualifyDetail.amortizationTerm == null);
     System.assert(objQualifyDetail.interestCompoundDd == null);
@@ -1136,9 +988,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objQualifyDetail.qualifyDetailId == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Contact objContact = new FilogixGETJSONWrapper.Contact(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Contact objContact = new FilogixGETJSONWrapper.Contact(System.JSON.createParser(json));
     System.assert(objContact != null);
     System.assert(objContact.contactId == null);
     System.assert(objContact.address == null);
@@ -1152,9 +1002,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objContact.preferredContactMethodDd == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Liability objLiability = new FilogixGETJSONWrapper.Liability(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Liability objLiability = new FilogixGETJSONWrapper.Liability(System.JSON.createParser(json));
     System.assert(objLiability != null);
     System.assert(objLiability.liabilityId == null);
     System.assert(objLiability.borrowerId == null);
@@ -1169,9 +1017,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objLiability.shared == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.LenderProfile objLenderProfile = new FilogixGETJSONWrapper.LenderProfile(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.LenderProfile objLenderProfile = new FilogixGETJSONWrapper.LenderProfile(System.JSON.createParser(json));
     System.assert(objLenderProfile != null);
     System.assert(objLenderProfile.contact == null);
     System.assert(objLenderProfile.lenderName == null);
@@ -1181,9 +1027,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objLenderProfile.registrationNameFr == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.SubjectPropertyList objSubjectPropertyList = new FilogixGETJSONWrapper.SubjectPropertyList(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.SubjectPropertyList objSubjectPropertyList = new FilogixGETJSONWrapper.SubjectPropertyList(System.JSON.createParser(json));
     System.assert(objSubjectPropertyList != null);
     System.assert(objSubjectPropertyList.address == null);
     System.assert(objSubjectPropertyList.annualTaxAmt == null);
@@ -1192,16 +1036,12 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objSubjectPropertyList.subjectPropertyId == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper objFilogixGETJSONWrapper = new FilogixGETJSONWrapper(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper objFilogixGETJSONWrapper = new FilogixGETJSONWrapper(System.JSON.createParser(json));
     System.assert(objFilogixGETJSONWrapper != null);
     System.assert(objFilogixGETJSONWrapper.result == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.DealHistory objDealHistory = new FilogixGETJSONWrapper.DealHistory(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.DealHistory objDealHistory = new FilogixGETJSONWrapper.DealHistory(System.JSON.createParser(json));
     System.assert(objDealHistory != null);
     System.assert(objDealHistory.applicationId == null);
     System.assert(objDealHistory.dealHistoryId == null);
@@ -1213,9 +1053,7 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objDealHistory.userProfileId == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.ContactName objContactName = new FilogixGETJSONWrapper.ContactName(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.ContactName objContactName = new FilogixGETJSONWrapper.ContactName(System.JSON.createParser(json));
     System.assert(objContactName != null);
     System.assert(objContactName.salutationDd == null);
     System.assert(objContactName.contactFirstName == null);
@@ -1223,16 +1061,12 @@ public class FilogixGETJSONWrapper_Test {
     System.assert(objContactName.contactLastName == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.Submissions objSubmissions = new FilogixGETJSONWrapper.Submissions(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.Submissions objSubmissions = new FilogixGETJSONWrapper.Submissions(System.JSON.createParser(json));
     System.assert(objSubmissions != null);
     System.assert(objSubmissions.submission == null);
 
     json = '{\"TestAMissingObject\": { \"TestAMissingArray\": [ { \"TestAMissingProperty\": \"Some Value\" } ] } }';
-    FilogixGETJSONWrapper.RentalIncome objRentalIncome = new FilogixGETJSONWrapper.RentalIncome(
-      System.JSON.createParser(json)
-    );
+    FilogixGETJSONWrapper.RentalIncome objRentalIncome = new FilogixGETJSONWrapper.RentalIncome(System.JSON.createParser(json));
     System.assert(objRentalIncome != null);
     System.assert(objRentalIncome.incomeId == null);
     System.assert(objRentalIncome.incomeAmount == null);
