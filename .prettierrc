@@ -8,6 +8,14 @@
     {
       "files": "*.{cmp,page,component}",
       "options": { "parser": "html" }
+    },
+    {
+      "files": "*.{trigger,cls}",
+      "options": { "parser": "apex", "singleAttributePerLine": true, "printWidth": 600, "htmlWhitespaceSensitivity": }
+    },
+    {
+      "files": "*.{apex}",
+      "options": { "parser": "apex-anonymous" }
     }
   ]
 }
